@@ -1,0 +1,18 @@
+.login {
+    background-color: #F5F0F0;
+    width: 500px;
+    height: 140px;
+    padding: 75px 0px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.login input {
+    width: 150px;
+    margin: 20px 100px;
+}
+
+.login input[type="button"] {
+    width: 100px;
+    height: 35px;
+}

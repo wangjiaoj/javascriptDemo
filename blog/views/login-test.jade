@@ -1,0 +1,26 @@
+extends layout
+
+block content
+    link(rel='stylesheet', href='/stylesheets/login.css')
+    h1=title
+    -var pcon=title+"page";
+    p=pcon
+    .login
+        .row
+            span.title 姓名
+            input(type="text" id="userName" placeholder="请输入用户名")
+        .row
+            span.title 密码
+            input(type="passward" id="passward" placeholder="请输入密码")
+        .row
+            input(type="button" id="submit" value="登录") 
+    .bind
+        .row
+            span.bindSpan 点击我
+        .row
+            span.bindSpan 测试下
+    script(src="/javascripts/jquery-1.11.1.js")
+    script(src="/javascripts/login-test.js")
+        
+    
+      
