@@ -11,8 +11,28 @@
             var ele = this.selector;
             ele.value();
         },
-        addHandler: function(type, handler) {
-            var ele = document.getElementById(this.selector);
+        on: function(type, handler) {
+            JQuery.event.addHandler(this.selector, type, handler);
+        },
+        off: function(type, handler) {
+            JQuery.event.addHandler(this.selector, type, handler);
+        }
+    }
+
+    myJQuery.prototype.init = function(selector, context) {
+        if (!selector) {
+            return this;
+        }
+        var ele = document.getElementById(selector);
+        this.ele = ele;
+        if (selector) {
+            this.selector = selector;
+            this.context = context;
+        }
+    }
+    JQuery.event = {
+        addHandler: function(selector, type, handler) {
+            var ele = document.getElementById(selector);
             if (ele.addEventListenter) {
                 ele.addEventListenter(type, handler, false);
             } else if (ele.attachEvent) {
@@ -22,8 +42,8 @@
             }
             return this;
         },
-        removeHandler: function(type, handler) {
-            var ele = ocument.getElementById(this.selector);
+        removeHandler: function(selector, type, handler) {
+            var ele = ocument.getElementById(selector);
             if (ele.addEventListenter) {
                 ele.removeEventListenter(type, handler);
             } else if (ele.attachEvent) {
@@ -32,17 +52,6 @@
                 ele["on" + type] = null;
             }
             return this;
-        }
-    }
-    myJQuery.prototype.init = function(selector, context) {
-        if (!selector) {
-            return this;
-        }
-
-        document.getElementById(selector);
-        if (selector) {
-            this.selector = selector;
-            this.context = context;
         }
     }
     myJQuery.ajax = function(options) {
