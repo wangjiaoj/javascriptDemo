@@ -128,16 +128,13 @@ arguments是函数运行时的实参列表
   + arguments每一个函数都有，arguments只会在内部找自身的arguments，无法引用到外层的arguments
  
 
-## 四、关于JavaScript中apply与call的用法意义及区别
-
-* JavaScript中有一个call和apply方法，其作用基本相同，但也有略微的区别。先来看看JS手册中对call的解释：
-  + call 方法调用一个对象的一个方法，以另一个对象替换当前对象。`call([thisObj[,arg1[, arg2[,   [,.argN]]]]])`
-  + 参数thisObj：可选项。将被用作当前对象的对象。
-  + arg1, arg2,  , argN：可选项。将被传递方法参数序列。  
-  + 说明call 方法可以用来代替另一个对象调用一个方法。call 方法可将一个函数的对象上下文从初始的上下文改变为由 thisObj 指定的新对象。如果没有提供 thisObj 参数，那么 Global 对象被用作 thisObj。说明白一点其实就是更改对象的内部指针，即改变对象的this指向的内容。这在面向对象的js编程过程中有时是很有用的。引用网上一个代码段，运行后自然就明白其道理。
-
+## 四、apply与call及bind的用法意义及区别
+1. apply与call都是改变上下文中的this并立即执行这个函数，对于apply和call两者在作用上是相同的，但两者在参数上有区别的。对于第一个参数意义都一样，都是要传入给当前对象的对象;
+但对第二个参数：apply传入的是一个参数数组，也就是将多个参数组合成为一个数组传入，而call则作为call的参数传入（从第二个参数开始）。
+*如 `func.call(func1,var1,var2,var3)`对应的apply写法为：`func.apply(func1,[var1,var2,var3])` ,同时使用apply的好处是可以直接将当前函数的arguments对象作为apply的第二个参数传入
 
 ```javascript
+//例一
  function Obj(){
     this.value="对象！";
 }
@@ -149,12 +146,9 @@ window.Fun1();   //global 变量
 Fun1.call(window);  //global 变量
 Fun1.call(document.getElementById('myText'));  //input text
 Fun1.call(new Obj());   //对象！
-```
 
-* call函数和apply方法的第一个参数都是要传入给当前对象的对象，及函数内部的this。后面的参数都是传递给当前对象的参数。运行如下代码：
-
-```javascript
- var func=new function(){
+//例二
+var func=new function(){
     this.a="func"
 }  
  var myfunc=function(x){
@@ -163,23 +157,51 @@ Fun1.call(new Obj());   //对象！
   alert(x);
 }
  myfunc.call(func,"var");
+//弹出 func var
+
+//例三
+var a = {
+    user:"追梦子",
+    fn:function(e,ee){
+        console.log(this.user); //追梦子
+        console.log(e+ee); //11
+    }
+}
+var b = a.fn;
+b.apply(a,[10,1]);
+```
+2. bind同样可以改变对象的指向，但实际上bind方法返回的是一个修改过后的函数，并不像apply和call会立即执行。
+
+```javascript
+var a = {
+    user:"追梦子",
+    fn:function(){
+        console.log(this.user); //追梦子
+    }
+}
+var b = a.fn;
+var c = b.bind(a);
+console.log(c);
+c();
 ```
 
-  + 可见分别弹出了func和var。到这里就对call的每个参数的意义有所了解了。
-  + 对于apply和call两者在作用上是相同的，但两者在参数上有区别的。对于第一个参数意义都一样，但对第二个参数：apply传入的是一个参数数组，也就是将多个参数组合成为一个数组传入，而call则作为call的参数传入（从第二个参数开始）。
-  + 如 `func.call(func1,var1,var2,var3)`对应的apply写法为：`func.apply(func1,[var1,var2,var3])` ,同时使用apply的好处是可以直接将当前函数的arguments对象作为apply的第二个参数传入
+* 总结 call和apply都是改变上下文中的this并立即执行这个函数，bind方法可以让对应的函数想什么时候调就什么时候调用，并且可以将参数在执行的时候添加，这是它们的区别，根据自己的实际情况来选择使用
 
 ## 五、this
 
-js中函数的4种调用方式
+* this的指向在函数定义的时候是确定不了的，只有函数执行的时候才能确定this到底指向谁，实际上this的最终指向的是那个调用它的对象（这句话有些问题，后面会解释为什么会有问题，虽然网上大部分的文章都是这样说的，虽然在很多情况下那样去理解不会出什么问题，但是实际上那样理解是不准确的，所以在你理解this的时候会有种琢磨不透的感觉），那么接下来我会深入的探讨这个问题。
+
+* js中函数的5种调用方式
 
 1. 全局的this(浏览器）：指向window
 
  ```javascript
- console.log(this.document===document);
- conosle.log(this.window===window);
+ console.log(this.document===document);//true
+
+ conosle.log(this.window===window);//true
+
  this.a=37;
- console.log(window.a);
+ console.log(window.a);//37
 ```
 
 2. 一般函数调用的this:指向window
@@ -188,12 +210,14 @@ js中函数的4种调用方式
 function f1(){
     return this;
 }
-f1()===window;
+f1()===window;//true
+
 function f2(){
    "use strict";
    return this;
 }
-f2()===window;
+f2();//undefined
+f2()===window; //false
 ```
 
 * 作为普通函数来调用时this的值->window,准确来说，this为null，但被解释为window,在ECMASCRIPT标准中，如果this为null，则被解释成undefined
@@ -201,25 +225,52 @@ f2()===window;
 3. 作为对象的方法来调用时：this指向方法的调用者，即该对象
 
 ```javascript
-Var o={
+//例一
+var o={
   prop:37,
 　f:function(){
-　　　retrurn this.prop;
+　　　return this.prop;
 　}
 }
-Console.log(o.f());//logs 37
+console.log(o.f());//logs 37
 
-//或者
-var o={ prop:37};
-　　function indepent(){
-　　　retrurn this.prop;
-　}
+//例二
+var o={prop:37};
+function indepent(){
+　　return this.prop;
 }
 o.f= indepent;
 console.log(o.f());//logs 37
+
+//例三
+var o={
+     a:37,
+     b:{
+        a:12,
+        fn:function(){
+            console.log(this.a);
+        }
+     }
+};
+o.b.fn();//12
+
+//例四
+var o={
+     a:37,
+     b:{
+        a:12,
+        fn:function(){
+            console.log(this.a);//undefined
+            console.log(this);//window
+        }
+     }
+};
+var j=o.b.fn;
+j();
+
 ```
 
-* 在例子中都是指向o
+* this指向的永远是最后调用它的对象，即执行时是谁调用的
 * get/set方法:也是会指向get/set方法所在的对象
 
 4. 原型链上的this
@@ -359,9 +410,46 @@ So you can see……为什么new的时候this就指向新的对象了吧？
 
 ## 六、闭包
 
+### 6.1垃圾回收机制
+1. js的设计者为了让没有必要的变量保存在内存中，设计了垃圾回收机制（我们写的任何变量都是需要内存空间的），什么叫没有必要的变量？也就是说你不在需要这个变量的时候它就会被销毁？那么你肯定会问js怎么知道那些变量是我们不需要的哪些是我们需要的。所以js为了知道哪些变量需要保存下来，哪些不需要保存下来，会进行一些判断。接下来我们就一起看看js是怎么判断的。
+* 1.在js中定义的全局变量是不会被销毁的，因为我们随时都可能会用到这个变量，所以不能被销毁。
+* 2.但是在函数中定义的变量就不一定了，而且由于在函数的定义的变量的生命周期在执行完这个函数就销毁的原因自然就保存不了上一次的值。
+  + 2.1但是并不是说函数就真的保存不了上一次的值，因为有的时候我们确实需要上一次的值，所以js判断是否需要保存上一次变量的值的时候就会遵守这样的一个规则。
+  + 规则，如果这个函数有被外部的变量引用就不会销毁（这句话说的不够准确，下面代码会一步一步解释），否则销毁
+* 可以比较下面两个例子
+```javascript
+//例一
+function a(){
+    var b = 0;
+    return function(){
+        b ++;
+        console.log(b);
+    }
+}
+
+a()();//1
+a()();//1
 
 
+//例二
+function a(){
+    var b = 0;
+    return function(){
+        b ++;
+        console.log(b);
+    }
+}
 
+var d = a();
+d();//1
+d();//2
+```
+
+* 总结：
+  + 1、如果一个对象不被引用，那么这个对象就会被GC回收；
+  + 2、如果两个对象互相引用，但是没有被第3个对象所引用，那么这两个互相引用的对象也会被回收。
+
+[参考文章](http://www.cnblogs.com/pssp/p/5211637.html 'GC')
 
 
 ## 七、Js对象概述
