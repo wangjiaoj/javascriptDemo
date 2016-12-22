@@ -193,16 +193,19 @@ d();//2
 1. 闭包
 * 闭包是指有权访问另一个函数作用于连中的变量函数。
 * 作用域链是理解闭包的关键；
-  
+
+
 
 
 ## 四、apply与call及bind的用法意义及区别
 
 1. apply与call都是改变上下文中的this并立即执行这个函数，(调用一个对象的一个方法，以另一个对象替换当前对象)对于apply和call两者在作用上是相同的，但两者在参数上有区别的。对于第一个参数意义都一样，都是要传入给当前对象的对象;
 但对第二个参数：apply传入的是一个参数数组，也就是将多个参数组合成为一个数组传入，而call则作为call的参数传入（从第二个参数开始）。
-*如 `func.call(func1,var1,var2,var3)`对应的apply写法为：`func.apply(func1,[var1,var2,var3])` ,同时使用apply的好处是可以直接将当前函数的arguments对象作为apply的第二个参数传入
+
+* 如 `func.call(func1,var1,var2,var3)`对应的apply写法为：`func.apply(func1,[var1,var2,var3])` ,同时使用apply的好处是可以直接将当前函数的arguments对象作为apply的第二个参数传入
 
 ```javascript
+
 //例一
  function Obj(){
     this.value="对象！";
@@ -238,11 +241,13 @@ var a = {
 }
 var b = a.fn;
 b.apply(a,[10,1]);
+
 ```
 
 2. bind同样可以改变对象的指向，但实际上bind方法返回的是一个修改过后的函数，并不像apply和call会立即执行。
 
 ```javascript
+
 var a = {
     user:"追梦子",
     fn:function(){
@@ -253,6 +258,7 @@ var b = a.fn;
 var c = b.bind(a);
 console.log(c);
 c();
+
 ```
 
 * 总结 call和apply都是改变上下文中的this并立即执行这个函数，bind方法可以让对应的函数想什么时候调就什么时候调用，并且可以将参数在执行的时候添加，这是它们的区别，根据自己的实际情况来选择使用
@@ -696,6 +702,10 @@ get/set与原型链
 ### 7.4、属性级的权限设置
 
 Object.getOwnPropertyDescriptor()方法可以取得给定属性的特性：
+| 值	   | 含义                                        |
+| ----- |:------------------------------------------:|
+| xMin	| viewport和viewBox左边对齐                   | 
+
 
 ### 7.5、对象标签 
 
