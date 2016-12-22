@@ -658,6 +658,7 @@ delete abc; // 返回true
 ```javascript
 eval("var abc = 100;console.log(delete abc); console.log(abc);"); // 返回true, undefined...
 ```
+
 4. 属性检测
 
 ```javascript
@@ -754,50 +755,78 @@ console.log(man.age);//27
 ### 5.4、属性级的权限设置
 
 Object.getOwnPropertyDescriptor()方法可以取得给定属性的特性：
-| 值	   | 含义                                        |
-| ----- |:------------------------------------------:|
-| xMin	| viewport和viewBox左边对齐                   | 
+ ![](pic/configurabel&writable.png)
 
+### 5.5、对象标签
 
-### 5.5、对象标签 
+1. [{proto}] 原型标签、[{class}]、[{extensible}]
 
- [{proto}] 原型标签、[{class}]、[{extensible}]
-序列化
-如果属性值为undefined，将不会出现在序列化之后的结果中，
-如果属性值NaN,infnity,将会转化为null，如果是时间，将会转化成UTC的时间格式
+2. 序列化
 
-使用json的Stringfy()方法序列化，返回一个字符串
-使用parse()方法，把json对象转化为js对象，此外主义json中的键要用双引号引起来
+* 如果属性值为undefined，将不会出现在序列化之后的结果中，
+* 如果属性值NaN,infnity,将会转化为null，如果是时间，将会转化成UTC的时间格式
+
+```javascript
+//序列化
+var obj={ x:1, y:true,z:[1,2,3],nullVal:null};
+JSON.stringify(obj);//"{"x":1,"y":true,"z":[1,2,3],"nullVal":null}"
+
+var obj={ val:undefined,a:NaN,b:Infinity,c:new Date()};
+JSON.stringify(obj);//"{"a":null,"b":null,"c":"2016-12-22T14:31:58.240Z"}"
+
+var obj=JSON.parse('{"x":1}');
+JSON.stringify(obj);//"{"x":1}"
+```
+
+* 使用json的Stringfy()方法序列化，返回一个字符串
+* 使用parse()方法，把json对象转化为js对象，此外主义json中的键要用双引号引起来
+
+* 序列化自定义
+
+```javascript
+var obj={
+    x:1,
+    y:2,
+    o:{
+        o1:1,
+        o2:2,
+        toJSON:function(){
+             return this.o1+this.o2
+        }
+    }
+};
+JSON.stringify(obj);//"{"x":1,"y":2,"o":3}"
+```
 
 ## 六、js对象的特点,js对象和json的一些对比比较
 
-1、js对象的特点:
-  1)、Js对象不依靠类而存在，可直接生成
+### 6.1 js对象的特点:
+
+1. Js对象不依靠类而存在，可直接生成
 　　总结：Js中的对象，就是“一组属性与值的集合”，属性可以任意添减，方法和属性不必区分
-  2)、Js面向对象的私有属性和封装
+2. Js面向对象的私有属性和封装
     通过闭包来完成js面向对象的私有属性和封装
 
-2、js对象和json的一些对比比较:
+```javascript
+function girl(name,bf){
+    var secret=bf;
+    this.name=name;
+    this.showlove=function(){
+        return secret;
+    }
+}
+var g=new girl('lindaiyu','jiabaoyu');
+alert(g.name+'xihuan'+g.showlove())
+```
+
+### 6.2 js对象和json的一些对比比较:
+
 　　关于JSON（JavaScript Object Natation），简单的说就是轻量级的用于交换数据的格式，基于javascript 语法的子集，即数组和对象表示。
 　　每一个数据都是一对键和值，用 , 分隔开。每一个键和值用 :分割开。
 　　json 里的键和 Javascript 的对象标识符是不同的概念，必须用双引号包裹包裹。在 Javascript 对象里，对象标识符可以不用引号，用单引号或双引号。string 可以用单引号或双引号来表现。而在 json 的 概念里的 string，其表现形式为必须用双引号包裹。
 　通过eval() 函数可以将JSON字符串转化为对象。 
-　
-　
-　
-　
-　
-　
-　
-　
-　
-　
-　
-　
-　
-　
-　
-　
+
+
 ## 七、原型：prototype和__proto__
 
 ### 7.1 对prototype和__proto__的理解:
@@ -852,13 +881,59 @@ Object.getOwnPropertyDescriptor()方法可以取得给定属性的特性：
 4. 关于js构造函数返回值的详细解释：
 * 不管是在java或.net或javascript中，构造函数的里面的this只的就是将要得到的对象本身，在new的时候开辟内存空间，这个空间肯定是个object然后和this相连，(javascript并且原型应用会把函数的prototype给新的对象)。但是不同的是java或.net如果你在构造函数里面写return是会发生编译期错误的，因为他知道这个是构造函数不应该有return关键字。而javascript不一样，他可以有，如果你在javascript构造函数中写return，return了对象的话，他就会舍弃原先的内存空间及this,并且不会原型引用当前函数的prototype，而是得到直接的返回值，也就说，如果一个带返回值的方法，不管你 new还是不new得到的都是返回值的内容。
 
+```javascript
+//例一
+function Person(name,sex){
+    this.name=name;
+    this.sex=sex;
+    return this.name;
+}
+var obj=new Person('li',1);
+obj//Person {name: "li", sex: 1}
+
+//例二
+function Person(name,sex){
+    this.name=name;
+    this.sex=sex;
+    return {"returnValue":11};
+}
+var obj=new Person('li',1);
+obj//Object {returnValue: 11}
+
+//例三
+function Person(name,sex){
+    this.name=name;
+    this.sex=sex;
+    return {"returnValue":11};
+}
+Person.prototype.cc=function(){
+    console.log("console");
+}
+var obj=new Person('li',1);
+obj//Object {returnValue: 11}
+obj.cc//undefined
+
+//例四
+function Person(name,sex){
+    this.name=name;
+    this.sex=sex;
+    return this.name;
+}
+Person.prototype.cc=function(){
+    console.log("console");
+}
+var obj=new Person('li',1);
+obj//Person {name: "li", sex: 1}
+onj.cc()//console
+
+```
 
 ## 九、Js面向对象之静态方法
 
 ```javascript
  var harshiqi=function(){
     this.bark=function(){
-    	 alert("wangwang");
+        alert("wangwang");
     }
  }
 
@@ -867,12 +942,25 @@ harshiqi.ajax=function(){
  }
  var h=new harshiqi();
  console.log(h);
+ //H中没有ajax方法
+ /*
+ 即:
+ ajax()方法是基于”函数“本身的，和返回的对象没有关系
+ bark要调用，必须要new harshiqi()得到对象，切有返回对象才能调用
+使用ajax()方法要调用，不需要new对象，直接用harshiqi调用
+ */
+ h.bark();
+ harshiqi.ajax()
 ```
+* 之前是否接触过静态方法？
+1. Math.random():静态方法
+2. $.ajax():静态方法
+3. 写jquery插件，2种办法
+    通过闭包，吧方法写到jquery圆形上
+    直接增加$的静态方法
 
-H中没有ajax方法；
- 
 
-　　
+
 ## 十、ready与load执行方式区别
 
 ### 10.1 Jquery中使用的有：
