@@ -4,7 +4,7 @@
 
 ### 1.1 函数的概念：
 
-函数是一块JavaScript代码，被定义一次，但可执行和调用多次，js中的函数也是对象，所以js函数可以像其他对象那样操作和传递,所以我们也常叫js中的函数为函数对象。
+* 函数是一块JavaScript代码，被定义一次，但可执行和调用多次，js中的函数也是对象，所以js函数可以像其他对象那样操作和传递,所以我们也常叫js中的函数为函数对象。
 关于函数的五个部分：this、arguments、作用域、不同调用方式、不同创建方法
 
 ### 1.2 函数的调用方式：
@@ -52,7 +52,7 @@ arguments是函数运行时的实参列表
 * 执行环境定义了变量或函数有权访问的其他数据，决定了他们各自的行为;
 * 每个执行环境都有一个与之关联的变量对象，环境中定义的所有变量和函数都保存在这个对象中。虽然我们编写的代码无法访问这个对象，但解析器在处理数据时会在后台使用它。
 * 全局执行环境是最外围的一个执行环境，在web浏览器中，全局执行环境被认为是window对象。每一个函数都有自己的执行环境。
-* 某个执行环境的所有代码执行完毕后，该环境被销毁，保存在其中的所有拔凉和函数定义也随之销毁(全局执行环境知道应用程序退出，如关闭网页或浏览器时才会被销毁)。
+* 某个执行环境的所有代码执行完毕后，该环境被销毁，保存在其中的所有变量和函数定义也随之销毁(全局执行环境直到应用程序退出，如关闭网页或浏览器时才会被销毁)。
 * 执行流控制机制：当执行流进入一个函数时，函数的环境就会被推入一个环境栈中。而在函数执行之后，栈将其环境弹出，将控制权交给之前的执行环境。
 
 ### 2.2 作用域链(scope chain)
@@ -65,12 +65,12 @@ arguments是函数运行时的实参列表
 
 1. 在函数嵌套中，变量(标识符)是如何查找的？ 首先从作用域链前端开始，在局部环境(函数内部)寻找，寻找不到，则向外层寻找，直到全局（Window）环境的变量对象。
 2. var，是在函数运行的上下文中，声明一个变量，如果不加var，则认为是一个赋值操作，但不要狭隘的理解为声明一个全局变量。
-3. Js代码执行：
-* JavaScript代码自上而下执行，但是js代码在执行前，会先有词法分析过程，所以事实上，js运行要分为词法分析和执行两个阶段。
-* 所以即使当前要打印的变量的声明代码在后面，还没有运行到，但系统会在词法分析期间默认已经有了这个变量，所以结果是undefine，而不是报错。
 
 ### 2.3 词法分析过程:
 
+* js代码执行：
+  + JavaScript代码自上而下执行，但是js代码在执行前，会先有词法分析过程，所以事实上，js运行要分为词法分析和执行两个阶段。
+  + 所以即使当前要打印的变量的声明代码在后面，还没有运行到，但系统会在词法分析期间默认已经有了这个变量，所以结果是undefine，而不是报错。
 * 词法分析主要分为3步：
    + 第一步：先分析形参
    + 第二步：分析变量声明
@@ -80,8 +80,8 @@ arguments是函数运行时的实参列表
 * 具体步骤：
   + 0：函数运行前的一瞬间，生成ative object(活动对象)，形成AO
   + 1：
-    - 1.1 函数声明的参数，生成AO的属性，值是undefined，
-    - 1.2 接收形参，给刚刚形成AO的属性的形参赋值
+    - 1.1 函数声明的形数，生成AO的属性，值是undefined，
+    - 1.2 接收实参，给刚刚形成AO的属性的形参赋值。
   + 2：分析var变量声明：如 `var age`,
     - 2.1 如果AO上还没有age属性，则添加AO属性，值是undefined，
     - 2.2 如果AO上已经有age属性，则不做任何操作.
@@ -130,13 +130,14 @@ function func(greet){
 func(1);//1 function(){}
 ```
 
-### 2.4作用域链其他知识点
+### 2.4 作用域链其他知识点
 
-* 作用域本质上是一个指向变量对象的指针列表，它只引用但不实际包含变量对象(闭包的成因之一)。
-* 找变量时由内向外找，分析AO链时由外向内分析
-* Js三个重要组成部分：作用域链 ，原型链、闭包
+* 作用域链本质上是一个指向变量对象的指针列表，它只引用但不实际包含变量对象。
+* AO链其实可以认为就是作用域链。找变量时由内向外找，分析AO链时由外向内分析
+* Js三个重要组成部分：作用域链、原型链、闭包
 * 当一个函数运行的时候，函数内部能引用的变量有：AO、arguments、this
 * 对于arguments和this，每个函数都有自己独有的arguments和this，且不进行链式查找
+* this对象是在运行时基于函数的执行环境绑定的
 * 作用域链应用实例：JQuery中的最外层函数中将window对象作为参数传入，这样可以加快函数内变量的查找速度,其中不传值undefined的原因之一是方法智障给undefined赋值。
 
 ```javascript
@@ -177,7 +178,7 @@ function a(){
 }
 //此处其实就是使用了闭包
 
-var d = a();
+var d = a();//函数a的执行执行完成后，其活动对象并未被销毁,因为匿名函数的作用域链仍然在引用这个活动对象
 d();//1
 d();//2
 ```
@@ -188,16 +189,62 @@ d();//2
 
 [参考文章](http://www.cnblogs.com/pssp/p/5211637.html 'GC')
 
-### 2.5闭包
+### 2.5 闭包
 
 1. 闭包
-* 闭包是指有权访问另一个函数作用于连中的变量函数。
+* 闭包是指有权访问另一个函数作用域中变量的函数。
 * 作用域链是理解闭包的关键；
+ 
+```javascript
+//闭包计数器例子
+//这样其他人就无法访问到counter,可以解决变量污染的问题
+var count=(function(){
+    var counter=0;
+    return function(){
+       return ++counter;
+        
+    }
+})();
+console.log(count());//1
+console.log(count());//2
 
+```
 
+* 友情延伸-个人命名空间
 
+```javascript
+var wjj={};//个人命名空间
+wjj.count=(function(){
+    var counter=0;
+    return function(){
+       return ++counter;
+        
+    }
+})();
+console.log(wjj.count());//1
+console.log(wjj.count());//2
 
-## 四、apply与call及bind的用法意义及区别
+```
+2. 闭包中的this
+
+```javascript
+var name="window"; 
+var obj={
+    name :"obj",
+     getName: function(){
+         var that=this;
+         return function(){
+             return that.name;
+        }
+    }
+}
+console.log(obj.getName()());//obj
+```
+
+* 此例子中涉及到this的特点：this是运行时基于函数的执行环境绑定的；
+* this arguments均存在这样的问题，在闭包中，要注意将其保存在闭包能访问的变量中
+
+## 三、apply与call及bind的用法意义及区别
 
 1. apply与call都是改变上下文中的this并立即执行这个函数，(调用一个对象的一个方法，以另一个对象替换当前对象)对于apply和call两者在作用上是相同的，但两者在参数上有区别的。对于第一个参数意义都一样，都是要传入给当前对象的对象;
 但对第二个参数：apply传入的是一个参数数组，也就是将多个参数组合成为一个数组传入，而call则作为call的参数传入（从第二个参数开始）。
@@ -263,7 +310,7 @@ c();
 
 * 总结 call和apply都是改变上下文中的this并立即执行这个函数，bind方法可以让对应的函数想什么时候调就什么时候调用，并且可以将参数在执行的时候添加，这是它们的区别，根据自己的实际情况来选择使用
 
-## 五、this
+## 四、this
 
 * this的指向在函数定义的时候是确定不了的，只有函数执行的时候才能确定this到底指向谁，实际上this的最终指向的是那个调用它的对象（这句话有些问题，后面会解释为什么会有问题，虽然网上大部分的文章都是这样说的，虽然在很多情况下那样去理解不会出什么问题，但是实际上那样理解是不准确的，所以在你理解this的时候会有种琢磨不透的感觉），那么接下来我会深入的探讨这个问题。
 
@@ -300,15 +347,20 @@ f2()===window; //false
 
 3. 作为对象的方法来调用时：this指向方法的调用者，即该对象
 
+* 例一中第二次调用时'(o.f)()'之所以值依然是37，原因是因为'o.f'和'(o.f)'的定义是相同的；第三次调用时是先发生了赋值，然后调用赋值后的返回函数，所以是12
+
 ```javascript
 //例一
+var age=12;
 var o={
-  prop:37,
+  age:37,
 　f:function(){
-　　　return this.prop;
+　　　return this.age;
 　}
 }
-console.log(o.f());//logs 37
+console.log(o.f());//37
+console.log((o.f)())//37
+console.log((o.f=o.f)())//12
 
 //例二
 var o={prop:37};
@@ -316,7 +368,7 @@ function indepent(){
 　　return this.prop;
 }
 o.f= indepent;
-console.log(o.f());//logs 37
+console.log(o.f());//37
 
 //例三
 var o={
@@ -420,12 +472,13 @@ dog.t.call(obj);//php
 * tmp 和(dog.t=obj.t)()所指向的母体不同，前者是window，后者是null，被解释为window
 
 6. 新思路
- [利用call来分析this问题的思路参考文章](http://www.imooc.com/article/1758 "Title").
- 把一个函数调用替换成funcName.call的形式，从而理解运行时上下文中this到底指向谁。总结来说就是下面两个等价变形：
-`foo() ---> foo.call(window)`
-`obj.foo() --> obj.foo.call(obj)`
-只要理解以上两个变形，this就不再是问题啦！！
-例五：
+
+* [利用call来分析this问题的思路参考文章](http://www.imooc.com/article/1758 "Title").
+* 把一个函数调用替换成funcName.call的形式，从而理解运行时上下文中this到底指向谁。总结来说就是下面两个等价变形：
+  + `foo() ---> foo.call(window)`
+  + `obj.foo() --> obj.foo.call(obj)`
+  + 只要理解以上两个变形，this就不再是问题啦！！
+* 例五：
 
 ```javascript
  var x = 10;
@@ -450,9 +503,8 @@ obj2.f(); // obj2.f.call(obj2)
 //==> 30
 ```
 
-例五有些同学会可能出错的原因，是没有明确我上面说的：this是在执行时才会被确认的
-用于构造函数
-先看一段代码：
+* 例五有些同学会可能出错的原因，是没有明确我上面说的：this是在执行时才会被确认的
+* 用于构造函数，先看一段代码：
 
 ```javascript
 func person(name) {
@@ -462,7 +514,7 @@ var caibirdme = new person("deen");
 // caibirdme.name == deen
 ```
 
-我上面也说了，函数在用作构造函数时同样可以用call方法去代替，那这里怎么代替呢？这里你又需要明确一点：new constrcut()是一种创建对象的语法糖它等价于
+* 我上面也说了，函数在用作构造函数时同样可以用call方法去代替，那这里怎么代替呢？这里你又需要明确一点：new constrcut()是一种创建对象的语法糖它等价于
 
 ```javascript
     function person(name) {
@@ -486,12 +538,11 @@ So you can see……为什么new的时候this就指向新的对象了吧？
 
 
 
-## 七、Js对象概述
+## 五、Js对象概述
 
-### 7.1 概念：
+### 5.1 概念：
 
 * 对象中包含一系列的属性，这些属性是无序的，每个属性都有一个字符串key和对应的value。
-
 
 ```javascript
 var obj={x:1,y:2};
@@ -519,7 +570,7 @@ js对象中每一个属性都有writable、enumerable、configurable 、value的
 除了每一个属性会有一些标签和get、set方法以外，每个对象都有一个原型，比如创建一个函数，每个函数都会有一个prototype属性；
 除此之外，对象还有一个`[{class}]`标签来表示它是属于哪一个种类的，还有一个`[{extensible}]`标签来表示这个对象是否允许继续添加新的属性；(对应于对象，可以说是对象标签).
 
-### 7.2 创建对象、原型链：
+### 5.2 创建对象、原型链：
 
  创建对象的方法：
 1. 创建对象-字面量：`var obj2 = {    x : 1,    y : 2,    o : {        z : 3,        n : 4    }};`
@@ -546,7 +597,7 @@ js对象中每一个属性都有writable、enumerable、configurable 、value的
 
 ![](pic/object.create.png)
 
-### 7.3、读写对象属性:
+### 5.3、读写对象属性:
 
 1. 属性异常  删除属性  检测属性 枚举属性
 * `[[configurable]]`:表示能否使用delete操作符删除从而重新定义，或能否修改为访问器属性。默认为true;
@@ -644,7 +695,7 @@ if(cat.legs!=undefined){
 }
 ```
 
-属性枚举
+* 属性枚举
 
 ```javascript
 //属性枚举
@@ -677,7 +728,8 @@ for(key in obj){
 
 5. Get/set方法
 
-属性getter/setter方法
+* 属性getter/setter方法
+
 ```javascript
 //属性getter/setter方法
 var man={
@@ -695,11 +747,11 @@ man.age=100;//
 console.log(man.age);//27
 ```
 
-get/set与原型链
+* get/set与原型链
 
 ![](pic/prototype.setget.png)
 
-### 7.4、属性级的权限设置
+### 5.4、属性级的权限设置
 
 Object.getOwnPropertyDescriptor()方法可以取得给定属性的特性：
 | 值	   | 含义                                        |
@@ -707,7 +759,7 @@ Object.getOwnPropertyDescriptor()方法可以取得给定属性的特性：
 | xMin	| viewport和viewBox左边对齐                   | 
 
 
-### 7.5、对象标签 
+### 5.5、对象标签 
 
  [{proto}] 原型标签、[{class}]、[{extensible}]
 序列化
@@ -717,7 +769,7 @@ Object.getOwnPropertyDescriptor()方法可以取得给定属性的特性：
 使用json的Stringfy()方法序列化，返回一个字符串
 使用parse()方法，把json对象转化为js对象，此外主义json中的键要用双引号引起来
 
-## 八、js对象的特点,js对象和json的一些对比比较
+## 六、js对象的特点,js对象和json的一些对比比较
 
 1、js对象的特点:
   1)、Js对象不依靠类而存在，可直接生成
@@ -746,9 +798,9 @@ Object.getOwnPropertyDescriptor()方法可以取得给定属性的特性：
 　
 　
 　
-## 九、原型：prototype和__proto__
+## 七、原型：prototype和__proto__
 
-### 9.1 对prototype和__proto__的理解:
+### 7.1 对prototype和__proto__的理解:
 
 [javascript核心指南](http://www.cnblogs.com/ifishing/archive/2010/12/08/1900594.html "Title") 
 
@@ -770,7 +822,7 @@ Object.getOwnPropertyDescriptor()方法可以取得给定属性的特性：
   + 1.对象有属性__proto__,指向该对象的构造函数的原型对象。
   + 2.方法除了有属性__proto__,还有属性prototype，prototype指向该方法的原型对象。
 
-### 9.2 判定原型关系常用方法
+### 7.2 判定原型关系常用方法
 
 1. 判断对象与原型对象的关系：isPrototypeOf();
 2. 检测一个属性是存在于实例中，还是存在于原型：hasOwnProperty()
@@ -785,7 +837,8 @@ Object.getOwnPropertyDescriptor()方法可以取得给定属性的特性：
 
 
 
-## 十、javascript中构造函数的返回值问题和new对象的过程
+## 八、javascript中构造函数的返回值问题和new对象的过程
+
 1. 首先明确一点：javascript中构造函数是不需要有返回值的，这一点跟java很类似。可以认为构造函数和普通函数的最大差别就是：构造函数中没有return语句，普通函数可以有return语句；构造函数中会使用this关键字定义成员变量和成员方法，普通的函数不会使用this关键字定义成员变量和方法。
 
 2. 构造函数不需要显示的返回值。使用new来创建对象(调用构造函数)时，如果return的是非对象(数字、字符串、布尔类型等)会忽而略返回值;如果return的是对象，则返回该对象。
@@ -800,7 +853,7 @@ Object.getOwnPropertyDescriptor()方法可以取得给定属性的特性：
 * 不管是在java或.net或javascript中，构造函数的里面的this只的就是将要得到的对象本身，在new的时候开辟内存空间，这个空间肯定是个object然后和this相连，(javascript并且原型应用会把函数的prototype给新的对象)。但是不同的是java或.net如果你在构造函数里面写return是会发生编译期错误的，因为他知道这个是构造函数不应该有return关键字。而javascript不一样，他可以有，如果你在javascript构造函数中写return，return了对象的话，他就会舍弃原先的内存空间及this,并且不会原型引用当前函数的prototype，而是得到直接的返回值，也就说，如果一个带返回值的方法，不管你 new还是不new得到的都是返回值的内容。
 
 
-## 十一、Js面向对象之静态方法
+## 九、Js面向对象之静态方法
 
 ```javascript
  var harshiqi=function(){
@@ -820,9 +873,9 @@ H中没有ajax方法；
  
 
 　　
-## 十二、ready与load执行方式区别
+## 十、ready与load执行方式区别
 
-### 12. 1 Jquery中使用的有：
+### 10.1 Jquery中使用的有：
 
 ```javascript
    $(function(){      })
@@ -864,7 +917,7 @@ $(document).load(function(){
 })
 ```
 
-### 12. 2 ready与load
+### 10.2 ready与load
 
 1. ready与load谁先执行：
     ready与load那一个先执行，那一个后执行？答案是ready先执行，load后执行。
