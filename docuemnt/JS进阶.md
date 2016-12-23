@@ -956,8 +956,8 @@ harshiqi.ajax=function(){
 1. Math.random():静态方法
 2. $.ajax():静态方法
 3. 写jquery插件，2种办法
-    通过闭包，吧方法写到jquery圆形上
-    直接增加$的静态方法
+   * 通过闭包，吧方法写到jquery圆形上
+   * 直接增加$的静态方法
 
 
 
