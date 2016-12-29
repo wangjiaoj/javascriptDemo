@@ -10,4 +10,5 @@
 
 ### 2.1 多重边框
 
-1. 考虑使用box-shadow或outline来作为边框
+1. 考虑使用box-shadow或outline来作为边框，但outline并不紧贴box-radius,box-shadow会紧贴边框
+2. linear-gradient做斜条纹时要注意根据角度计算无缝贴片，但使用repeating-linear-gradient就不用担心这个问题
