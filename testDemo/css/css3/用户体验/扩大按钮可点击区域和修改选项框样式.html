@@ -3,10 +3,15 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>扩大按钮可点击区域</title>
+    <title>扩大按钮可点击区域和修改选项框样式</title>
     <style>
         .area {
             margin: 40px;
+            font-family: 微软雅黑;
+        }
+        
+        input[type="checkbox"] {
+            margin: 0;
         }
         
         .button {
@@ -30,7 +35,6 @@
         }
         
         .checkbox input[type="checkbox"] {
-            margin: 0;
             position: absolute;
             clip: rect(0, 0, 0, 0);
         }
@@ -56,6 +60,32 @@
         .checkbox input[type="checkbox"]:focus+label::before {
             box-shadow: 0 0 .1em #58a;
         }
+        
+        .checkbox input[type="checkbox"]:disabled+label::before {
+            background: grey;
+        }
+        
+        .kaiguan input[type="checkbox"]+label {
+            display: inline-block;
+            padding: .5em;
+            border-radius: .3em;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            background: #ccc;
+            text-align: center;
+            background-image: linear-gradient(#ddd, #bbb);
+        }
+        
+        .kaiguan input[type="checkbox"]:checked+label,
+        .kaiguan input[type="checkbox"]:active+label {
+            box-shadow: .05em .1em .2em rgba(0, 0, 0, 0.6) inset;
+            background: #bbb;
+        }
+        
+        .kaiguan input[type="checkbox"] {
+            position: absolute;
+            clip: rect(0, 0, 0, 0);
+            cursor: pointer
+        }
     </style>
 </head>
 
@@ -69,11 +99,19 @@
         </div>
     </div>
 
-    <div class="checkbox">
-        <input type="checkbox" id="awsome" value="">
-        <label for="awsome">awsome</label>
+    <div class="area checkbox">
+        <input type="checkbox" value="" id="check01">
+        <label for="check01">awsome</label>
+    </div>
+    <div class="area checkbox">
+        <input type="checkbox" value="" disabled="true" id="check02">
+        <label for="check02">awsome</label>
     </div>
 
+    <div class="area kaiguan">
+        <input type="checkbox" value="" id="check03">
+        <label for="check03">awsome</label>
+    </div>
     <script>
         var event = {
             addHandler: function(selector, type, handler) {
@@ -81,7 +119,7 @@
                 if (ele.addEventListenter) {
                     ele.addEventListenter(type, handler, false);
                 } else if (ele.attachEvent) {
-                    ele.attachEvent("on" + type, handler);
+                    ele.attachEvent(" on" + type, handler);
                 } else {
                     ele["on" + type] = handler;
                 }
@@ -99,8 +137,8 @@
                 return this;
             }
         }
-        event.addHandler("awsome", "change", function(e) {
-            console.log("check:" + e.target.checked);
+        event.addHandler("check03", "change", function(e) {
+            console.log("check: " + e.target.checked);
         });
     </script>
 </body>

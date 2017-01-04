@@ -5,6 +5,18 @@
     <meta charset=utf-8 />
     <title>梯形标签页</title>
     <style>
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        ul li {
+            list-style-type: none;
+            display: inline-block;
+            margin-right: -15px;
+        }
+        
         .mian {
             margin: 0 auto;
             padding: 20px 0px;
@@ -13,9 +25,14 @@
             height: 1000px;
         }
         
-        ul li {
-            list-style-type: none;
-            display: inline-block;
+        tab-content {
+            width: 800px;
+        }
+        
+        .content {
+            height: 500px;
+            background: #fff;
+            border: 1px solid blue;
         }
         
         .nav ul li a {
@@ -26,9 +43,7 @@
             text-align: center;
         }
         
-        .nav ul li a.selected {}
-        
-        .nav ul li a.selected::before {
+        .nav ul li.selected a::before {
             background: #fff;
         }
         
@@ -44,6 +59,8 @@
             /* scaleY(1.3)放大来增加高度，保证3D旋转后字体上方还保有足够的高度，还可以保证变形不被支持时也可以一起优雅回退*/
             transform-origin: bottom;
             background: #D2C5C5;
+            border: 1px solid blue;
+            border-bottom: none;
         }
     </style>
 
@@ -54,7 +71,7 @@
         <div class="tab-content">
             <div class="nav">
                 <ul>
-                    <li><a href="">page1</a></li>
+                    <li class="selected"><a href="">page1</a></li>
                     <li><a href="">page1</a></li>
                     <li><a href="">page1</a></li>
                 </ul>
