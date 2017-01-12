@@ -628,7 +628,10 @@ js对象中每一个属性都有writable、enumerable、configurable 、value的
  }
 ```
 
-3. 属性删除，有些属性是不可删除的 比如下面例子中的prototype
+3. 属性删除,有些属性是不可删除的 比如下面例子中的prototype
+
+* 用var定义的全局变量不可删除;
+* 在函数中用var定义的局部变量也不可删除，当然函数更不会被删除
 
 ```javascript
 //属性删除
@@ -644,7 +647,6 @@ var descriptor=Object.getOwnPropertyDescriptor(Object,"prototype");
 descriptor.configurable;//false
 ```
 
-用var定义的全局变量不可删除;在函数中用var定义的局部变量也不可删除，当然函数更不会被删除
 特例 ：通常情况下，使用var去声明的变量，不能被delete，例如：
 
 ```javascript
