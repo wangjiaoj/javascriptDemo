@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+      <canvas id="canvas-test"></canvas>
+      <script src="../js/canvas.js"></script>
+      <script>
+          var  tan=[
+              {p:[{x:0,y:0},{x:200,y:200},{x:400,y:0}],color:"orange"},
+              {p:[{x:400,y:0},{x:200,y:200},{x:400,y:400}],color:"green"},
+              {p:[{x:0,y:0},{x:100,y:100},{x:0,y:200}],color:"grey"},
+              {p:[{x:100,y:100},{x:0,y:200},{x:100,y:300},{x:200,y:200}],color:"yellow"},
+              {p:[{x:0,y:200},{x:0,y:400},{x:200,y:400}],color:"red"},
+              {p:[{x:200,y:200},{x:100,y:300},{x:300,y:300}],color:"grey"},
+              {p:[{x:100,y:300},{x:200,y:400},{x:400,y:400},{x:300,y:300}],color:"blue"},
+          ];
+          var canvas=c2D.init("canvas-test",1500,1500);//
+          for(var i=0;i<tan.length;i++){
+            canvas=canvas.fillStyleColor(tan[i].color)
+            .line(tan[i].p)
+            .draw();
+          }
+        
+      </script>
+</body>
+</html>
