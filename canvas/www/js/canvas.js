@@ -44,16 +44,23 @@
         	this.lineData=lineData;
         	return this;
         },
-        lineArc：function(x,y,radius,startAngle,endAngle,counterClockwise){
+        lineArc:function(x,y,radius,startAngle,endAngle,counterClockwise){
+        	//@ 以 x,y为圆心绘制弧线
         	this.style="arc";
+        	this.arcData={x:x,y:y,radius:radius,startAngle:startAngle,endAngle:endAngle,counterClockwise:counterClockwise};
         	return this;
         },
-        lineArcTo：function(){
+        lineArcTo:function(x1,y1,x2,y2,radius){
+        	//@ 绘制弧线
         	this.style="arcTo";
+        	this.arcToData={x1:x1,y1:y1,x2:x2,y2:y2,radius:radius};
         	return this;
         },
         lineBezierCurveTo:function(c1x,c1y,c2x,c2y,x,y){
-
+        	//@ 绘制曲线
+        	this.style="bezierCurveTo";
+        	this.bezierCurveToData={c1x:c1x,c1y:c1y,c2x:c2x,c2y:c2y,x:x,y:y};
+        	return this;
         },
 		draw:function(){
 			//@ 绘制路径
@@ -65,17 +72,47 @@
              	for(var i=1;i<coordinate.length;i++){
              		context.lineTo(coordinate[i].x,coordinate[i].y);
              	}
-             	context.fillStyle=this.fillColor;
-             	context.fill();//填充色
+        
              }
              else if(this.style==="rect"){
-             
+             		var coordinate=this.rectData;
+             		context.rect(coordinate.x,coordinate.y,coordinate.w,coordinate.h);
              }
+             else if(this.style==="arc"){
+             		var coordinate=this.arcData;
+             		context.arc(coordinate.x,coordinate.y,coordinate.radius,coordinate.startAngle,coordinate.endAngle,coordinate.counterClockwise);
+             }
+             else if(this.style==="arcTo"){
+             		var coordinate=this.arcToData;
+             		context.arcTo(coordinate.x1,coordinate.y1,coordinate.x2,coordinate.y2,coordinate.radius);
+             }
+             if(this.fillColor){
+             	 context.fillStyle=this.fillColor;
+             	  context.fill();//填充色
+             }
+            
              context.closePath();
-             context.lineWidth=3;
+             context.lineWidth=1;
              context.strokeStyle="black";
              context.stroke();//画线
             return this;
+         },
+         fillText:function(obj){
+         	//@ 使用格式{style:{font:"",textAlign:"".baseline:""},text:{string:"",x:"",y:""}}
+         	var context=this.context;
+         	for(var item in obj.style){
+         		 context[item]=obj.style[item];
+         	};
+         	context.fillText(obj.text.string,obj.text.x,obj.text.y);
+         	return this;
+         },
+         strokeText:function(obj){
+         	//@ 使用格式{style:{font:"",textAlign:"",baseline:""},text:{string:"",x:"",y:""}}
+         	var context=this.context;
+         	for(var item in obj.style){
+         		 context[item]=obj.style.item;
+         	};
+         	context.strokeText(obj.text.string,obj.text.x,obj.text.y)
          }
 	}
           
