@@ -15,7 +15,7 @@
          position: { left: 100, top: 50 }, //自定义弹出位置
          onpicked: function() {}, //选中日期时的回调函数
          calendars: 1, //单日历还是双日历
-         current: '2017-01-01',
+         current: '', //2017-01-01
          onRenderCell: function() { return {} }
      }
      var ids = {},
@@ -25,52 +25,41 @@
              days: 'datepickerViewDays'
          },
          tpl = {
-             wrapper: '<div class="datepicker"><div class="datepickerBorderT" /><div class="datepickerBorderB" /><div class="datepickerBorderL" /><div class="datepickerBorderR" /><div class="datepickerBorderTL" /><div class="datepickerBorderTR" /><div class="datepickerBorderBL" /><div class="datepickerBorderBR" /><div class="datepickerContainer"><table cellspacing="0" cellpadding="0"><tbody><tr></tr></tbody></table></div></div>',
+
              header: [
                  '<div class="dpTitle">',
-                 '<div class="navImg NavImgll"><a></a></div><div class="navImg NavImgl"><a></a></div>',
-                 '<div style="float:left"><div class="menuSel MMenu" style="display: none; left: 36px;">',
+                 '<div class="navImg datepickerYearGoPrev"><a></a></div><div class="navImg datepickerMonthGoPrev"><a></a></div>',
+                 '<div style="float:left" class="datepickerMonthMenu"><div class="menuSel MMenu" style="display: none; left: 36px;">',
                  '<table cellspacing="0" cellpadding="3" border="0" nowrap="nowrap"><tbody>',
-                 '<tr><td nowrap="" class="menu">一月</td><td nowrap="" class="menu">七月</td></tr>',
-                 '<tr nowrap="nowrap"><td nowrap="" class="menu" >二月</td><td nowrap="" class="menu">八月</td></tr>',
-                 '<tr nowrap="nowrap"><td nowrap="" class="menu">三月</td><td nowrap="" class="menu">九月</td></tr>',
-                 '<tr nowrap="nowrap"><td nowrap="" class="menu">四月</td><td nowrap="" class="menu">十月 </td></tr>',
-                 '<tr nowrap="nowrap"><td nowrap="" class="menu">五月</td><td nowrap="" class="menu">十一</td></tr>',
-                 '<tr nowrap="nowrap "><td nowrap="" class="menu">六月</td><td nowrap="" class="menu">十二</td></tr>',
+                 '<tr nowrap="nowrap"><td data-month="1" class="menu">一月</td><td data-month="7" class="menu">七月</td></tr>',
+                 '<tr nowrap="nowrap"><td data-month="2" class="menu">二月</td><td data-month="8" class="menu">八月</td></tr>',
+                 '<tr nowrap="nowrap"><td data-month="3" class="menu">三月</td><td data-month="9" class="menu">九月</td></tr>',
+                 '<tr nowrap="nowrap"><td data-month="4" class="menu">四月</td><td data-month="10" class="menu">十月 </td></tr>',
+                 '<tr nowrap="nowrap"><td data-month="5" class="menu">五月</td><td data-month="11" class="menu">十一</td></tr>',
+                 '<tr nowrap="nowrap"><td data-month="6" class="menu">六月</td><td data-month="12" class="menu">十二</td></tr>',
                  '</tbody></table>',
-                 '</div><input class="yminput"></div>',
-                 '<div style="float:left"><div class="menuSel YMenu" style="display: none;"></div><input class="yminput"></div>',
-                 '<div class="navImg NavImgrr"><a></a></div><div class="navImg NavImgr"><a></a></div>',
+                 '</div><input class="datapickerinput datapickerInputMonth"></div>',
+                 '<div style="float:left"  class="datepickerYearMenu"><div class="menuSel YMenu" style="display: none;"></div><input class="datapickerinput datapickerInputYear"></div>',
+                 '<div class="navImg datepickerYearGoNext"><a></a></div><div class="navImg  datepickerMonthGoNext"><a></a></div>',
                  '<div style="float:right"></div>',
                  '</div>'
              ],
-
-
-
-             head: [
-                 '<td class="datepickerBlock">',
-                 '<table cellspacing="0" cellpadding="0">',
-                 '<thead>',
-                 '<tr>',
-                 '<th colspan="7"><a class="datepickerGoPrev" href="#"><span><%=prev%></span></a>',
-                 '<a class="datepickerMonth" href="#"><span></span></a>',
-                 '<a class="datepickerGoNext" href="#"><span><%=next%></span></a></th>',
-                 '</tr>',
-                 '<tr class="datepickerDoW">',
-                 '<th><span><%=day1%></span></th>',
-                 '<th><span><%=day2%></span></th>',
-                 '<th><span><%=day3%></span></th>',
-                 '<th><span><%=day4%></span></th>',
-                 '<th><span><%=day5%></span></th>',
-                 '<th><span><%=day6%></span></th>',
-                 '<th><span><%=day7%></span></th>',
-                 '</tr>',
-                 '</thead>',
-                 '</table></td>'
+             time: ['<div id="dpTime" style="display: none;">',
+                 '<div class="menuSel hhMenu" style="display: none;"></div>',
+                 '<div class="menuSel mmMenu" style="display: none;"></div>',
+                 '<div class="menuSel ssMenu" style="display: none;"></div>',
+                 '<table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td rowspan="2"><span id="dpTimeStr">时间</span>&nbsp;<input class="tB" maxlength="2"><input value=":" class="tm" readonly=""><input class="tE" maxlength="2"><input value=":" class="tm" readonly=""><input class="tE" maxlength="2"></td><td><button id="dpTimeUp"></button></td></tr><tr><td><button id="dpTimeDown"></button></td></tr></tbody></table>',
+                 '</div>'
              ],
-             space: '<td class="datepickerSpace"><div></div></td>',
+             control: ['<div id="dpControl">',
+                 '<input class="dpButton" id="dpClearInput" type="button" value="清空">',
+                 '<input class="dpButton" id="dpTodayInput" type="button" value="今天">',
+                 '<input class="dpButton" id="dpOkInput" type="button" value="确定">',
+                 '</div>'
+             ],
+             Quickselect: '<div class="datepickerQuickSelect"></div>',
              days: [
-                 '<div><table class="WdayTable" width="100%" border="0" cellspacing="0" cellpadding="0"><tbody class="datepickerDays">',
+                 '<table class="WdayTable" width="100%" border="0" cellspacing="0" cellpadding="0"><tbody>',
                  '<tr class="MTitle" align="center"><td>日</td><td>一</td><td>二</td><td>三</td><td>四</td><td>五</td><td>六</td></tr>',
                  '<tr>',
                  '<td class="<%=weeks[0].days[0].classname%>"><span><%=weeks[0].days[0].text%></span></td>',
@@ -126,7 +115,7 @@
                  '<td class="<%=weeks[5].days[5].classname%>"><span><%=weeks[5].days[5].text%></span></a></td>',
                  '<td class="<%=weeks[5].days[6].classname%>"><span><%=weeks[5].days[6].text%></span></a></td>',
                  '</tr>',
-                 '</tbody></table></div>'
+                 '</tbody></table>'
              ],
              months: [
                  '<table cellspacing="0" cellpadding="3" border="0" nowrap="nowrap"><tbody>',
@@ -137,8 +126,9 @@
                  '<tr nowrap="nowrap"><td nowrap="" class="menu"><%=data[4]%></td><td nowrap="" class="menu"><%=data[10]%></td></tr>',
                  '<tr nowrap="nowrap "><td nowrap="" class="menu"><%=data[5]%></td><td nowrap="" class="menu"><%=data[11]%></td></tr>',
                  '</tbody></table>',
-                 '<table cellspacing="0" cellpadding="3" border="0" align="center"><tbody><tr><td class="menu">←</td><td class="menu" >×</td><td class="menu" >→</td></tr></tbody></table>'
+                 '<table cellspacing = "0" cellpadding = "3" border = "0" align = "center"> <tbody> <tr> <td class = "yearMenuGoprev yearMenuControl"> ← </td><td class="yearMenuClose yearMenuControl">×</td> <td class = "yearMenuGoNext yearMenuControl"> → </td></tr> </tbody></table > '
              ]
+
          };
 
 
@@ -148,43 +138,39 @@
      var DatePicker = function(options) {
          this.options = $.extend({}, defaultOptions, options || {});
          this.init();
+
      }; // DatePicker
      var fn = DatePicker.prototype
      fn.init = function() {
+         //设置当前时间,如果未设定开始时间,则取当前日期为默认值
+         if (this.options.startDate) {
+             this.options.current = this.options.startDate;
+         } else {
+             var current = new Date();
+             this.options.current = current.getFullYear() + "-" + (current.getMonth() + 1) + "-" + current.getDate();
+         }
          this.bulidCalender();
+
      }
      fn.bulidCalender = function() {
+         var html = this.fill();
+         html = '<div  class="datepickerDays">' + html + '</div>';
+         var $WdateDiv = $('<div class="WdateDiv"></div>');
+         $WdateDiv.append(tpl.header.join(""), html, tpl.time.join(""), tpl.Quickselect, tpl.control.join(""));
+         var dataPicker = $("body").append($WdateDiv);
+
+         var date = new Date(this.options.current);
+         $WdateDiv.find(".datapickerinput").eq(0).val((date.getMonth() + 1) + "月");
+         $WdateDiv.find(".datapickerinput").eq(1).val(date.getFullYear());
+         this.wrapper = $WdateDiv;
+         this.bindHeader();
+     }
+     fn.fill = function() {
          var options = this.options;
-         var cnt;
+         var cnt, date;
+
          for (var i = 0; i < options.calendars; i++) {
              date = new Date(options.current);
-
-             //  date.addMonths(-currentCal + i);
-             //  tblCal = cal.find('table').eq(i + 1);
-
-             //  if (i == 0) tblCal.addClass('datepickerFirstView');
-             //  if (i == options.calendars - 1) tblCal.addClass('datepickerLastView');
-
-             //  if (tblCal.hasClass('datepickerViewDays')) {
-             //      dow = date.getMonthName(true) + ", " + date.getFullYear();
-             //  } else if (tblCal.hasClass('datepickerViewMonths')) {
-             //      dow = date.getFullYear();
-             //  } else if (tblCal.hasClass('datepickerViewYears')) {
-             //      dow = (date.getFullYear() - 6) + ' - ' + (date.getFullYear() + 5);
-             //  }
-             //  tblCal.find('thead tr:first th a:eq(1) span').text(dow);
-             dow = date.getFullYear() - 6;
-
-             data = {
-                 data: [],
-                 className: 'datepickerYears'
-             }
-             for (var j = 0; j < 12; j++) {
-                 data.data.push(dow + j);
-             }
-             // datepickerYears template
-             //  html = tmpl(tpl.months.join(''), data);
-
              date.setDate(1);
              data = { weeks: [], test: 10 };
              month = date.getMonth();
@@ -244,57 +230,130 @@
              }
              // Fill the datepickerDays template with data
              html = tmpl(tpl.days.join(''), data); //+ html;
-
-             //  data = {
-             //      data: options.locale.monthsShort,
-             //      className: 'datepickerMonths'
-             //  };
-             //  // datepickerMonths template
-             //  html = tmpl(tpl.months.join(''), data) + html;
-             var $WdateDiv = $('<div class="WdateDiv"></div>');
-             $WdateDiv.append(tpl.header.join(""), html);
-             var dataPicker = $("body").append($WdateDiv);
-
-             $WdateDiv.find(".yminput").eq(0).val(date.getMonth() + "月");
-             $WdateDiv.find(".yminput").eq(1).val(date.getFullYear());
-             this.wrapper = $WdateDiv;
          }
-         this.bindHeader();
+         return html;
      }
+     fn.bulidYearMenu = function(year) {
+         var html, data, dow;
+
+         dow = year - 6;
+         data = {
+             data: [],
+             className: 'datepickerYears'
+         }
+         for (var j = 0; j < 12; j++) {
+             data.data.push(dow + j);
+         }
+         // datepickerYears template
+         html = tmpl(tpl.months.join(''), data);
+         return html;
+     }
+
      fn.bindHeader = function() {
          var datePickerWrapper = this.wrapper,
              options = this.options;;
-         var self = this,
-             html, data, dow;
-         datePickerWrapper.on("", "click", function() {
+         var self = this;
+
+         var wrapperHeader = datePickerWrapper.find(".dpTitle");
+         var input = datePickerWrapper.find(".datapickerinput");
+         wrapperHeader.on("click", ".navImg", function() {
+             if ($(this).hasClass("datepickerYearGoPrev")) {
+                 self.dateChange(1, -1);
+             } else if ($(this).hasClass("datepickerMonthGoPrev")) {
+                 self.dateChange(2, -1);
+             } else if ($(this).hasClass("datepickerYearGoNext")) {
+                 self.dateChange(1, 1);
+             } else if ($(this).hasClass("datepickerMonthGoNext")) {
+                 self.dateChange(2, 1);
+             }
+         });
+         wrapperHeader.find(".MMenu").on("click", "td", function() {
+             var monthSelect = parseInt($(this).data("month")) - 1;
+             self.dateChange(4, monthSelect);
 
          });
-         datePickerWrapper.find(".yminput").on("focus", function() {
-             if ($(this).siblings("div").find("table").length < 1) {
-                 date = new Date(options.current);
+         wrapperHeader.find(".YMenu").on("click", "td", function(e) {
+             var ele = $(e.target);
+             if (ele.hasClass("menu")) {
+                 var yearSelect = $(this).text();
+                 self.dateChange(3, yearSelect);
+             } else {
+                 e.stopPropagation();
+                 if (ele.hasClass("yearMenuGoprev")) {
+                     var table = $(this).parents("table").siblings("table");
+                     table.find("td").each(function() {
+                         var year = parseInt($(this).text()) - 12;
+                         $(this).text(year);
+                     });
 
-                 dow = date.getFullYear() - 6;
+                 } else if (ele.hasClass("yearMenuClose")) {
+                     var table = $(this).parents(".YMenu").css("display", "none");
 
-                 data = {
-                     data: [],
-                     className: 'datepickerYears'
+                 } else if (ele.hasClass("yearMenuGoNext")) {
+                     var table = $(this).parents("table").siblings("table");
+                     table.find("td").each(function() {
+                         var year = parseInt($(this).text()) + 12;
+                         $(this).text(year);
+                     });
                  }
-                 for (var j = 0; j < 12; j++) {
-                     data.data.push(dow + j);
-                 }
-                 // datepickerYears template
-                 html = tmpl(tpl.months.join(''), data);
-                 $(this).siblings("div").append(html);
              }
 
+
+         });
+         wrapperHeader.find(".datapickerinput").on("focus", function() {
+             if ($(this).siblings("div").find("table").length < 1) {
+                 var date, html, year;
+                 date = new Date(options.current);
+                 year = date.getFullYear();
+                 html = self.bulidYearMenu(year);
+
+                 $(this).siblings("div").append(html);
+
+
+             }
              $(this).siblings("div").css("display", "block");
          });
-         datePickerWrapper.find(".yminput").on("blur", function() {
-             if ($(this).siblings("div").find("table").length > 1) {
-                 $(this).siblings("div").empty();
+         $("body").on("click", function(e) {
+             var ele = $(e.target);
+             if (!ele.hasClass("datapickerinput")) {
+                 wrapperHeader.find(".menuSel").css("display", "none");
+             } else if (ele.hasClass("datapickerInputMonth")) {
+                 wrapperHeader.find("MMenu").css("display", "none");
+             } else if (ele.hasClass("datapickerInputYear")) {
+                 wrapperHeader.find("YMenu").css("display", "none");
              }
-             $(this).siblings("div").css("display", "none");
+
+
          });
+     }
+
+     fn.dateChange = function(YearOrMonth, num) {
+         var options = this.options;
+         var datePickerWrapper = this.wrapper;
+         var input = datePickerWrapper.find(".datapickerinput");
+         var date = new Date(options.current);
+         switch (YearOrMonth) {
+             case 1:
+                 date.addYears(num);
+                 break;
+             case 2:
+                 date.addMonths(num);
+                 break;
+             case 3:
+                 date.setYear(num);
+                 break;
+             case 4:
+                 date.setMonth(num);
+                 break;
+             default:
+                 date.setMonths(num);
+         }
+         this.options.current = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+         //重新渲染tpl.day中的内容，并进行填充；  
+         var html = this.fill();
+         datePickerWrapper.find(".datepickerDays").empty().html(html);
+         input.eq(0).val((date.getMonth() + 1) + "月");
+         input.eq(1).val(date.getFullYear());
      }
 
      function extendDate() {
