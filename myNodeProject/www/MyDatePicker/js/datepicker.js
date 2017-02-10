@@ -51,10 +51,10 @@
                  '<table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td rowspan="2"><span id="dpTimeStr">时间</span>&nbsp;<input class="tB" maxlength="2"><input value=":" class="tm" readonly=""><input class="tE" maxlength="2"><input value=":" class="tm" readonly=""><input class="tE" maxlength="2"></td><td><button id="dpTimeUp"></button></td></tr><tr><td><button id="dpTimeDown"></button></td></tr></tbody></table>',
                  '</div>'
              ],
-             control: ['<div id="dpControl">',
-                 '<input class="dpButton" id="dpClearInput" type="button" value="清空">',
-                 '<input class="dpButton" id="dpTodayInput" type="button" value="今天">',
-                 '<input class="dpButton" id="dpOkInput" type="button" value="确定">',
+             control: ['<div class="dpControl">',
+                 '<input class="dpButton datepickerClearInput" type="button" value="清空">',
+                 '<input class="dpButton datepickerToday" type="button" value="今天">',
+                 '<input class="dpButton datepickerOk" type="button" value="确定">',
                  '</div>'
              ],
              Quickselect: '<div class="datepickerQuickSelect"></div>',
@@ -158,13 +158,15 @@
          var $WdateDiv = $('<div class="WdateDiv"></div>');
          $WdateDiv.append(tpl.header.join(""), html, tpl.time.join(""), tpl.Quickselect, tpl.control.join(""));
          var dataPicker = $("body").append($WdateDiv);
-
          var date = new Date(this.options.current);
          $WdateDiv.find(".datapickerinput").eq(0).val((date.getMonth() + 1) + "月");
          $WdateDiv.find(".datapickerinput").eq(1).val(date.getFullYear());
          this.wrapper = $WdateDiv;
          this.bindHeader();
+         this.bindDay()
+             //this.bindControl();
      }
+
      fn.fill = function() {
          var options = this.options;
          var cnt, date;
@@ -233,6 +235,7 @@
          }
          return html;
      }
+
      fn.bulidYearMenu = function(year) {
          var html, data, dow;
 
@@ -270,7 +273,6 @@
          wrapperHeader.find(".MMenu").on("click", "td", function() {
              var monthSelect = parseInt($(this).data("month")) - 1;
              self.dateChange(4, monthSelect);
-
          });
          wrapperHeader.find(".YMenu").on("click", "td", function(e) {
              var ele = $(e.target);
@@ -278,17 +280,17 @@
                  var yearSelect = $(this).text();
                  self.dateChange(3, yearSelect);
              } else {
+
                  e.stopPropagation();
+
                  if (ele.hasClass("yearMenuGoprev")) {
                      var table = $(this).parents("table").siblings("table");
                      table.find("td").each(function() {
                          var year = parseInt($(this).text()) - 12;
                          $(this).text(year);
                      });
-
                  } else if (ele.hasClass("yearMenuClose")) {
                      var table = $(this).parents(".YMenu").css("display", "none");
-
                  } else if (ele.hasClass("yearMenuGoNext")) {
                      var table = $(this).parents("table").siblings("table");
                      table.find("td").each(function() {
@@ -296,9 +298,8 @@
                          $(this).text(year);
                      });
                  }
+
              }
-
-
          });
          wrapperHeader.find(".datapickerinput").on("focus", function() {
              if ($(this).siblings("div").find("table").length < 1) {
@@ -306,10 +307,7 @@
                  date = new Date(options.current);
                  year = date.getFullYear();
                  html = self.bulidYearMenu(year);
-
                  $(this).siblings("div").append(html);
-
-
              }
              $(this).siblings("div").css("display", "block");
          });
@@ -318,15 +316,30 @@
              if (!ele.hasClass("datapickerinput")) {
                  wrapperHeader.find(".menuSel").css("display", "none");
              } else if (ele.hasClass("datapickerInputMonth")) {
-                 wrapperHeader.find("MMenu").css("display", "none");
+                 wrapperHeader.find(".YMenu").css("display", "none");
              } else if (ele.hasClass("datapickerInputYear")) {
-                 wrapperHeader.find("YMenu").css("display", "none");
+                 wrapperHeader.find(".MMenu").css("display", "none");
              }
-
-
          });
      }
-
+     fn.bindDay = function() {
+         var options = this.options;
+         var datePickerWrapper = this.wrapper;
+         var dayWrapper = datePickerWrapper.find(".datepickerDays");
+         dayWrapper.on("click", $.proxy(this.datepicker, this));
+     }
+     fn.datepicker = function(e) {
+         var ele = $(e.target);
+         var day = parseInt(ele.find("span").text());
+         if (ele.hasClass("datepickerInMonth")) {
+             this.dateChange(5, day);
+         } else if (ele.hasClass("datepickerFuture")) {
+             this.dateChange(6, day);
+         } else {
+             this.dateChange(7, day);
+         }
+         console.log(this.options.current)
+     }
      fn.dateChange = function(YearOrMonth, num) {
          var options = this.options;
          var datePickerWrapper = this.wrapper;
@@ -345,8 +358,16 @@
              case 4:
                  date.setMonth(num);
                  break;
+             case 5:
+                 date.setDate(num);
+                 break;
+             case 6:
+                 date.addMonths(1);
+                 date.setDate(num);
+                 break;
              default:
-                 date.setMonths(num);
+                 date.addMonths(-1);
+                 date.setDate(num);
          }
          this.options.current = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
          //重新渲染tpl.day中的内容，并进行填充；  
@@ -354,6 +375,30 @@
          datePickerWrapper.find(".datepickerDays").empty().html(html);
          input.eq(0).val((date.getMonth() + 1) + "月");
          input.eq(1).val(date.getFullYear());
+     }
+
+     fn.controlBind = function() {
+         var options = this.options,
+             datePickerWrapper = this.wrapper;
+         var self = this;
+         var dpControl = datePickerWrapper.find("dpControl");
+         dpControl.on("click", ".dpButton", function(e) {
+             var ele = $(e.target);
+             if (ele.hasClass("datepickerClearInput")) {
+
+             } else if (ele.hasClass("datepickerToday")) {
+                 self.dateselect();
+             } else if (ele.hasClass("datepickerOk")) {
+
+             }
+             //datapicker消失
+         })
+     }
+     fn.dateselect = function() {
+         var options = this.options;
+         options.onpicked.call(this);
+
+
      }
 
      function extendDate() {

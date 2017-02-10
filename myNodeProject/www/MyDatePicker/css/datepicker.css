@@ -254,7 +254,7 @@
         cursor: pointer;
     }
     
-    .WdateDiv #dpControl {
+    .WdateDiv .dpControl {
         text-align: right;
     }
     
