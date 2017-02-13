@@ -1,0 +1,25 @@
+<script type="text/javascript" src="./js/jquery.js"></script>
+<script type="text/javascript" src="./js/datepicker.js"></script>
+<link rel="stylesheet" media="screen" type="text/css" href="./css/base.css" />
+<link rel="stylesheet" media="screen" type="text/css" href="./css/clean.css" />
+<div>
+    <input id="inputDate">
+    <label id="closeOnSelect" class="checkbox"><input type="checkbox" checked="checked"> Close on selection</label>
+</div>
+
+<script type="text/javascript">
+    $('#inputDate').DatePicker({
+        mode: 'single',
+        position: 'right',
+        onBeforeShow: function(el) {
+            if ($('#inputDate').val())
+                $('#inputDate').DatePickerSetDate($('#inputDate').val(), true);
+        },
+        onChange: function(date, el) {
+            $(el).val((date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear());
+            if ($('#closeOnSelect input').attr('checked')) {
+                $(el).DatePickerHide();
+            }
+        }
+    });
+</script>
