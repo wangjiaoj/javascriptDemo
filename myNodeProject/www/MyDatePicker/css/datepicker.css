@@ -153,7 +153,7 @@
         cursor: pointer;
     }
     
-    .WdateDiv .datepickerInMonthOn {
+    .WdateDiv .datepickerInMonth:hover {
         cursor: pointer;
         background-color: #C0EBEF;
     }
@@ -164,8 +164,8 @@
         color: #FF2F2F;
     }
     
-    .WdateDiv .datepickerSundayOn,
-    .WdateDiv .datepickerSaturdayOn {
+    .WdateDiv .datepickerSunday:hover,
+    .WdateDiv .datepickerSaturday:hover {
         cursor: pointer;
         color: #000;
         background-color: #C0EBEF;
@@ -176,7 +176,7 @@
         color: blue;
     }
     
-    .WdateDiv .Wselday {
+    .WdateDiv .datepickerSelected {
         background-color: #A9E4E9;
     }
     
@@ -189,7 +189,7 @@
         color: #6A6AFF;
     }
     
-    .WdateDiv .datepickerNotInMonthOn {
+    .WdateDiv .datepickerNotInMonth:hover {
         cursor: pointer;
         background-color: #C0EBEF;
     }
