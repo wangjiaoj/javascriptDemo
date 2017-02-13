@@ -389,7 +389,7 @@
          var options = this.options;
          var datePickerWrapper = this.wrapper;
          var input = datePickerWrapper.find(".datapickerinput");
-         var date = new Date((options.current).replace(/-/g,"/"));
+         var date = new Date((options.current).replace(/-/g, "/"));
          switch (YearOrMonth) {
              case 1:
                  date.addYears(num);
