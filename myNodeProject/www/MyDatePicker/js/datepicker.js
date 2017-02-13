@@ -159,7 +159,7 @@
          var $WdateDiv = $('<div class="WdateDiv" style="visibility: hidden;"></div>');
          $WdateDiv.append(tpl.header.join(""), html, tpl.time.join(""), tpl.Quickselect, tpl.control.join(""));
          var dataPicker = $("body").append($WdateDiv);
-         var date = new Date(this.options.current);
+         var date = new Date((this.options.current).replace(/-/g, "/"));
          $WdateDiv.find(".datapickerinput").eq(0).val((date.getMonth() + 1) + "月");
          $WdateDiv.find(".datapickerinput").eq(1).val(date.getFullYear());
          this.wrapper = $WdateDiv;
@@ -174,7 +174,7 @@
          var cnt, date;
 
          for (var i = 0; i < options.calendars; i++) {
-             date = new Date(options.current);
+             date = new Date((options.current).replace(/-/g, "/"));
              date.setDate(1);
              data = { weeks: [], test: 10 };
              month = date.getMonth();
@@ -242,8 +242,8 @@
      }
 
      fn.bulidYearMenu = function(year) {
-         var maxYear = new Date(this.options.maxDate).getFullYear();
-         var minYear = new Date(this.options.minDate).getFullYear();
+         var maxYear = new Date((this.options.maxDate).replace(/-/g, "/")).getFullYear();
+         var minYear = new Date((this.options.minDate).replace(/-/g, "/")).getFullYear();
          var html, data, dow, year;
 
          dow = year - 6;
@@ -337,7 +337,7 @@
          wrapperHeader.find(".datapickerinput").on("focus", function() {
              if ($(this).siblings("div").find("table").length < 1) {
                  var date, html, year;
-                 date = new Date(options.current);
+                 date = new Date((options.current).replace(/-/g, "/"));
                  year = date.getFullYear();
                  html = self.bulidYearMenu(year);
                  $(this).siblings("div").append(html);
@@ -389,7 +389,7 @@
          var options = this.options;
          var datePickerWrapper = this.wrapper;
          var input = datePickerWrapper.find(".datapickerinput");
-         var date = new Date(options.current);
+         var date = new Date((options.current).replace(/-/g,"/"));
          switch (YearOrMonth) {
              case 1:
                  date.addYears(num);
