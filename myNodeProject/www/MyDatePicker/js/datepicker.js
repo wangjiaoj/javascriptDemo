@@ -9,7 +9,9 @@
          maxDate: "2099-12-31 23:59:59",
          eCont: 'id', //单纯当做日历使用的元素id
          startDate: '', //'1980-05-01'日历展示的初始日期，也可以使用这样的格式'%y-%M-01 00:00:00',%y表示当前年份
-         isShowClear: true,
+         isShowClear: true, //bool	true	是否显示清空按钮
+         isShowOK: true, //bool	true	是否显示确定按钮
+         isShowToday: true, //bool	true	是否显示今天按钮
          readOnly: false, //isShowClear false 和 readOnly true 最好同时使用,
          dateFmt: 'yyyy-MM-dd', //'yyyy年MM月ss秒'年月日时分秒   'H:mm:ss'只显示时分秒   'yyyy年MM月'年月
          firstDayOfWeek: 0, //自定义星期的第一天,各个国家的习惯不同,有些喜欢以星期日作为第一天,有些以星期一作为第一天.相关属性:firstDayOfWeek: 可设置 0 - 6 的任意一个数字,0:星期日 1:星期一 
@@ -152,7 +154,22 @@
              this.options.current = current.getFullYear() + "-" + (current.getMonth() + 1) + "-" + current.getDate();
          }
          this.bulidCalender();
+         this.bind();
      }
+     fn.bind = function() {
+         var self = this;
+         $(this.options.el).on("focus", function() {
+             self.show();
+         });
+         $(this.options.el).on("blur", function() {
+             self.valid();
+         });
+     }
+
+     fn.valid = function() {
+
+     }
+
      fn.bulidCalender = function() {
          var html = this.bulidDay();
          html = '<div  class="datepickerDays" >' + html + '</div>';
@@ -447,9 +464,7 @@
              }
              //datapicker消失
          });
-         $(this.options.el).on("focus", function() {
-             self.show();
-         })
+
 
      }
 
