@@ -161,7 +161,8 @@
          } else {
              this.options.showTime = false;
          }
-         this.options.current = current.getFullYear() + "-" + (current.getMonth() + 1) + "-" + current.getDate();
+
+         this.options.current = new Date(current.getTime());
          this.options.maxDate = (this.options.maxDate).replace(/-/g, "/");
          this.options.minDate = (this.options.minDate).replace(/-/g, "/");
 
@@ -193,23 +194,32 @@
              var reg = /^\d{4}-((0[1-9])|([0-9])|(1[0-2]))-((0[1-9])|([0-9])|([1-2][0-9])|(3[0-1]))$/;
              if (reg.test(date)) {
                  date = new Date(date.replace(/-/g, "/"));
-                 if (new Date(options.minDate) <= date <= new Date(options.maxDate)) {
-                     this.options.current = this.options.current = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();;
-                     this.options.date = date;
+                 if ((new Date(options.minDate) <= date) || (date <= new Date(options.maxDate))) {
+                     this.options.current = new Date(date.getTime());
+                     this.options.date = new Date(date.getTime());
                  }
              }
-             $(this.options.el).val(this.options.current);
+             this.elSetValue();
          }
-
      }
 
+     fn.elSetValue = function() {
+         var currnet = this.options.current;
+         var val;
+         if (this.options.showTime) {
+             val = currnet.getFullYear() + '-' + currnet.getMonth() + '-' + currnet.getDay();
+         } else {
+             val = currnet.getFullYear() + '-' + currnet.getMonth() + '-' + currnet.getDay() + '' + currnet.getHour() + ":" + currnet.getMinutes() + ":" + currnet.getSeconds();
+         }
+         $(this.options.el).val(val);
+     }
 
      fn.bulidCalender = function() {
 
          var $WdateDiv = $('<div class="WdateDiv" style="visibility: hidden;"></div>');
          $WdateDiv.append(tpl.header.join(""), '<div  class="datepickerDays"></div>', tpl.time.join(""), tpl.Quickselect, tpl.control.join(""));
          var dataPicker = $("body").append($WdateDiv);
-         var date = new Date((this.options.current).replace(/-/g, "/"));
+         var date = new Date(this.options.current.getTime());
          $WdateDiv.find(".datapickerinput").eq(0).val((date.getMonth() + 1) + "月");
          $WdateDiv.find(".datapickerinput").eq(1).val(date.getFullYear());
          this.wrapper = $WdateDiv;
@@ -237,20 +247,21 @@
                  data.weekslist.push(weekList[i])
              }
 
-             date = new Date((options.current).replace(/-/g, "/"));
+             date = new Date(options.current.getTime());;
              date.setDate(1);
 
              month = date.getMonth();
              var dow = (date.getDay() - options.firstDayOfWeek) % 7;
              date.addDays(-(dow + (dow < 0 ? 7 : 0)));
              cnt = 0;
-             var curr = new Date((options.current).replace(/-/g, "/"));;
+             var curr;
+             curr = new Date(options.current.getTime());
              if (curr > new Date(options.maxDate)) {
                  curr = new Date(options.maxDate);
-                 this.options.current = curr.getFullYear() + "-" + (curr.getMonth() + 1) + "-" + curr.getDate();
+                 this.options.current = new Date(curr.getTime());
              } else if (curr < new Date(options.minDate)) {
                  curr = new Date(options.minDate);
-                 this.options.current = curr.getFullYear() + "-" + (curr.getMonth() + 1) + "-" + curr.getDate();
+                 this.options.current = new Date(curr.getTime());
              }
              while (cnt < 42) {
                  indic = parseInt(cnt / 7, 10);
@@ -357,7 +368,7 @@
      fn.bulidMonthMenu = function() {
          var months = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"];
          var maxDate = new Date(this.options.maxDate);
-         var date = new Date(this.options.current);
+         var date = new Date(this.options.current.getTime());
          var minDate = new Date(this.options.minDate);
          var maxMonth = maxDate.getMonth();
          var minMonth = minDate.getMonth();
@@ -442,7 +453,7 @@
          wrapperHeader.find(".datapickerinput").on("focus", function() {
              var date, year;
              if ($(this).hasClass("datapickerInputYear")) {
-                 date = new Date((options.current).replace(/-/g, "/"));
+                 date = new Date(options.current.getTime());
                  year = date.getFullYear();
                  self.bulidYearMenu(year);
                  self.monthMenuWerapper.css("display", "none");
@@ -494,7 +505,7 @@
          }
          // ele.addClass("datepickerSelected");
          this.options.onpicked.call(this);
-         $(this.options.el).val(this.options.current);
+         this.elSetValue()
          console.log(this.options.current)
      }
 
@@ -502,7 +513,7 @@
          var options = this.options;
          var datePickerWrapper = this.wrapper;
          var input = datePickerWrapper.find(".datapickerinput");
-         var date = new Date((options.current).replace(/-/g, "/"));
+         var date = new Date(options.current.getTime());
          switch (YearOrMonth) {
              case 1:
                  date.addYears(num);
@@ -531,7 +542,7 @@
              this.options.date = date;
          }
 
-         this.options.current = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+         this.options.current = new Date(date.getTime());
          //重新渲染tpl.day中的内容，并进行填充；  
          this.bulidDay();
 
@@ -542,10 +553,22 @@
      fn.bindControl = function() {
          var datePickerWrapper = this.wrapper;
          var self = this;
+         var dpTime = datePickerWrapper.find(".dpTime");
          if (this.options.showTime) {
-             $WdateDiv.find(".dpTime").css("display", "block");
-             this.options.current;
-             ////待修改撒
+             dpTime.css("display", "block");
+             var current = this.options.current;
+             dpTime.find("input:eq(0)").val(current.getHours());
+             dpTime.find("input:eq(2)").val(current.getMinutes());
+             dpTime.find("input:eq(4)").val(current.getSeconds());
+
+             ////待修改
+             /*
+             关于时间格式问题，有的时包括时分秒的,有的不包括
+             currnet 和date  保存数据时应该都是按照new Date()的格式保存
+             然后具体显示时间时要根据时间格式判断来进行时间显示
+             注意时间格式的两个问题，一个是IE下用yyyy/mm/dd的格式来new Date()
+               var copy = new Date();copy.setTime(obj.getTime());return copy;
+               */
          }
          var dpControl = datePickerWrapper.find(".dpControl");
          var input = datePickerWrapper.find(".datapickerinput");
@@ -556,13 +579,13 @@
              } else if (ele.hasClass("datepickerToday")) {
                  var date = new Date();
                  self.options.date = date;
-                 self.options.current = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+                 self.options.current = new Date(date.getTime());
                  //重新渲染tpl.day中的内容，并进行填充；  
                  self.bulidDay();
 
                  input.eq(0).val((date.getMonth() + 1) + "月");
                  input.eq(1).val(date.getFullYear());
-                 $(self.options.el).val(self.options.current);
+                 self.elSetValue();
              } else if (ele.hasClass("datepickerOk")) {
                  datePickerWrapper.css("visibility", 'hidden');
              }
