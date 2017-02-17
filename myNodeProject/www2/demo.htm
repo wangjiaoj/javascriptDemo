@@ -8,3 +8,19 @@
 
 <input id="d12" type="text" />
 <img onclick="WdatePicker({el:'d12', dateFmt:'yyyy-MM-dd HH:mm:ss'})" src="My97DatePicker/skin/datePicker.gif" width="16" height="22" align="absmiddle">
+
+
+<div id="div1" style="float: right;">
+
+</div>
+<input type="text" id="testdiv" />
+<script>
+    WdatePicker({
+        eCont: 'div1',
+        onpicked: function(x) {
+            debugger
+            alert('date  is:' + dp.cal.getDateStr());
+            document.getElementById("testdiv").value = dp.cal.getDateStr();
+        }
+    })
+</script>

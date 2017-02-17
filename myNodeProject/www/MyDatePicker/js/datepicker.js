@@ -17,12 +17,13 @@
          dateFmt: 'yyyy-MM-dd', // 格式:'yyyy-MM-dd HH:mm:ss   'H:mm:ss'只显示时分秒   'yyyy年MM月'年月
          firstDayOfWeek: 0, //默认一周日开始,可设置 0 - 6 的任意一个数字,0:星期日 1:星期一 
          position: { left: 100, top: 50 }, //自定义弹出位置
-         onpicked: function() {}, //选中日期时的回调函数
-         calendars: 1, //单日历还是双日历
 
+         calendars: 1, //单日历还是双日历
+         onpicked: function(date) {}, //选中日期时的回调函数,date是选中的日期，类型：Date
          onRenderCell: function() { return {} },
          onBeforeShow: function() {}
      }
+
      var ids = {},
          views = {
              years: 'datepickerViewYears',
@@ -44,7 +45,10 @@
                  '<div class="menuSel hhMenu" style="display: none;"></div>',
                  '<div class="menuSel mmMenu" style="display: none;"></div>',
                  '<div class="menuSel ssMenu" style="display: none;"></div>',
-                 '<table cellspacing="0" cellpadding="0" border="0"><tbody><tr><td rowspan="2"><span class="dpTimeStr">时间</span>&nbsp;<input class="tB" maxlength="2"><input value=":" class="tm" readonly=""><input class="tE" maxlength="2"><input value=":" class="tm" readonly=""><input class="tE" maxlength="2"></td><td><button class="dpTimeUp"></button></td></tr><tr><td><button class="dpTimeDown"></button></td></tr></tbody></table>',
+                 '<table cellspacing="0" cellpadding="0" border="0"><tbody>',
+                 '<tr><td rowspan="2"><span class="dpTimeStr">时间</span>&nbsp;<input class="tB inputHour inputTime" maxlength="2"><input value=":" class="tm" readonly=""><input class="tE inputMinute inputTime" maxlength="2"><input value=":" class="tm" readonly=""><input class="tE inputSecond inputTime" maxlength="2"></td><td><button class="dpTimeUp"></button></td></tr>',
+                 '<tr><td><button class="dpTimeDown"></button></td></tr>',
+                 '</tbody></table>',
                  '</div>'
              ],
              control: ['<div class="dpControl">',
@@ -142,34 +146,47 @@
      extendDate();
 
      var DatePicker = function(options) {
+         /*
+              关于时间格式问题，有的时包括时分秒的,有的不包括
+              currnet 和date  保存数据时应该都是按照new Date()的格式保存
+              然后具体显示时间时要根据时间格式判断来进行时间显示
+              注意时间格式的两个问题，一个是IE下用yyyy/mm/dd的格式来new Date()
+              另一个是赋值问题，注意时间类型是引用对象
+        */
          this.options = $.extend({}, defaultOptions, options || {});
          this.init();
      }; // DatePicker
 
      var fn = DatePicker.prototype;
-
+     /**
+      */
      fn.init = function() {
-         //设置当前时间,如果未设定开始时间,则取当前日期为默认值
-         //日期以/分隔保存，以防止在IE下 new Date()报错
-         if (this.options.date) {
-             var current = this.options.date;
-         } else {
-             var current = new Date();
-         }
-         if (this.options.dateFmt === 'yyyy-MM-dd HH:mm:ss') {
-             this.options.showTime = true;
-         } else {
-             this.options.showTime = false;
-         }
+             //设置当前时间,如果未设定开始时间,则取当前日期为默认值
+             //日期以/分隔保存，以防止在IE下 new Date()报错
+             if (this.options.date) {
+                 var current = this.options.date;
+             } else {
+                 var current = new Date();
+             }
+             if (this.options.dateFmt === 'yyyy-MM-dd HH:mm:ss') {
+                 this.showTime = true;
+             } else {
+                 this.showTime = false;
+             }
 
-         this.options.current = new Date(current.getTime());
-         this.options.maxDate = (this.options.maxDate).replace(/-/g, "/");
-         this.options.minDate = (this.options.minDate).replace(/-/g, "/");
+             this.options.current = new Date(current.getTime());
+             this.options.maxDate = (this.options.maxDate).replace(/-/g, "/");
+             this.options.minDate = (this.options.minDate).replace(/-/g, "/");
 
-         this.bulidCalender();
-         this.bind();
-     }
-     fn.bind = function() {
+             this.bulidCalender();
+             if (!this.options.eCont) {
+                 this.bindEl();
+             }
+         }
+         /**
+          * 绑定el元素上的事件
+          */
+     fn.bindEl = function() {
          var self = this;
          if (this.options.readOnly) {
              $(this.options.el).attr("readOnly", true);
@@ -180,10 +197,7 @@
          }
          $(this.options.el).on("click", function(e) {
              e.stopPropagation()
-             if (!$(this).hasClass("active")) {
-                 $(this).addClass("active");
-                 self.show();
-             }
+             self.show();
          });
 
      }
@@ -204,32 +218,68 @@
      }
 
      fn.elSetValue = function() {
-         var currnet = this.options.current;
+         var currnet = this.options.date;
          var val;
-         if (this.options.showTime) {
-             val = currnet.getFullYear() + '-' + currnet.getMonth() + '-' + currnet.getDay();
-         } else {
-             val = currnet.getFullYear() + '-' + currnet.getMonth() + '-' + currnet.getDay() + '' + currnet.getHour() + ":" + currnet.getMinutes() + ":" + currnet.getSeconds();
+         if (currnet && this.options.el && !this.options.eCont) {
+             if (this.showTime) {
+                 val = currnet.getFullYear() + '-' + (currnet.getMonth() + 1) + '-' + currnet.getDate() + ' ' + currnet.getHours() + ":" + currnet.getMinutes() + ":" + currnet.getSeconds();
+             } else {
+                 val = currnet.getFullYear() + '-' + (currnet.getMonth() + 1) + '-' + currnet.getDate();
+             }
          }
          $(this.options.el).val(val);
      }
 
      fn.bulidCalender = function() {
 
-         var $WdateDiv = $('<div class="WdateDiv" style="visibility: hidden;"></div>');
+         var $WdateDiv = $('<div class="WdateDiv"></div>');
          $WdateDiv.append(tpl.header.join(""), '<div  class="datepickerDays"></div>', tpl.time.join(""), tpl.Quickselect, tpl.control.join(""));
-         var dataPicker = $("body").append($WdateDiv);
+
+         if (this.options.eCont) {
+             $(this.options.eCont).append($WdateDiv);
+         } else {
+             $("body").append($WdateDiv);
+             $WdateDiv.css("visibility", "hidden");
+         }
+
          var date = new Date(this.options.current.getTime());
          $WdateDiv.find(".datapickerinput").eq(0).val((date.getMonth() + 1) + "月");
          $WdateDiv.find(".datapickerinput").eq(1).val(date.getFullYear());
+
+
          this.wrapper = $WdateDiv;
          this.yearMenuWerapper = this.wrapper.find(".YMenu");
          this.monthMenuWerapper = this.wrapper.find(".MMenu");
-         this.bulidDay()
-         this.bindHeader();
-         this.bindDay();
-         this.bindControl();
+         var dpControl = $WdateDiv.find(".dpControl");
 
+         if (!this.options.eCont) {
+             $(this.options.eCont).empty().append($WdateDiv);
+             var dpTime = $WdateDiv.find(".dpTime");
+             if (this.showTime) {
+                 dpTime.css("display", "block");
+                 var current = this.options.current;
+                 dpTime.find("input:eq(0)").val(current.getHours()).addClass("active");
+                 dpTime.find("input:eq(2)").val(current.getMinutes());
+                 dpTime.find("input:eq(4)").val(current.getSeconds());
+             }
+             if (!this.options.isShowClear) {
+                 dpControl.find(".datepickerClearInput").css("display", "none");
+             }
+             if (!this.options.isShowOK) {
+                 dpControl.find(".datepickerToday").css("display", "none");
+             }
+             if (!this.options.isShowToday) {
+                 dpControl.find(".datepickerOk").css("display", "none");
+             }
+         } else {
+             dpControl.css("display", "none");
+             $WdateDiv.find(".datepickerQuickSelect").css("display", "none");
+         }
+         this.bulidDay();
+         this.bindCalender();
+         if (this.options.eCont) {
+             this.bindControl();
+         }
 
      }
 
@@ -290,9 +340,15 @@
                  }
                  if (month != date.getMonth()) {
                      data.weeks[indic].days[indic2].classname.push('datepickerNotInMonth');
+                     if (month > date.getMonth()) {
+                         data.weeks[indic].days[indic2].classname.push('datepickerMonthprev');
+                     } else {
+                         data.weeks[indic].days[indic2].classname.push('datepickerMonthNext');
+                     }
                      // disable clicking of the 'not in month' cells
                  } else {
                      data.weeks[indic].days[indic2].classname.push('datepickerInMonth');
+
                  }
                  if (date.getDay() == 0) {
                      data.weeks[indic].days[indic2].classname.push('datepickerSunday');
@@ -366,7 +422,7 @@
      }
 
      fn.bulidMonthMenu = function() {
-         var months = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"];
+         var months = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一", "十二"];
          var maxDate = new Date(this.options.maxDate);
          var date = new Date(this.options.current.getTime());
          var minDate = new Date(this.options.minDate);
@@ -402,9 +458,9 @@
          this.monthMenuWerapper.empty().append(html);
      }
 
-     fn.bindHeader = function() {
+     fn.bindCalender = function() {
          var datePickerWrapper = this.wrapper,
-             options = this.options;;
+             options = this.options;
          var self = this;
 
          var wrapperHeader = datePickerWrapper.find(".dpTitle");
@@ -420,10 +476,12 @@
                  self.dateChange(2, 1);
              }
          });
+
          wrapperHeader.find(".MMenu").on("click", "td.menu", function() {
              var monthSelect = parseInt($(this).data("month")) - 1;
              self.dateChange(4, monthSelect);
          });
+
          wrapperHeader.find(".YMenu").on("click", "td.menu", function(e) {
              var ele = $(e.target);
              if (ele.hasClass("menu")) {
@@ -450,6 +508,7 @@
 
              }
          });
+
          wrapperHeader.find(".datapickerinput").on("focus", function() {
              var date, year;
              if ($(this).hasClass("datapickerInputYear")) {
@@ -465,6 +524,7 @@
                  self.yearMenuWerapper.css("display", "none");
              }
          });
+
          $("body").on("click", function(e) {
              var ele = $(e.target);
              if (!ele.hasClass("datapickerinput")) {
@@ -475,14 +535,13 @@
                  wrapperHeader.find(".MMenu").css("display", "none");
              }
          });
-     }
 
-     fn.bindDay = function() {
-         var options = this.options;
-         var datePickerWrapper = this.wrapper;
+         //绑定日期点击事件
          var dayWrapper = datePickerWrapper.find(".datepickerDays");
          dayWrapper.on("click", "td", $.proxy(this.dateselect, this));
      }
+
+
 
      fn.dateselect = function(e) {
          var ele = $(e.target),
@@ -498,14 +557,14 @@
          }
          if (ele.hasClass("datepickerInMonth")) {
              this.dateChange(5, day);
-         } else if (ele.hasClass("datepickerFuture")) {
-             this.dateChange(6, day);
-         } else {
+         } else if (ele.hasClass("datepickerMonthprev")) {
              this.dateChange(7, day);
+         } else {
+             this.dateChange(6, day);
          }
          // ele.addClass("datepickerSelected");
-         this.options.onpicked.call(this);
-         this.elSetValue()
+         this.options.onpicked.call(this, this.options.date);
+         this.elSetValue();
          console.log(this.options.current)
      }
 
@@ -514,6 +573,7 @@
          var datePickerWrapper = this.wrapper;
          var input = datePickerWrapper.find(".datapickerinput");
          var date = new Date(options.current.getTime());
+
          switch (YearOrMonth) {
              case 1:
                  date.addYears(num);
@@ -549,51 +609,118 @@
          input.eq(0).val((date.getMonth() + 1) + "月");
          input.eq(1).val(date.getFullYear());
      }
+     fn.hoursChange = function() {
+         var dpTime = this.wrapper.find(".dpTime");
+         var hour = dpTime.find("input:eq(0)").val();
+         var min = dpTime.find("input:eq(2)").val();
+         var sec = dpTime.find("input:eq(4)").val();
+         this.options.current.setHours(hour, min, sec);
+     }
 
      fn.bindControl = function() {
          var datePickerWrapper = this.wrapper;
          var self = this;
          var dpTime = datePickerWrapper.find(".dpTime");
-         if (this.options.showTime) {
-             dpTime.css("display", "block");
-             var current = this.options.current;
-             dpTime.find("input:eq(0)").val(current.getHours());
-             dpTime.find("input:eq(2)").val(current.getMinutes());
-             dpTime.find("input:eq(4)").val(current.getSeconds());
 
-             ////待修改
-             /*
-             关于时间格式问题，有的时包括时分秒的,有的不包括
-             currnet 和date  保存数据时应该都是按照new Date()的格式保存
-             然后具体显示时间时要根据时间格式判断来进行时间显示
-             注意时间格式的两个问题，一个是IE下用yyyy/mm/dd的格式来new Date()
-               var copy = new Date();copy.setTime(obj.getTime());return copy;
-               */
-         }
          var dpControl = datePickerWrapper.find(".dpControl");
-         var input = datePickerWrapper.find(".datapickerinput");
+
+
+         //'清空','确认','今天' 按钮事件绑定
          dpControl.on("click", ".dpButton", function(e) {
+             var input = datePickerWrapper.find(".datapickerinput");
              var ele = $(e.target);
              if (ele.hasClass("datepickerClearInput")) {
-                 $(self.options.el).val();
+                 self.options.date = "";
              } else if (ele.hasClass("datepickerToday")) {
                  var date = new Date();
                  self.options.date = date;
                  self.options.current = new Date(date.getTime());
                  //重新渲染tpl.day中的内容，并进行填充；  
                  self.bulidDay();
-
                  input.eq(0).val((date.getMonth() + 1) + "月");
                  input.eq(1).val(date.getFullYear());
-                 self.elSetValue();
              } else if (ele.hasClass("datepickerOk")) {
+                 self.options.date = new Date(self.options.current.getTime());
+             }
+             self.elSetValue();
+             //datapicker消失
+             if (!self.options.eCont) {
                  datePickerWrapper.css("visibility", 'hidden');
              }
-             //datapicker消失
+
+         });
+
+         dpTime.on("click", "input.inputTime", function() {
+             //默认inputHour处于active状态 当点击inputMinute和inputSecond后，被点击的处于活跃状态 
+             dpTime.find("input.inputTime").removeClass("active");
+             $(this).addClass("active");
+         });
+
+         dpTime.on("blur", "input.inputTime", function() {
+             var val = parseInt($(this).val());
+             if (!val || isNaN(val)) {
+                 val = 0;
+             } else {
+                 if (val < 0) {
+                     val = 0;
+                 } else if (val > 59) {
+                     val = 59;
+                 }
+                 if ($(this).hasClass("inputHour") && val > 23) {
+                     val = 23;
+                 }
+             }
+             $(this).val(val);
+             self.hoursChange();
          });
 
 
+         dpTime.on("click", ".dpTimeUp", function() {
+             var input = dpTime.find("input.inputTime.active");
+             if (input.hasClass("inputHour")) {
+                 var val = parseInt(input.val());
+                 if (val < 23) {
+                     val++;
+                     input.val(val);
+                     self.hoursChange();
+                 }
+             } else {
+                 var val = parseInt(input.val());
+                 if (val < 59) {
+                     if (val < 54) {
+                         val = val + 5;
+                     } else {
+                         val++;
+                     }
+                     input.val(val);
+                     self.hoursChange();
+                 }
+             }
+         });
+
+         dpTime.on("click", ".dpTimeDown", function() {
+             var input = dpTime.find("input.inputTime.active");
+             if (input.hasClass("inputHour")) {
+                 var val = parseInt(input.val());
+                 if (val > 0) {
+                     val--;
+                     input.val(val);
+                 }
+             } else {
+                 var val = parseInt(input.val());
+                 if (val > 0) {
+                     if (val > 5) {
+                         val = val - 5;
+                     } else {
+                         val--;
+                     }
+                     input.val(val);
+                 }
+             }
+         });
+
      }
+
 
      fn.show = function(ev) {
          var options = this.options;

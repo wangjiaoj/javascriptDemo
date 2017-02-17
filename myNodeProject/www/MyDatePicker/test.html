@@ -10,15 +10,30 @@
 <body>
 
     <input id="simple-calendar" />
+    <div id="calendar">
 
+    </div>
     <script type="text/javascript">
         new DatePicker({
-            el: '#simple-calendar',
+            eCont: '#calendar',
             minDate: "2017-01-01 00:00:00",
             maxDate: "2017-10-01 23:59:59",
-            firstDayOfWeek: "1",
-            dateFmt: 'yyyy-MM-dd HH:mm:ss'
+            onpicked: function(date) {
+                alert("date" + date);
+            }
         });
+        // {
+        //       el: '#simple-calendar',
+        //     minDate: "2017-01-01 00:00:00",
+        //     maxDate: "2017-10-01 23:59:59",
+        //     isShowClear: false,
+        //     readOnly: true
+        // }
+        //   el: '#simple-calendar',
+        //     minDate: "2017-01-01 00:00:00",
+        //     maxDate: "2017-10-01 23:59:59",
+        //     firstDayOfWeek: "1",
+        //     dateFmt: 'yyyy-MM-dd HH:mm:ss'
     </script>
 </body>
 
