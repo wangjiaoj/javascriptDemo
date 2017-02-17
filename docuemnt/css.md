@@ -74,3 +74,7 @@ if("clipPath" in $0.style){
 * 背景根据两个偏移参数进行偏移，然后根据模糊半径进行模糊，后面模糊后的背景和原背景重合的部分会被剪切掉,中间还有一个参数：扩张半径 可扩大或缩小投影的尺寸
 
 ### 5、用户体验
+
+
+[滚动条样式](http://blog.csdn.net/hanshileiai/article/details/40398177)
+[具体实例](http://www.xuanfengge.com/demo/201311/scroll/css3-scroll.html)
