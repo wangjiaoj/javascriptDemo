@@ -1,4 +1,13 @@
- (function($) {
+ (function(factory) {
+     if (typeof define == 'function' && define.cmd) {
+         define(function(require) {
+             var $ = require('jquery');
+             factory($, window, document);
+         })
+     } else {
+         factory($, window, document);
+     }
+ }(function($, window, document) {
      var cache = {},
          tmpl;
 
@@ -16,9 +25,9 @@
          readOnly: false, //isShowClear false 和 readOnly true 最好同时使用,
          dateFmt: 'yyyy-MM-dd', // 格式:'yyyy-MM-dd HH:mm:ss   'H:mm:ss'只显示时分秒   'yyyy年MM月'年月
          firstDayOfWeek: 0, //默认一周日开始,可设置 0 - 6 的任意一个数字,0:星期日 1:星期一 
-         position: { left: 100, top: 50 }, //自定义弹出位置
+         position: 'bottom', //自定义弹出位置top，left,right,bottom
 
-         calendars: 1, //单日历还是双日历
+         calendars: 1, //单日历还是双日历---待实现
          onpicked: function(date) {}, //选中日期时的回调函数,date是选中的日期，类型：Date
          onRenderCell: function() { return {} },
          onBeforeShow: function() {}
@@ -177,9 +186,17 @@
              this.options.current = new Date(current.getTime());
              this.options.maxDate = (this.options.maxDate).replace(/-/g, "/");
              this.options.minDate = (this.options.minDate).replace(/-/g, "/");
+             //如果起始时间大于最大时间和最小时间
+             if (new Date(this.options.maxDate) < this.options.current) {
+                 this.options.current = new Date(this.options.maxDate);
+             } else if (new Date(this.options.minDate) > this.options.current) {
+                 this.options.current = new Date(this.options.minDate);
+             }
 
              this.bulidCalender();
              if (!this.options.eCont) {
+                 this.offsetHeight = $(this.options.el).get(0).offsetHeight;
+                 this.offsetWidth = $(this.options.el).get(0).offsetWidth;
                  this.bindEl();
              }
          }
@@ -276,8 +293,9 @@
              $WdateDiv.find(".datepickerQuickSelect").css("display", "none");
          }
          this.bulidDay();
+         this.YearOrMonthButtonControl();
          this.bindCalender();
-         if (this.options.eCont) {
+         if (!this.options.eCont) {
              this.bindControl();
          }
 
@@ -356,19 +374,19 @@
                  if (date.getDay() == 6) {
                      data.weeks[indic].days[indic2].classname.push('datepickerSaturday');
                  }
-                 var fromUser = options.onRenderCell(date);
+                 //  var fromUser = options.onRenderCell(date);
 
                  if (curr) {
                      if (curr.getDate() == date.getDate() && curr.getMonth() == date.getMonth() && curr.getYear() == date.getYear()) {
                          data.weeks[indic].days[indic2].classname.push('datepickerSelected');
                      }
                  }
-                 if (fromUser.disabled) {
-                     data.weeks[indic].days[indic2].classname.push('datepickerDisabled');
-                 }
-                 if (fromUser.className) {
-                     data.weeks[indic].days[indic2].classname.push(fromUser.className);
-                 }
+                 //  if (fromUser.disabled) {
+                 //      data.weeks[indic].days[indic2].classname.push('datepickerDisabled');
+                 //  }
+                 //  if (fromUser.className) {
+                 //      data.weeks[indic].days[indic2].classname.push(fromUser.className);
+                 //  }
                  data.weeks[indic].days[indic2].classname = data.weeks[indic].days[indic2].classname.join(' ');
                  cnt++;
                  date.addDays(1);
@@ -439,10 +457,24 @@
                      text: months[j],
                      classname: []
                  };
-                 if ((minMonth <= j) && (j <= maxMonth)) {
-                     data.data[j].classname.push("menu");
+                 if (minDate.getFullYear() === maxDate.getFullYear()) {
+                     if ((minMonth <= j) && (j <= maxMonth)) {
+                         data.data[j].classname.push("menu");
+                     } else {
+                         data.data[j].classname.push("invalidMenu");
+                     }
+                 } else if (date.getFullYear() === maxDate.getFullYear()) {
+                     if (j <= maxMonth) {
+                         data.data[j].classname.push("menu");
+                     } else {
+                         data.data[j].classname.push("invalidMenu");
+                     }
                  } else {
-                     data.data[j].classname.push("invalidMenu");
+                     if (minMonth <= j) {
+                         data.data[j].classname.push("menu");
+                     } else {
+                         data.data[j].classname.push("invalidMenu");
+                     }
                  }
              }
          } else {
@@ -466,7 +498,20 @@
          var wrapperHeader = datePickerWrapper.find(".dpTitle");
          var input = datePickerWrapper.find(".datapickerinput");
 
-         wrapperHeader.on("click", ".navImg", $.proxy(this.yearOrMonthChange, this));
+         wrapperHeader.on("click", ".navImg", function() {
+             if ($(this).hasClass("invalid")) {
+                 return false;
+             }
+             if ($(this).hasClass("datepickerYearGoPrev")) {
+                 self.yearOrMonthChange(1, -1);
+             } else if ($(this).hasClass("datepickerMonthGoPrev")) {
+                 self.yearOrMonthChange(2, -1);
+             } else if ($(this).hasClass("datepickerYearGoNext")) {
+                 self.yearOrMonthChange(1, 1);
+             } else if ($(this).hasClass("datepickerMonthGoNext")) {
+                 self.yearOrMonthChange(2, 1);
+             }
+         });
 
          wrapperHeader.find(".MMenu").on("click", "td.menu", function() {
              var monthSelect = parseInt($(this).data("month")) - 1;
@@ -532,60 +577,15 @@
          dayWrapper.on("click", "td", $.proxy(this.dateselect, this));
      }
 
-
-     fn.yearOrMonthChange = function(e) {
-         var ele = $(e.target),
-             var date = new Date(options.current.getTime());
-         var YearFlag = 0;
-         if (ele.hasClass("datepickerYearGoPrev")) {
-             self.dateChange(1, -1);
-             YearFlag = 1;
-         } else if (ele.hasClass("datepickerMonthGoPrev")) {
-             self.dateChange(2, -1);
-             YearFlag = 2;
-         } else if (ele.hasClass("datepickerYearGoNext")) {
-             self.dateChange(1, 1);
-             YearFlag = 3;
-         } else if (ele.hasClass("datepickerMonthGoNext")) {
-             self.dateChange(2, 1);
-             YearFlag = 4;
-         }
-         var maxDate = new Date(this.options.maxDate);
+     fn.yearOrMonthChange = function(type, num) {
          var date = new Date(this.options.current.getTime());
-         var minDate = new Date(this.options.minDate);
-
-         var maxYear = maxDate.getFullYear();
-         var minYear = minDate.getFullYear();
-         var maxMonth = maxDate.getMonth();
-         var minMonth = minDate.getMonth();
-         var wrapperHeader = datePickerWrapper.find(".dpTitle");
-         var input = datePickerWrapper.find(".datapickerinput");
-
-         var YearGoPrev = wrapperHeader.find(".navImg.datepickerYearGoPrev"),
-             MonthGoPrev = wrapperHeader.find(".navImg.datepickerMonthGoPrev"),
-             YearGoNext = wrapperHeader.find(".navImg.datepickerYearGoNext"),
-             MonthGoNext = wrapperHeader.find(".navImg.datepickerMonthGoNext");
-
-         if (date.getFullYear() >= maxYear) {
-             YearGoNext.addClass("invalid");
-             if (date.getFullYear() === maxYear && date.getMonth() >= maxMonth) {
-                 MonthGoNext.addClass("invalid");
-             }
-         }
-         if (date.getFullYear() <= minYear) {
-             YearGoPrev.addClass("invalid");
-             if (date.getFullYear() === minYear && date.getMonth() <= minMonth) {
-                 MonthGoPrev.addClass("invalid");
-             }
-         }
-         if (ele.hasClass("invalid")) {
-             return false;
-         }
-
-         var input = datePickerWrapper.find(".datapickerinput");
-
-         switch (YearOrMonth) {
-
+         var wrapperHeader = this.wrapper.find(".dpTitle");
+         var input = wrapperHeader.find(".datapickerinput");
+         /* 
+          * 1,2,为点击月份或年份增加或减少按钮
+          * 3,4为点击月份或年份菜单
+          */
+         switch (type) {
              case 1:
                  date.addYears(num);
                  break;
@@ -599,8 +599,52 @@
                  date.setMonth(num);
                  break;
          }
-
+         this.options.current = new Date(date.getTime());
+         this.YearOrMonthButtonControl();
+         //重新渲染tpl.day中的内容，并进行填充；  
+         this.bulidDay();
+         input.eq(0).val((date.getMonth() + 1) + "月");
+         input.eq(1).val(date.getFullYear());
      }
+
+     fn.YearOrMonthButtonControl = function() {
+         var date = new Date(this.options.current.getTime());
+         var maxDate = new Date(this.options.maxDate);
+         var minDate = new Date(this.options.minDate);
+         var maxYear = maxDate.getFullYear();
+         var minYear = minDate.getFullYear();
+         var maxMonth = maxDate.getMonth();
+         var minMonth = minDate.getMonth();
+         var wrapperHeader = this.wrapper.find(".dpTitle");
+         var YearGoPrev = wrapperHeader.find(".navImg.datepickerYearGoPrev"),
+             MonthGoPrev = wrapperHeader.find(".navImg.datepickerMonthGoPrev"),
+             YearGoNext = wrapperHeader.find(".navImg.datepickerYearGoNext"),
+             MonthGoNext = wrapperHeader.find(".navImg.datepickerMonthGoNext");
+
+         //当前年份大于等于maxYear  或 当年年份+1时,月份也会超过最大限制
+         if (date.getFullYear() >= maxYear || ((date.getFullYear() + 1) >= maxYear && date.getMonth() > maxMonth)) {
+             YearGoNext.addClass("invalid");
+             if (date.getFullYear() === maxYear && date.getMonth() >= maxMonth) {
+                 MonthGoNext.addClass("invalid");
+             } else {
+                 MonthGoNext.removeClass("invalid");
+             }
+         } else {
+             YearGoNext.removeClass("invalid");
+         }
+
+         if (date.getFullYear() <= minYear || ((date.getFullYear() - 1) <= minYear && date.getMonth() < minMonth)) {
+             YearGoPrev.addClass("invalid");
+             if (date.getFullYear() === minYear && date.getMonth() <= minMonth) {
+                 MonthGoPrev.addClass("invalid");
+             } else {
+                 MonthGoPrev.removeClass("invalid");
+             }
+         } else {
+             YearGoPrev.removeClass("invalid");
+         }
+     }
+
      fn.dateselect = function(e) {
          var ele = $(e.target),
              day;
@@ -614,11 +658,11 @@
              return false;
          }
          if (ele.hasClass("datepickerInMonth")) {
-             this.dateChange(5, day);
+             this.dateChange(1, day);
          } else if (ele.hasClass("datepickerMonthprev")) {
-             this.dateChange(7, day);
+             this.dateChange(3, day);
          } else {
-             this.dateChange(6, day);
+             this.dateChange(2, day);
          }
          // ele.addClass("datepickerSelected");
          this.options.onpicked.call(this, this.options.date);
@@ -626,25 +670,22 @@
          console.log(this.options.current)
      }
 
-     fn.dateChange = function(YearOrMonth, num) {
+     fn.dateChange = function(type, num) {
          var options = this.options;
-         var datePickerWrapper = this.wrapper;
-         var input = datePickerWrapper.find(".datapickerinput");
+         var input = this.wrapper.find(".datapickerinput");
          var date;
-         if (YearOrMonth) {
+         if (type) {
              date = new Date(options.current.getTime());
              /* 
-              * 1,2,3,4为点击月份增加或减少
               * 5,6,7为点击日历上的日期，
               * 5是当前月日期，6是日历上前一个月的某天，7是日历上后一月的某天
               * YearOrMonth为空时，为点击当天
               */
-             switch (YearOrMonth) {
-
-                 case 5:
+             switch (type) {
+                 case 1:
                      date.setDate(num);
                      break;
-                 case 6:
+                 case 2:
                      date.addMonths(1);
                      date.setDate(num);
                      break;
@@ -652,21 +693,17 @@
                      date.addMonths(-1);
                      date.setDate(num);
              }
-             if (YearOrMonth >= 5) {
-                 this.options.date = date;
-             }
          } else {
              date = new Date();
-             this.options.date = date;
          }
-
+         this.options.date = date;
          this.options.current = new Date(date.getTime());
          //重新渲染tpl.day中的内容，并进行填充；  
          this.bulidDay();
-
          input.eq(0).val((date.getMonth() + 1) + "月");
          input.eq(1).val(date.getFullYear());
      }
+
      fn.hoursChange = function() {
          var dpTime = this.wrapper.find(".dpTime");
          var hour = dpTime.find("input:eq(0)").val();
@@ -693,7 +730,7 @@
                  self.dateChange();
                  //重新渲染tpl.day中的内容，并进行填充；  
                  self.bulidDay();
-                 this.options.onpicked.call(this, this.options.date);
+                 self.options.onpicked.call(self, self.options.date);
              } else if (ele.hasClass("datepickerOk")) {
                  self.options.date = new Date(self.options.current.getTime());
              }
@@ -773,7 +810,6 @@
          });
 
      }
-
 
      fn.show = function(ev) {
          var options = this.options;
@@ -861,10 +897,6 @@
      }
 
 
-
-
-
-
      function extendDate() {
          if (Date.prototype.tempDate) {
              return;
@@ -937,4 +969,4 @@
 
 
      window.DatePicker = DatePicker;
- })(jQuery);
+ }));
