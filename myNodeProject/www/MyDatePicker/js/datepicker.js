@@ -13,12 +13,14 @@
 
      var defaultOptions = {
          el: 'id', //日历显示定位位置的id，当选中日期后将数据显示到该id内
+         eCont: '', //单纯当做日历使用的元素id
+         startDate: '', //'1980-05-01'日历展示的初始日期，也可以使用这样的格式'%y-%M-01 00:00:00',%y表示当前年份
          date: new Date(), //格式：new Date()默认选中当前日期,用于保存实际上选中的日期
          current: '', //格式："yyyy-mm-dd" 不是当前实际选中的日期，是用于计算并展示日历的时间,初始化时默认等于date，用户不可自定义
          minDate: "1900-01-01 00:00:00",
          maxDate: "2099-12-31 23:59:59",
-         eCont: '', //单纯当做日历使用的元素id
-         startDate: '', //'1980-05-01'日历展示的初始日期，也可以使用这样的格式'%y-%M-01 00:00:00',%y表示当前年份
+
+
          isShowClear: true, //bool	true	是否显示清空按钮
          isShowOK: true, //bool	true	是否显示确定按钮
          isShowToday: true, //bool	true	是否显示今天按钮
@@ -29,12 +31,12 @@
 
          calendars: 1, //单日历还是双日历---待实现
          onpicked: function(date) {}, //选中日期时的回调函数,date是选中的日期，类型：Date
-         onRenderCell: function() { return {} },
+
          onBeforeShow: function() {}
      }
 
-     var ids = {},
-         views = {
+
+     var views = {
              years: 'datepickerViewYears',
              months: 'datepickerViewMonths',
              days: 'datepickerViewDays'
@@ -154,6 +156,42 @@
 
      extendDate();
 
+
+     /**
+      * @constructor  
+      * @description 日期选择插件
+      * @param {Object}   options -弹窗配置,   
+      * @param {Node}     [options.el='']  -作为日期选择器显示定位位置的id，当选中日期后将数据显示到该元素内
+      * @param {Node}     [options.eCont=''] -单纯当做日历使用的元素id
+      * @param date: new Date() 格式：new Date()默认选中当前日期,用于保存实际上选中的日期
+      * @param current: '' 格式："yyyy-mm-dd" 不是当前实际选中的日期，是用于计算并展示日历的时间,初始化时默认等于date，用户不可自定义
+      * @param {String}   [options.startDate=''] -'1980-05-01'日历展示的初始日期，也可以使用这样的格式'%y-%M-01 00:00:00',%y表示当前年份
+      * @param {String}   [options.minDate="1900-01-01 00:00:00"] -最小日期
+      * @param {String}   [options.maxDate="2099-12-31 23:59:59"] -最大日期
+      * @param {Boolean}  [options.isShowClear=true] -是否显示清空按钮
+      * @param {Boolean}  [options.isShowOK=true]    -是否显示确定按钮
+      * @param {Boolean}  [options.isShowToday=true]	-是否显示今天按钮
+      * @param {Boolean}  [options.readOnly=false] -false 和 readOnly true 最好同时使用,
+      * @param {String}   [options.dateFmt='yyyy-MM-dd'] -格式:'yyyy-MM-dd HH:mm:ss   'H:mm:ss'只显示时分秒   'yyyy年MM月'年月
+      * @param {Number}   [options.firstDayOfWeek=0] -默认一周日开始,可设置 0 - 6 的任意一个数字,0:星期日 1:星期一 
+      * @param {String}   [options.position='bottom'] - 自定义弹出位置top，left,right,bottom
+      * @param {Number}   [options.calendars=1] -单日历还是双日历---待实现
+      * @param {function} [options.onpicked=function(date){}]  //选中日期时的回调函数,date是选中的日期，类型：Date
+      * @param {function} [options.onRenderCell=function() { return true }]
+      * @param {function} [options.onBeforeShow=function() {}]
+      *
+      * @example 
+      *  new DatePicker({
+      *     el: '#simple-calendar',
+      *     minDate: "2016-12-01 00:00:00",
+      *     maxDate: "2017-10-01 23:59:59",
+      *     firstDayOfWeek: "1",
+      *     onpicked: function(date) {
+      *         alert("date" + date);
+      *     }
+      * });
+      *
+      */
      var DatePicker = function(options) {
          /*
               关于时间格式问题，有的时包括时分秒的,有的不包括
@@ -164,89 +202,53 @@
         */
          this.options = $.extend({}, defaultOptions, options || {});
          this.init();
-     }; // DatePicker
+     };
 
      var fn = DatePicker.prototype;
+
      /**
+      * 初始化
+      * @private 
       */
      fn.init = function() {
-             //设置当前时间,如果未设定开始时间,则取当前日期为默认值
-             //日期以/分隔保存，以防止在IE下 new Date()报错
-             if (this.options.date) {
-                 var current = this.options.date;
-             } else {
-                 var current = new Date();
-             }
-             if (this.options.dateFmt === 'yyyy-MM-dd HH:mm:ss') {
-                 this.showTime = true;
-             } else {
-                 this.showTime = false;
-             }
+         //设置当前时间,如果未设定开始时间,则取当前日期为默认值
 
-             this.options.current = new Date(current.getTime());
-             this.options.maxDate = (this.options.maxDate).replace(/-/g, "/");
-             this.options.minDate = (this.options.minDate).replace(/-/g, "/");
-             //如果起始时间大于最大时间和最小时间
-             if (new Date(this.options.maxDate) < this.options.current) {
-                 this.options.current = new Date(this.options.maxDate);
-             } else if (new Date(this.options.minDate) > this.options.current) {
-                 this.options.current = new Date(this.options.minDate);
-             }
-
-             this.bulidCalender();
-             if (!this.options.eCont) {
-                 this.offsetHeight = $(this.options.el).get(0).offsetHeight;
-                 this.offsetWidth = $(this.options.el).get(0).offsetWidth;
-                 this.bindEl();
-             }
-         }
-         /**
-          * 绑定el元素上的事件
-          */
-     fn.bindEl = function() {
-         var self = this;
-         if (this.options.readOnly) {
-             $(this.options.el).attr("readOnly", true);
+         if (this.options.startDate) {
+             var current = this.options.startDate;
          } else {
-             $(this.options.el).on("blur", function() {
-                 self.valid($(this).val());
-             });
+             var current = new Date();
          }
-         $(this.options.el).on("click", function(e) {
-             e.stopPropagation()
-             self.show();
-         });
+         if (this.options.dateFmt === 'yyyy-MM-dd HH:mm:ss') {
+             this.showTime = true;
+         } else {
+             this.showTime = false;
+         }
 
+         this.options.current = new Date(current.getTime());
+         //日期以/分隔保存，以防止在IE下 new Date()报错
+         this.options.maxDate = (this.options.maxDate).replace(/-/g, "/");
+         this.options.minDate = (this.options.minDate).replace(/-/g, "/");
+         //如果起始时间大于最大时间和最小时间
+         if (new Date(this.options.maxDate) < this.options.current) {
+             this.options.current = new Date(this.options.maxDate);
+         } else if (new Date(this.options.minDate) > this.options.current) {
+             this.options.current = new Date(this.options.minDate);
+         }
+
+         this.bulidCalender();
+         if (!this.options.eCont) {
+             this.offsetHeight = $(this.options.el).get(0).offsetHeight;
+             this.offsetWidth = $(this.options.el).get(0).offsetWidth;
+             this.bindEl();
+         }
      }
 
-     fn.valid = function(date) {
-         if (date) {
-             var options = this.options;
-             var reg = /^\d{4}-((0[1-9])|([0-9])|(1[0-2]))-((0[1-9])|([0-9])|([1-2][0-9])|(3[0-1]))$/;
-             if (reg.test(date)) {
-                 date = new Date(date.replace(/-/g, "/"));
-                 if ((new Date(options.minDate) <= date) || (date <= new Date(options.maxDate))) {
-                     this.options.current = new Date(date.getTime());
-                     this.options.date = new Date(date.getTime());
-                 }
-             }
-             this.elSetValue();
-         }
-     }
 
-     fn.elSetValue = function() {
-         var currnet = this.options.date;
-         var val;
-         if (currnet && this.options.el && !this.options.eCont) {
-             if (this.showTime) {
-                 val = currnet.getFullYear() + '-' + (currnet.getMonth() + 1) + '-' + currnet.getDate() + ' ' + currnet.getHours() + ":" + currnet.getMinutes() + ":" + currnet.getSeconds();
-             } else {
-                 val = currnet.getFullYear() + '-' + (currnet.getMonth() + 1) + '-' + currnet.getDate();
-             }
-         }
-         $(this.options.el).val(val);
-     }
 
+     /**
+      * 初始化日期选择器DOM结构 
+      * @private 
+      */
      fn.bulidCalender = function() {
 
          var $WdateDiv = $('<div class="WdateDiv"></div>');
@@ -301,6 +303,10 @@
 
      }
 
+     /**
+      * 创建日期选择器中的日期部分DOM
+      * @private 
+      */
      fn.bulidDay = function() {
          var options = this.options;
          var cnt, date;
@@ -315,7 +321,7 @@
                  data.weekslist.push(weekList[i])
              }
 
-             date = new Date(options.current.getTime());;
+             date = new Date(options.current.getTime());
              date.setDate(1);
 
              month = date.getMonth();
@@ -343,6 +349,7 @@
                      text: date.getDate(),
                      classname: []
                  };
+
                  var today = new Date();
                  if (today.getDate() == date.getDate() && today.getMonth() == date.getMonth() && today.getYear() == date.getYear()) {
                      data.weeks[indic].days[indic2].classname.push('datepickerToday');
@@ -356,9 +363,11 @@
                  if ((date > new Date(options.maxDate)) || (date < new Date(options.minDate))) {
                      data.weeks[indic].days[indic2].classname.push('datepickerInvalidDay');
                  }
+
                  if (month != date.getMonth()) {
                      data.weeks[indic].days[indic2].classname.push('datepickerNotInMonth');
-                     if (month > date.getMonth()) {
+                     if (options.current > date) {
+                         //用data比较会比较准确，因为会牵涉到最小2016-12-01 和2017-01-01单纯比较月份时 前面月份大于后面的  
                          data.weeks[indic].days[indic2].classname.push('datepickerMonthprev');
                      } else {
                          data.weeks[indic].days[indic2].classname.push('datepickerMonthNext');
@@ -366,8 +375,8 @@
                      // disable clicking of the 'not in month' cells
                  } else {
                      data.weeks[indic].days[indic2].classname.push('datepickerInMonth');
-
                  }
+
                  if (date.getDay() == 0) {
                      data.weeks[indic].days[indic2].classname.push('datepickerSunday');
                  }
@@ -398,6 +407,10 @@
 
      }
 
+     /**
+      * 创建日期选择器中的年份选择菜单DOM
+      * @private 
+      */
      fn.bulidYearMenu = function(year) {
          var maxYear = new Date(this.options.maxDate).getFullYear();
          var minYear = new Date(this.options.minDate).getFullYear();
@@ -419,7 +432,7 @@
              year = dow + j;
              data.data[j] = {
                  text: year,
-                 classname: []
+                 classname: ["yearMenu"]
              };
 
              if ((maxYear >= year) && (year >= minYear)) {
@@ -439,6 +452,10 @@
          this.yearMenuWerapper.empty().append(html);
      }
 
+     /**
+      * 创建日期选择器中的月份选择菜单DOM
+      * @private 
+      */
      fn.bulidMonthMenu = function() {
          var months = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一", "十二"];
          var maxDate = new Date(this.options.maxDate);
@@ -455,7 +472,7 @@
              for (var j = 0; j < 12; j++) {
                  data.data[j] = {
                      text: months[j],
-                     classname: []
+                     classname: ["monthMenu"]
                  };
                  if (minDate.getFullYear() === maxDate.getFullYear()) {
                      if ((minMonth <= j) && (j <= maxMonth)) {
@@ -490,6 +507,10 @@
          this.monthMenuWerapper.empty().append(html);
      }
 
+     /**
+      * 绑定日期选择器主题中的事件
+      * @private 
+      */
      fn.bindCalender = function() {
          var datePickerWrapper = this.wrapper,
              options = this.options;
@@ -513,38 +534,12 @@
              }
          });
 
-         wrapperHeader.find(".MMenu").on("click", "td.menu", function() {
-             var monthSelect = parseInt($(this).data("month")) - 1;
-             self.yearOrMonthChange(4, monthSelect);
-         });
+         //  wrapperHeader.find(".MMenu").on("click", "td.menu", function() {
 
-         wrapperHeader.find(".YMenu").on("click", "td.menu", function(e) {
-             var ele = $(e.target);
-             if (ele.hasClass("menu")) {
-                 var yearSelect = $(this).text();
-                 self.yearOrMonthChange(3, yearSelect);
-             } else {
+         //  });
 
-                 e.stopPropagation();
-                 if (ele.hasClass("yearMenuGoprev")) {
-                     var table = $(this).parents("table").siblings("table");
-                     if (table.length) {
-                         var year = parseInt(table.attr("data-year")) - 12;
-                     }
-                     self.bulidYearMenu(year);
-                 } else if (ele.hasClass("yearMenuClose")) {
-                     var table = $(this).parents(".YMenu").css("display", "none");
-                 } else if (ele.hasClass("yearMenuGoNext")) {
-                     var table = $(this).parents("table").siblings("table");
-                     if (table.length) {
-                         var year = parseInt(table.attr("data-year")) + 12;
-                         self.bulidYearMenu(year);
-                     }
-                 }
 
-             }
-         });
-
+         wrapperHeader.find(".menuSel").on("click", "td.menu", $.proxy(this.menuClikHandler, this));
          wrapperHeader.find(".datapickerinput").on("focus", function() {
              var date, year;
              if ($(this).hasClass("datapickerInputYear")) {
@@ -577,141 +572,10 @@
          dayWrapper.on("click", "td", $.proxy(this.dateselect, this));
      }
 
-     fn.yearOrMonthChange = function(type, num) {
-         var date = new Date(this.options.current.getTime());
-         var wrapperHeader = this.wrapper.find(".dpTitle");
-         var input = wrapperHeader.find(".datapickerinput");
-         /* 
-          * 1,2,为点击月份或年份增加或减少按钮
-          * 3,4为点击月份或年份菜单
-          */
-         switch (type) {
-             case 1:
-                 date.addYears(num);
-                 break;
-             case 2:
-                 date.addMonths(num);
-                 break;
-             case 3:
-                 date.setYear(num);
-                 break;
-             case 4:
-                 date.setMonth(num);
-                 break;
-         }
-         this.options.current = new Date(date.getTime());
-         this.YearOrMonthButtonControl();
-         //重新渲染tpl.day中的内容，并进行填充；  
-         this.bulidDay();
-         input.eq(0).val((date.getMonth() + 1) + "月");
-         input.eq(1).val(date.getFullYear());
-     }
-
-     fn.YearOrMonthButtonControl = function() {
-         var date = new Date(this.options.current.getTime());
-         var maxDate = new Date(this.options.maxDate);
-         var minDate = new Date(this.options.minDate);
-         var maxYear = maxDate.getFullYear();
-         var minYear = minDate.getFullYear();
-         var maxMonth = maxDate.getMonth();
-         var minMonth = minDate.getMonth();
-         var wrapperHeader = this.wrapper.find(".dpTitle");
-         var YearGoPrev = wrapperHeader.find(".navImg.datepickerYearGoPrev"),
-             MonthGoPrev = wrapperHeader.find(".navImg.datepickerMonthGoPrev"),
-             YearGoNext = wrapperHeader.find(".navImg.datepickerYearGoNext"),
-             MonthGoNext = wrapperHeader.find(".navImg.datepickerMonthGoNext");
-
-         //当前年份大于等于maxYear  或 当年年份+1时,月份也会超过最大限制
-         if (date.getFullYear() >= maxYear || ((date.getFullYear() + 1) >= maxYear && date.getMonth() > maxMonth)) {
-             YearGoNext.addClass("invalid");
-             if (date.getFullYear() === maxYear && date.getMonth() >= maxMonth) {
-                 MonthGoNext.addClass("invalid");
-             } else {
-                 MonthGoNext.removeClass("invalid");
-             }
-         } else {
-             YearGoNext.removeClass("invalid");
-         }
-
-         if (date.getFullYear() <= minYear || ((date.getFullYear() - 1) <= minYear && date.getMonth() < minMonth)) {
-             YearGoPrev.addClass("invalid");
-             if (date.getFullYear() === minYear && date.getMonth() <= minMonth) {
-                 MonthGoPrev.addClass("invalid");
-             } else {
-                 MonthGoPrev.removeClass("invalid");
-             }
-         } else {
-             YearGoPrev.removeClass("invalid");
-         }
-     }
-
-     fn.dateselect = function(e) {
-         var ele = $(e.target),
-             day;
-         if (ele.is("span")) {
-             day = parseInt(ele.text());
-             ele = ele.parents("td");
-         } else {
-             day = parseInt(ele.find("span").text());
-         }
-         if (ele.hasClass("datepickerInvalidDay")) {
-             return false;
-         }
-         if (ele.hasClass("datepickerInMonth")) {
-             this.dateChange(1, day);
-         } else if (ele.hasClass("datepickerMonthprev")) {
-             this.dateChange(3, day);
-         } else {
-             this.dateChange(2, day);
-         }
-         // ele.addClass("datepickerSelected");
-         this.options.onpicked.call(this, this.options.date);
-         this.elSetValue();
-         console.log(this.options.current)
-     }
-
-     fn.dateChange = function(type, num) {
-         var options = this.options;
-         var input = this.wrapper.find(".datapickerinput");
-         var date;
-         if (type) {
-             date = new Date(options.current.getTime());
-             /* 
-              * 5,6,7为点击日历上的日期，
-              * 5是当前月日期，6是日历上前一个月的某天，7是日历上后一月的某天
-              * YearOrMonth为空时，为点击当天
-              */
-             switch (type) {
-                 case 1:
-                     date.setDate(num);
-                     break;
-                 case 2:
-                     date.addMonths(1);
-                     date.setDate(num);
-                     break;
-                 default:
-                     date.addMonths(-1);
-                     date.setDate(num);
-             }
-         } else {
-             date = new Date();
-         }
-         this.options.date = date;
-         this.options.current = new Date(date.getTime());
-         //重新渲染tpl.day中的内容，并进行填充；  
-         this.bulidDay();
-         input.eq(0).val((date.getMonth() + 1) + "月");
-         input.eq(1).val(date.getFullYear());
-     }
-
-     fn.hoursChange = function() {
-         var dpTime = this.wrapper.find(".dpTime");
-         var hour = dpTime.find("input:eq(0)").val();
-         var min = dpTime.find("input:eq(2)").val();
-         var sec = dpTime.find("input:eq(4)").val();
-         this.options.current.setHours(hour, min, sec);
-     }
-
+     /**
+      * 绑定清空，今天，确定等按钮和时分秒输入框的事件控制
+      * @private 
+      */
      fn.bindControl = function() {
          var datePickerWrapper = this.wrapper;
          var self = this;
@@ -811,7 +675,271 @@
 
      }
 
-     fn.show = function(ev) {
+     /**
+      * 绑定el上的事件
+      * @private 
+      */
+     fn.bindEl = function() {
+         var self = this;
+         if (this.options.readOnly) {
+             $(this.options.el).attr("readOnly", true);
+         } else {
+             $(this.options.el).on("blur", function() {
+                 self.valid($(this).val());
+             });
+         }
+         $(this.options.el).on("click", function(e) {
+             e.stopPropagation()
+             self.show();
+         });
+
+     }
+
+     /**
+      * 验证el元素中的日期
+      * @private 
+      * @param {String} date -待验证的日期字符串
+      */
+     fn.valid = function(date) {
+         if (date) {
+             var options = this.options;
+             var reg = /^\d{4}-((0[1-9])|([0-9])|(1[0-2]))-((0[1-9])|([0-9])|([1-2][0-9])|(3[0-1]))$/;
+             if (reg.test(date)) {
+                 date = new Date(date.replace(/-/g, "/"));
+                 if ((new Date(options.minDate) <= date) || (date <= new Date(options.maxDate))) {
+                     this.options.current = new Date(date.getTime());
+                     this.options.date = new Date(date.getTime());
+                 }
+             }
+             this.elSetValue();
+         }
+     }
+
+     /**
+      * el元素日期赋值
+      * @private 
+      */
+     fn.elSetValue = function() {
+         var currnet = this.options.date;
+         var val;
+         if (currnet && this.options.el && !this.options.eCont) {
+             if (this.showTime) {
+                 val = currnet.getFullYear() + '-' + (currnet.getMonth() + 1) + '-' + currnet.getDate() + ' ' + currnet.getHours() + ":" + currnet.getMinutes() + ":" + currnet.getSeconds();
+             } else {
+                 val = currnet.getFullYear() + '-' + (currnet.getMonth() + 1) + '-' + currnet.getDate();
+             }
+         }
+         $(this.options.el).val(val);
+     }
+
+     /**
+      * 处理年份和月份变化 
+      * @private 
+      * @param {Number} type 年份和月份变化类型
+      * @param {Number} num 变化数量
+      */
+     fn.yearOrMonthChange = function(type, num) {
+         var date = new Date(this.options.current.getTime());
+         var wrapperHeader = this.wrapper.find(".dpTitle");
+         var input = wrapperHeader.find(".datapickerinput");
+         /* 
+          * 1,2,为点击月份或年份增加或减少按钮
+          * 3,4为点击月份或年份菜单
+          */
+         switch (type) {
+             case 1:
+                 date.addYears(num);
+                 break;
+             case 2:
+                 date.addMonths(num);
+                 break;
+             case 3:
+                 date.setYear(num);
+                 break;
+             case 4:
+                 date.setMonth(num);
+                 break;
+         }
+         this.options.current = new Date(date.getTime());
+         this.YearOrMonthButtonControl();
+         //重新渲染tpl.day中的内容，并进行填充；  
+         this.bulidDay();
+         input.eq(0).val((date.getMonth() + 1) + "月");
+         input.eq(1).val(date.getFullYear());
+     }
+
+     /**
+      * 日期选择器中的年份月粉增加或减少按钮可点击状态控制
+      * @private 
+      */
+     fn.YearOrMonthButtonControl = function() {
+         var date = new Date(this.options.current.getTime());
+         var maxDate = new Date(this.options.maxDate);
+         var minDate = new Date(this.options.minDate);
+         var maxYear = maxDate.getFullYear();
+         var minYear = minDate.getFullYear();
+         var maxMonth = maxDate.getMonth();
+         var minMonth = minDate.getMonth();
+         var wrapperHeader = this.wrapper.find(".dpTitle");
+         var YearGoPrev = wrapperHeader.find(".navImg.datepickerYearGoPrev"),
+             MonthGoPrev = wrapperHeader.find(".navImg.datepickerMonthGoPrev"),
+             YearGoNext = wrapperHeader.find(".navImg.datepickerYearGoNext"),
+             MonthGoNext = wrapperHeader.find(".navImg.datepickerMonthGoNext");
+
+         //当前年份大于等于maxYear  或 当年年份+1时,月份也会超过最大限制
+         if (date.getFullYear() >= maxYear || ((date.getFullYear() + 1) >= maxYear && date.getMonth() > maxMonth)) {
+             YearGoNext.addClass("invalid");
+             if (date.getFullYear() === maxYear && date.getMonth() >= maxMonth) {
+                 MonthGoNext.addClass("invalid");
+             } else {
+                 MonthGoNext.removeClass("invalid");
+             }
+         } else {
+             YearGoNext.removeClass("invalid");
+         }
+
+         if (date.getFullYear() <= minYear || ((date.getFullYear() - 1) <= minYear && date.getMonth() < minMonth)) {
+             YearGoPrev.addClass("invalid");
+             if (date.getFullYear() === minYear && date.getMonth() <= minMonth) {
+                 MonthGoPrev.addClass("invalid");
+             } else {
+                 MonthGoPrev.removeClass("invalid");
+             }
+         } else {
+             YearGoPrev.removeClass("invalid");
+         }
+     }
+
+     /**
+      * 年或月份菜单点击事件处理
+      * @param {Event} e dom事件对象
+      * @private 
+      */
+     fn.menuClikHandler = function(e) {
+         e.stopPropagation();
+         debugger
+         var ele = $(e.target);
+         if (ele.hasClass("menu")) {
+             if (ele.hasClass("monthMenu")) {
+                 var monthSelect = parseInt($(this).data("month")) - 1;
+                 self.yearOrMonthChange(4, monthSelect);
+             } else {
+                 var yearSelect = $(this).text();
+                 self.yearOrMonthChange(3, yearSelect);
+             }
+         } else {
+
+             //e.stopPropagation();
+             if (ele.hasClass("yearMenuGoprev")) {
+                 var table = $(this).parents("table").siblings("table");
+                 if (table.length) {
+                     var year = parseInt(table.attr("data-year")) - 12;
+                 }
+                 self.bulidYearMenu(year);
+             } else if (ele.hasClass("yearMenuClose")) {
+                 var table = $(this).parents(".YMenu").css("display", "none");
+             } else if (ele.hasClass("yearMenuGoNext")) {
+                 var table = $(this).parents("table").siblings("table");
+                 if (table.length) {
+                     var year = parseInt(table.attr("data-year")) + 12;
+                     self.bulidYearMenu(year);
+                 }
+             }
+
+         }
+     }
+
+     /**
+      * 日期选择器中的日期选中事件处理
+      * @param {Event} e dom事件对象
+      * @private 
+      */
+     fn.dateselect = function(e) {
+         var ele = $(e.target),
+             day;
+         if (ele.is("span")) {
+             day = parseInt(ele.text());
+             ele = ele.parents("td");
+         } else {
+             day = parseInt(ele.find("span").text());
+         }
+         if (ele.hasClass("datepickerInvalidDay")) {
+             return false;
+         }
+         if (ele.hasClass("datepickerInMonth")) {
+             this.dateChange(1, day);
+         } else if (ele.hasClass("datepickerMonthprev")) {
+             this.dateChange(3, day);
+         } else {
+             this.dateChange(2, day);
+         }
+         // ele.addClass("datepickerSelected");
+         this.options.onpicked.call(this, this.options.date);
+         this.elSetValue();
+         console.log(this.options.current)
+     }
+
+     /**
+      * 处理日期变化 
+      * @private 
+      * @param {Number} type 日期变化类型
+      * @param {Number} num 变化数量
+      */
+     fn.dateChange = function(type, num) {
+         var options = this.options;
+         var input = this.wrapper.find(".datapickerinput");
+         var date;
+         if (type) {
+             date = new Date(options.current.getTime());
+             /* 
+              * 5,6,7为点击日历上的日期，
+              * 5是当前月日期，6是日历上前一个月的某天，7是日历上后一月的某天
+              * YearOrMonth为空时，为点击当天
+              */
+             switch (type) {
+                 case 1:
+                     date.setDate(num);
+                     break;
+                 case 2:
+                     date.addMonths(1);
+                     date.setDate(num);
+                     break;
+                 default:
+                     date.addMonths(-1);
+                     date.setDate(num);
+             }
+         } else {
+             date = new Date();
+         }
+         this.options.date = date;
+         this.options.current = new Date(date.getTime());
+         //重新渲染tpl.day中的内容，并进行填充；  
+         this.bulidDay();
+         input.eq(0).val((date.getMonth() + 1) + "月");
+         input.eq(1).val(date.getFullYear());
+     }
+
+     /**
+      * 处理时分秒变化后的显示框数据显示 
+      * @private 
+      * @param {Number} type 年份和月份变化类型
+      * @param {Number} num 变化数量
+      */
+     fn.hoursChange = function() {
+         var dpTime = this.wrapper.find(".dpTime");
+         var hour = dpTime.find("input:eq(0)").val();
+         var min = dpTime.find("input:eq(2)").val();
+         var sec = dpTime.find("input:eq(4)").val();
+         this.options.current.setHours(hour, min, sec);
+     }
+
+
+
+     /**
+      * 日期选择器显示
+      * @private 
+      */
+     fn.show = function() {
          var options = this.options;
          var self = this;
          var cal = this.wrapper;
@@ -878,6 +1006,11 @@
          return false;
      }
 
+     /**
+      * 日期选择隐藏
+      * @private 
+      * @param {Event} e dom事件对象
+      */
      fn.hidden = function(ev) {
 
          if ($(ev.target).parents(".WdateDiv").length === 0) {
