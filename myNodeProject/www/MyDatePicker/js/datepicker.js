@@ -413,6 +413,7 @@
      /**
       * 创建日期选择器中的年份选择菜单DOM
       * @private 
+      * @param {Number} year 年份
       */
      fn.bulidYearMenu = function(year) {
          var maxYear = new Date(this.options.maxDate).getFullYear();
@@ -1013,7 +1014,6 @@
      /**
       * 日期选择隐藏
       * @private 
-      * @param {Event} e dom事件对象
       */
      fn.hidden = function() {
          $(this.options.el).removeClass("active");
