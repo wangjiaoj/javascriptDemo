@@ -9,7 +9,7 @@
      }
  }(function($, window, document) {
      var cache = {},
-         tmpl;
+         datepickerId = 0;;
 
      var defaultOptions = {
          el: 'id', //日历显示定位位置的id，当选中日期后将数据显示到该id内
@@ -201,6 +201,7 @@
               另一个是赋值问题，注意时间类型是引用对象
         */
          this.options = $.extend({}, defaultOptions, options || {});
+         this.id = datepickerId++;
          this.init();
      };
 
@@ -362,6 +363,8 @@
                  //超过最大和最小日期限制的时间
                  if ((date > new Date(options.maxDate)) || (date < new Date(options.minDate))) {
                      data.weeks[indic].days[indic2].classname.push('datepickerInvalidDay');
+                 } else {
+                     data.weeks[indic].days[indic2].classname.push('datepickerValidDay');
                  }
 
                  if (month != date.getMonth()) {
@@ -440,6 +443,7 @@
              } else {
                  data.data[j].classname.push("invalidMenu");
              }
+             data.data[j].classname = data.data[j].classname.join(" ");
          }
          if (maxYear >= year) {
              data.nextClassName = "yearMenuGoNext yearMenuControl";
@@ -493,12 +497,13 @@
                          data.data[j].classname.push("invalidMenu");
                      }
                  }
+                 data.data[j].classname = data.data[j].classname.join(" ");
              }
          } else {
              for (var j = 0; j < 12; j++) {
                  data.data[j] = {
                      text: months[j],
-                     classname: ["menu"]
+                     classname: 'monthMenu menu'
                  };
              }
          }
@@ -534,11 +539,6 @@
              }
          });
 
-         //  wrapperHeader.find(".MMenu").on("click", "td.menu", function() {
-
-         //  });
-
-
          wrapperHeader.find(".menuSel").on("click", "td.menu", $.proxy(this.menuClikHandler, this));
          wrapperHeader.find(".datapickerinput").on("focus", function() {
              var date, year;
@@ -569,7 +569,7 @@
 
          //绑定日期点击事件
          var dayWrapper = datePickerWrapper.find(".datepickerDays");
-         dayWrapper.on("click", "td", $.proxy(this.dateselect, this));
+         dayWrapper.on("click", "td.datepickerValidDay", $.proxy(this.dateselect, this));
      }
 
      /**
@@ -601,7 +601,7 @@
 
              self.elSetValue();
              //datapicker关闭
-             datePickerWrapper.css("visibility", 'hidden');
+             self.hidden();
          });
 
          dpTime.on("click", "input.inputTime", function() {
@@ -695,42 +695,7 @@
 
      }
 
-     /**
-      * 验证el元素中的日期
-      * @private 
-      * @param {String} date -待验证的日期字符串
-      */
-     fn.valid = function(date) {
-         if (date) {
-             var options = this.options;
-             var reg = /^\d{4}-((0[1-9])|([0-9])|(1[0-2]))-((0[1-9])|([0-9])|([1-2][0-9])|(3[0-1]))$/;
-             if (reg.test(date)) {
-                 date = new Date(date.replace(/-/g, "/"));
-                 if ((new Date(options.minDate) <= date) || (date <= new Date(options.maxDate))) {
-                     this.options.current = new Date(date.getTime());
-                     this.options.date = new Date(date.getTime());
-                 }
-             }
-             this.elSetValue();
-         }
-     }
 
-     /**
-      * el元素日期赋值
-      * @private 
-      */
-     fn.elSetValue = function() {
-         var currnet = this.options.date;
-         var val;
-         if (currnet && this.options.el && !this.options.eCont) {
-             if (this.showTime) {
-                 val = currnet.getFullYear() + '-' + (currnet.getMonth() + 1) + '-' + currnet.getDate() + ' ' + currnet.getHours() + ":" + currnet.getMinutes() + ":" + currnet.getSeconds();
-             } else {
-                 val = currnet.getFullYear() + '-' + (currnet.getMonth() + 1) + '-' + currnet.getDate();
-             }
-         }
-         $(this.options.el).val(val);
-     }
 
      /**
       * 处理年份和月份变化 
@@ -816,30 +781,29 @@
       * @private 
       */
      fn.menuClikHandler = function(e) {
-         e.stopPropagation();
-         debugger
+
+         var self = this;
          var ele = $(e.target);
          if (ele.hasClass("menu")) {
              if (ele.hasClass("monthMenu")) {
-                 var monthSelect = parseInt($(this).data("month")) - 1;
+                 var monthSelect = parseInt(ele.data("month")) - 1;
                  self.yearOrMonthChange(4, monthSelect);
              } else {
-                 var yearSelect = $(this).text();
+                 var yearSelect = ele.text();
                  self.yearOrMonthChange(3, yearSelect);
              }
          } else {
-
-             //e.stopPropagation();
+             e.stopPropagation();
              if (ele.hasClass("yearMenuGoprev")) {
-                 var table = $(this).parents("table").siblings("table");
+                 var table = ele.parents("table").siblings("table");
                  if (table.length) {
                      var year = parseInt(table.attr("data-year")) - 12;
                  }
                  self.bulidYearMenu(year);
              } else if (ele.hasClass("yearMenuClose")) {
-                 var table = $(this).parents(".YMenu").css("display", "none");
+                 var table = ele.parents(".YMenu").css("display", "none");
              } else if (ele.hasClass("yearMenuGoNext")) {
-                 var table = $(this).parents("table").siblings("table");
+                 var table = ele.parents("table").siblings("table");
                  if (table.length) {
                      var year = parseInt(table.attr("data-year")) + 12;
                      self.bulidYearMenu(year);
@@ -933,7 +897,42 @@
          this.options.current.setHours(hour, min, sec);
      }
 
+     /**
+      * 验证el元素中的日期
+      * @private 
+      * @param {String} date -待验证的日期字符串
+      */
+     fn.valid = function(date) {
+         if (date) {
+             var options = this.options;
+             var reg = /^\d{4}-((0[1-9])|([0-9])|(1[0-2]))-((0[1-9])|([0-9])|([1-2][0-9])|(3[0-1]))$/;
+             if (reg.test(date)) {
+                 date = new Date(date.replace(/-/g, "/"));
+                 if ((new Date(options.minDate) <= date) || (date <= new Date(options.maxDate))) {
+                     this.options.current = new Date(date.getTime());
+                     this.options.date = new Date(date.getTime());
+                 }
+             }
+             this.elSetValue();
+         }
+     }
 
+     /**
+      * el元素日期赋值
+      * @private 
+      */
+     fn.elSetValue = function() {
+         var currnet = this.options.date;
+         var val;
+         if (currnet && this.options.el && !this.options.eCont) {
+             if (this.showTime) {
+                 val = currnet.getFullYear() + '-' + (currnet.getMonth() + 1) + '-' + currnet.getDate() + ' ' + currnet.getHours() + ":" + currnet.getMinutes() + ":" + currnet.getSeconds();
+             } else {
+                 val = currnet.getFullYear() + '-' + (currnet.getMonth() + 1) + '-' + currnet.getDate();
+             }
+         }
+         $(this.options.el).val(val);
+     }
 
      /**
       * 日期选择器显示
@@ -998,10 +997,15 @@
                  left: left + 'px'
              });
              //  options.onAfterShow.apply(this, [cal.get(0)]);
-             $(document).on("click", $.proxy(this.hidden, this));
-             // $(document).bind('mousedown', function() {
-             //     self.hidden();
-             // }); // global listener so clicking outside the calendar will close it
+
+             var clickHandler = function(ev) {
+                 if ($(ev.target).parents(".WdateDiv").length === 0) {
+                     self.hidden();
+                 }
+             }
+             $(document).on("click." + this.id, $.proxy(clickHandler, this));
+
+             // global listener so clicking outside the calendar will close it
          }
          return false;
      }
@@ -1011,23 +1015,16 @@
       * @private 
       * @param {Event} e dom事件对象
       */
-     fn.hidden = function(ev) {
-
-         if ($(ev.target).parents(".WdateDiv").length === 0) {
-             $(this.options.el).removeClass("active");
-             var cal = this.wrapper;
-             cal.css({
-                 visibility: 'hidden',
-                 display: 'block'
-             });
-             $(document).off('mousedown');
-         }
+     fn.hidden = function() {
+         $(this.options.el).removeClass("active");
+         var cal = this.wrapper;
+         cal.css({
+             visibility: 'hidden',
+             display: 'block'
+         });
+         $(document).off('click.' + this.id);
      }
 
-     function canleder(options) {
-         this.options = $.extend({}, defaultOptions, options || {});
-         this.init();
-     }
 
 
      function extendDate() {
@@ -1069,6 +1066,74 @@
              return d - 1;
          };
      }
+
+
+     function getCallback(func) {
+         if ($.type(func) == 'string') {
+             if (func.indexOf('.') == -1)
+                 return func = window[func];
+             var ns = func.split('.');
+             var name = window[ns.shift()];
+             while (ns.length) {
+                 name = name[ns.shift()];
+             }
+             return name;
+         }
+         return func;
+     }
+
+     function readOptions(el) {
+         var options = {};
+         var config = [];
+         for (var n in defaultOptions) {
+             n = n.replace(/([A-Z])/g, "-$1").toLowerCase();
+             config.push(n);
+         }
+         for (var i = 0, l = config.length; i < l; i++) {
+             var n = config[i];
+             var an = "data-" + n;
+             if (n.indexOf('-') != -1) {
+                 n = (n.split('-')).map(function(v, i) {
+                     if (i == 0) return v;
+                     return v.charAt(0).toUpperCase() + v.substring(1, v.length);
+                 }).join('');
+             }
+             var val = el.attr(an);
+             if (val) {
+                 if (val == "false") {
+                     val = false;
+                 } else if (n.substr(0, 2) == "on") {
+                     val = getCallback(val);
+                 }
+                 options[n] = val;
+             }
+         }
+         return options;
+     }
+     if (!Array.prototype.map) {
+         Array.prototype.map = function(f, oThis) {
+             if (!f || f.constructor != Function.toString()) return;
+             oThis = oThis || window;
+             var a = [];
+             for (var i = 0, len = this.length; i < len; i++) {
+                 a.push(f.call(oThis, this[i], i, this));
+             }
+             return a;
+         }
+     }
+
+     function init(context) {
+         var selector = '[data-component="DatePicker"]';
+         context.find(selector).each(function() {
+             var el = $(this);
+             var options = readOptions(el);
+             el.data("datePicker", new DatePicker(el, options));
+         });
+     }
+     Select.init = init;
+     $(function() {
+         init($doc);
+     });
 
      var tmpl = function tmpl(str, data) {
          // Figure out if we're getting a template, or if we need to
