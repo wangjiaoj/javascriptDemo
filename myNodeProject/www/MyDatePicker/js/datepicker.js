@@ -27,8 +27,6 @@
          position: 'bottom', //自定义弹出位置top，left,right,bottom
          calendars: 1, //单日历还是双日历---待实现
          onpicked: function(date) {}, //选中日期时的回调函数,date是选中的日期，类型：Date
-
-         // onBeforeShow: function() {}
      }
 
 
@@ -182,7 +180,8 @@
       *         alert("date" + date);
       *     }
       * });
-      *
+      * 作为日期选择器：<input type="text" data-component="DatePicker">
+      * 作为日历：<div data-component="canlendar"></div>
       */
      var DatePicker = function(options) {
          /*
@@ -656,6 +655,7 @@
                  if (val > 0) {
                      val--;
                      input.val(val);
+                     self.hoursChange();
                  }
              } else {
                  var val = parseInt(input.val());
@@ -666,6 +666,7 @@
                          val--;
                      }
                      input.val(val);
+                     self.hoursChange();
                  }
              }
          });
@@ -1012,7 +1013,7 @@
      }
 
      /**
-      * 日期选择隐藏
+      * 日期选择器隐藏
       * @private 
       */
      fn.hidden = function() {
@@ -1025,7 +1026,12 @@
          $(document).off('click.' + this.id);
      }
 
-
+     /**
+      * 数据加载模板
+      * @private 
+      * @param {String} str -模板
+      * @param {String} data -模板中加载的数据
+      */
      var tmpl = function tmpl(str, data) {
          // Figure out if we're getting a template, or if we need to
          // load the template - and be sure to cache the result.
@@ -1056,6 +1062,10 @@
          return data ? fn(data) : fn;
      };
 
+     /**
+      * 扩展Date上的方法
+      * @private 
+      */
      function extendDate() {
          if (Date.prototype.tempDate) {
              return;
@@ -1111,6 +1121,11 @@
          return func;
      }
 
+     /**
+      * 读取元素上的配置
+      * @param {Object} el -Jquery对象
+      * @private 
+      */
      function readOptions(el) {
          var options = {};
          var config = [];
@@ -1151,6 +1166,11 @@
          }
      }
 
+     /**
+      * 对页面dom属性设置进行初始化
+      * @private 
+      * @param {Object} context -Jquery对象
+      */
      function init(context) {
          var selector = '[data-component="DatePicker"]';
          context.find(selector).each(function() {
@@ -1159,7 +1179,6 @@
              if (!options.eCont) {
                  options.el = el;
              }
-             // el.data("datePicker", new DatePicker(el, options));
              new DatePicker(options);
          });
          var selector = '[data-component="canlendar"]';
@@ -1169,7 +1188,6 @@
              if (!options.eCont) {
                  options.eCont = el;
              }
-             // el.data("datePicker", new DatePicker(el, options));
              new DatePicker(options);
          });
      }

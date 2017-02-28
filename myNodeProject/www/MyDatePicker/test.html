@@ -27,9 +27,7 @@
         <div class="row">
             <input type="text" data-component="DatePicker">
         </div>
-        <div class="row">
-            <input type="text" id="DatePickersfm">
-        </div>
+
         <div class="row">
             <div data-component="canlendar">
 
@@ -45,40 +43,34 @@
             minDate: "2017-01-01 00:00:00",
             maxDate: "2017-10-01 23:59:59",
             onpicked: function(date) {
-                alert("date" + date);
+                //  alert("date" + date);
             }
         });
+
         new DatePicker({
             el: '#simple-calendar',
             minDate: "2016-12-01 00:00:00",
             maxDate: "2017-10-01 23:59:59",
+            dateFmt: 'yyyy-MM-dd HH:mm:ss',
             firstDayOfWeek: "1",
-            onpicked: function(date) {
-                // alert("date" + date);
-            }
-        });
-        new DatePicker({
-            el: '#DatePickersfm',
-            minDate: "2016-12-01 00:00:00",
-            maxDate: "2017-10-01 23:59:59",
-            dateFmt: 'HH:mm:ss',
             onpicked: function(date) {
                 // alert("date" + date);
             }
         });
 
         // {
-        //       el: '#simple-calendar',
         //     minDate: "2017-01-01 00:00:00",
         //     maxDate: "2017-10-01 23:59:59",
         //     isShowClear: false,
         //     readOnly: true
         // }
-        //   el: '#simple-calendar',
+
+        // {
         //     minDate: "2017-01-01 00:00:00",
         //     maxDate: "2017-10-01 23:59:59",
         //     firstDayOfWeek: "1",
         //     dateFmt: 'yyyy-MM-dd HH:mm:ss'
+        // }
     </script>
 </body>
 
