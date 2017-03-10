@@ -1,0 +1,47 @@
+<html>
+
+<head>
+    <script src="./jquery.js"></script>
+    <style>
+        #test {
+            width: 20px;
+            height: 20px;
+            background: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="test">
+
+    </div>
+    <script>
+        var id = 1;
+
+        function bind(type, word) {
+            function b() {
+                console.log("click" + word)
+            }
+            if (type == "on") {
+                $("body")[type]("click", "#test", b)
+            } else {
+                $("body")[type]("click", "#test", b)
+            }
+
+        }
+		function bodyBind(type, word){
+		console.log("type:"+type)
+		  $("body")[type]("click.xx", function(){
+		     console.log("click.xx:" + word)
+		  });
+		
+		}
+		  $("body").on("click.cc", function(){
+		     console.log("click.cc:" )
+		  });
+        bind("on", "word");
+		bodyBind("on", "body");
+    </script>
+</body>
+
+</html>

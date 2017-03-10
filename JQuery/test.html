@@ -1,0 +1,118 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <script src="./jquery.js"></script>
+    <style>
+        .demonstrate {
+            background: red;
+        }
+        
+        .demonstrate ul li {
+            background: blue;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!--实例效果文字描述，可删-->
+    <div class="demonstrate">
+        <div class="description">
+            <h3>jq新版事件绑定.on()、解绑事件off()用法详解</h3>
+            <p>年月日 星期 时分秒</p>
+        </div>
+        <div id="demo">
+            <ul>
+                <li>1 点我有3弹窗</li>
+                <li>2 点我有3弹窗</li>
+                <li>3 点我有3弹窗</li>
+                <li>4 点我有3弹窗</li>
+            </ul>
+            <div style="clear:both;">
+                <p>
+                    <a href="javascript:;" class="bind">js->添加一个li,添加的li也能响应之前绑定的事件！</a>
+                </p>
+                <p>
+                    <a href="javascript:;" class="unbindAllclick">解绑li 所有click事件</a>
+                </p>
+                <p>
+                    <a href="javascript:;" class="unbindSpecifyclick">解绑li 指定事件函数的click事件2</a>
+                </p>
+                <p>
+                    <a href="javascript:;" class="unbindNamespace">解绑li 同一命名空间中的click事件2、mouseout事件</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        // js创建新元素  
+        $(".bind").on("click", function() {
+            $("ul").append("<li/>");
+            var temp = $("ul li").last();
+            temp.html($("ul li").length + "响应点击事件？");
+        });
+        // 旧版写法: 事件不能适用脚本创建的新元素  
+        // $("ul li").bind("click",function(){  
+        //  alert("不响应事件!");  
+        // })  
+        // 旧版事件.live()：适用脚本创建的新元素写法,live()调用过程如下：我们首先将click方法绑定到了Document，然后，查找Document里是否有这个元素。 这个过程对于性能来说可能比较浪费  
+        // $("ul li").live("click",function(){  
+        //  alert("响应事件!");  
+        // })  
+        // 新版写法一：单纯将bind改成on，事件不能适用脚本创建的新元素  
+        // $("ul li").on("click",function(){  
+        //  alert("不响应事件!");  
+        // })  
+        // 新版写法二：将live改成Delegate，适用脚本创建的新元素  
+        // $(".demonstrate").delegate("ul li","click",function(){  
+        //  alert("响应事件!");  
+        // })  
+        // 新版写法三：适用于匹配选择器的当前及未来的元素（比如由脚本创建的新元素）  
+        // $(ele).on() ele 为匹配元素的父元素，可指定为document/body ,但从查找document/body向下检索匹配元素这个过程对于性能来说，比较浪费，推荐定成匹配元素就近的父元素！！  
+        //如果你开发最新版本的jQuery，完全可以使用on()方法来处理所有的事件绑定，避免过多的方法调用,因为其实在最新版本的jQuery类库中，所有以上旧版方法在后面其实都是调用on()方法  
+        $(".demonstrate").on("click", "ul li", function(e) {
+            alert("响应" + e.type + "事件1!");
+        });
+        $(".demonstrate").on("click.namespace", "ul li", eventFunc = function(e) {
+            alert("响应" + e.type + "事件2!");
+        });
+        $(".demonstrate").on("mouseout.namespace", "ul li", function(e) {
+            alert("响应" + e.type + "事件!");
+        });
+        // 新版多事件同时绑定写法  
+        //$(".demonstrate").on({  
+        //  mouseover:function(){  
+        //  $(this).addClass("over");  
+        //  },  
+        //  mouseout:function(){  
+        //  $(this).removeClass("over");  
+        //  }  
+        //},"ul li")  
+        //  
+        //$(".demonstrate").on("mouseover mouseout","ul li",function(e){  
+        //  if(e.type=="mouseover"){  
+        //      $(this).addClass("over");  
+        //  }else{  
+        //      $(this).removeClass("over");  
+        //  }  
+        //})  
+        // 新版解绑事件写法: 可同时解绑多个事件 空格分隔开各个事件  
+        // 解绑所有点击事件  
+        $(".unbindAllclick").click(function() {
+                $(".demonstrate").off('click', "ul li");
+            })
+            // 事件函数：可解绑指定事件函数的同类事件,第3个参数：事件函数 (不需要引号)  
+        $(".unbindSpecifyclick").click(function() {
+                $(".demonstrate").off('click', "ul li", eventFunc);
+            })
+            // 命名空间：解绑同一命名空间中的多类（如click、mouseout等）事件,第1个参数可直接简写命名空间即可，或写成"click.namespace mouseout.namespace"全写形式  
+        $(".unbindNamespace").click(function() {
+            $(".demonstrate").off('.namespace', "ul li");
+        })
+    </script>
+
+</body>
+
+</html>
