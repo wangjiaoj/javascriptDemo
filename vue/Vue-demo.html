@@ -25,6 +25,11 @@
 		</table>
 
 		</div>
+		<div id="mes">{{message}}</div>
+		<div id="inp">
+			<input type="text" v-model="text">
+			 {{text}}
+		</div>
 		<script src='http://cdn.jsdelivr.net/vue/2.0.0/vue.min.js'></script>
 		<script>
             new Vue({
@@ -36,6 +41,18 @@
             		{ id: '3', author: '罗贯中', name: '三国演义', price: 24.0 },
             		{ id: 4, author: '吴承恩', name: '西游记', price: 20.0 }
             		] 
+            	}
+            });
+           var mes = new Vue({
+            	el:'#mes',
+            	data:{
+            		message:'hello!'
+            	}
+            })
+            var inp = new Vue({
+            	el:'#inp',
+            	data:{
+            		text:'hello!'
             	}
             })
 		</script>

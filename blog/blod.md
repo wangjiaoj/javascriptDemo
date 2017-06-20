@@ -3,3 +3,6 @@
 ## 关于express无法加入全局变量的情况，可以调用bin下的express命令
 ## express命令行工具建立项目后，要使用npm install初始化，调用npm start启动 
 http://localhost:3000/             
+
+## 关于cookie Set-Cookie:rememberme=yes; Domain=localhost; Path=/; HttpOnly
+这么个头的时候，由于localhost不是有效域名，会被chrome和ie无视掉。
