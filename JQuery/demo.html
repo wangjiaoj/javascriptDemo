@@ -1,0 +1,30 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <script src="./jquery.js"></script>
+
+</head>
+<a href="https://www.baidu.com" class="demonstrate">aaaaaaaaaaaaaa</a>
+
+<body>
+
+    <!--实例效果文字描述，可删-->
+    <div class="demonstrate">
+
+
+    </div>
+    <script type="text/javascript">
+        // js创建新元素  
+
+        $("body").on("click", ".demonstrate", function(e) {
+
+            e.stopPropagation();
+            alert('xx')
+            return false;
+        });
+    </script>
+
+</body>
+
+</html>
