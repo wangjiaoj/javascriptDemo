@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>jQuery UI 拖动（Draggable） - 自动滚动</title>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+  <link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
+  <style>
+  body{
+    box-sizing: border-box;
+  }
+  .container{
+    width:1000px;
+  }
+  .container-panel{
+     width:100%;
+  }  
+   .panel-frame {
+    display: table-cell;
+   }
+
+
+.layout-frame, .panel-frame {
+    width: 100%;
+    height: 100%;
+    float: left;
+    position: relative;
+}
+  .split-2-layout .layout-panel{
+       width:50%;
+   }
+   .component-frame{
+       position: relative;
+       height: 200px;
+       width: 100%;
+       margin: 20px;
+      border: 3px solid;
+   }
+   .edit-mode-frame{
+      cursor:move;
+      overflow: hidden; 
+   }
+.down-drop-handler, .panel-drop-frame, .panel-tip-frame, .up-drop-handler {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    z-index: 1000;
+}
+.down-drop-handler, .panel-drop-frame, .panel-tip-frame, .up-drop-handler {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    z-index: 1000;
+}
+   .down-drop-handler {
+    top: 50%;
+}
+ .component-frame   .hover-drop-handler{
+  background: #bdb4ff;
+  opacity: 0.85;
+ }
+ .zwf{
+   width: 100%;
+   height:50px;
+    margin: 20px;
+background: #bdb4ff;
+ }
+  </style>
+ 
+</head>
+<body>
+ <div class="container">
+   <div class="panel-frame container-panel">
+     <div class="layout-frame split-2-layout">
+
+       <div class="panel-frame layout-panel">
+         <div class="component-frame" style="border-color: red;" data-component-id="1">
+           11111111111111111111111111111111111111
+         </div>
+
+         <div class="component-frame"  style="border-color: green;" data-component-id="2">
+           22222222222222222222222222222222222
+         </div>
+
+          <div class="component-frame" style="border-color: blue;" data-component-id="3">
+           333333333333333333333333333333
+         </div>
+       </div> 
+
+       <div class="panel-frame layout-panel">
+         <div class="component-frame" style="border-color: grey;" data-component-id="4">
+           444444444444444444444444444444
+         </div>
+
+         <div class="component-frame" style="border-color: orange;" data-component-id="5">
+           55555555555555555555555555555555
+         </div>
+
+          <div class="component-frame" style="border-color: #7D751F;" data-component-id="6">
+           66666666666666666666666666666666666
+         </div>
+       </div> 
+
+     </div>
+   </div>
+ </div>
+
+ <script src="demo-tes.js"></script>
+</body>
+</html>
