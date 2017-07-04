@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>jQuery UI 拖动（Draggable） - 自动滚动</title>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        .container {
+            width: 1000px;
+        }
+        
+        .container-panel {
+            width: 100%;
+        }
+        
+        .panel-frame {
+            display: table-cell;
+        }
+        
+        .layout-frame,
+        .panel-frame {
+            width: 100%;
+            height: 100%;
+            float: left;
+            position: relative;
+        }
+        
+        .split-2-layout .layout-panel {
+            width: 50%;
+        }
+        
+        .component-frame {
+            position: relative;
+            width: 100%;
+        }
+        
+        .edit-mode-frame {
+            cursor: move;
+            overflow: hidden;
+        }
+        
+        .down-drop-handler,
+        .panel-drop-frame,
+        .panel-tip-frame,
+        .up-drop-handler {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            z-index: 1000;
+        }
+        
+        .down-drop-handler,
+        .panel-drop-frame,
+        .panel-tip-frame,
+        .up-drop-handler {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+        }
+        
+        .down-drop-handler {
+            top: 50%;
+        }
+        
+        .component-frame .hover-drop-handler {
+            background: #bdb4ff;
+            opacity: 0.85;
+        }
+        
+        .zwf {
+            width: 100%;
+            height: 50px;
+            margin: 20px;
+            background: #bdb4ff;
+            display: none;
+        }
+        
+        .component-frame-content {
+            height: 200px;
+            margin: 20px;
+            border: 3px solid;
+        }
+        
+        .zwk-hid {
+            display: block;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="panel-frame container-panel">
+            <div class="layout-frame split-2-layout">
+
+                <div class="panel-frame layout-panel">
+                    <div class="component-frame" data-component-id="1">
+                        <div class="component-frame-content" style="border-color: red;">
+                            <h1>1</h1>
+                        </div>
+
+                    </div>
+
+                    <div class="component-frame" data-component-id="2">
+                        <div class="component-frame-content" style="border-color: green;">
+                            <h1>2</h1>
+                        </div>
+
+                    </div>
+
+                    <div class="component-frame" data-component-id="3">
+                        <div class="component-frame-content" style="border-color: blue;">
+                            <h1>3</h1>
+                        </div>
+
+                    </div>
+                    <div class="component-frame">
+                        <div class="component-frame-content" style="visibility:hidden;">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-frame layout-panel">
+                    <div class="component-frame" data-component-id="4">
+                        <div class="component-frame-content" style="border-color: grey;">
+                            <h1>4</h1>
+                        </div>
+
+                    </div>
+
+                    <div class="component-frame" data-component-id="5">
+                        <div class="component-frame-content" style="border-color: orange;">
+                            <h1>5</h1>
+                        </div>
+
+                    </div>
+
+                    <div class="component-frame" data-component-id="6">
+                        <div class="component-frame-content" style="border-color: #7D751F;">
+                            <h1>6</h1>
+                        </div>
+
+                    </div>
+                    <div class="component-frame">
+                        <div class="component-frame-content" style="visibility:hidden;">
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="drag-zwf-test.js"></script>
+</body>
+
+</html>
