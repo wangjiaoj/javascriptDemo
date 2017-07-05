@@ -42,7 +42,7 @@
               if (!this.empty) {
                   this.frame.append(this.downDropFrame);
               } else {
-                  console.log('xxx')
+                  console.log('empty')
               }
               this.upDropFrame.droppable({
                   accept: ".component-frame,.new-component",
@@ -97,6 +97,7 @@
           },
           dragOver: function (t, ui, flag) {
               this.frameContent.removeClass('component-frame-sameType');
+              this.frameContent.removeClass('component-frame-no-sameType');
               if (flag) {
                   this.upDropFrame.addClass("hover-drop-handler");
                   this.ZWKFrame.addClass('zwk-hid');
@@ -106,6 +107,8 @@
                   console.log('over-type:id:' + type + ";type:" + this.type)
                   if (type == this.type) {
                       this.frameContent.addClass('component-frame-sameType');
+                  } else {
+                      this.frameContent.addClass('component-frame-no-sameType');
                   }
                   this.downDropFrame.addClass("hover-drop-handler");
               }
@@ -120,7 +123,15 @@
                   this.moveComponent(dragComponent, flag)
               } else {
                   this.frameContent.removeClass('component-frame-sameType');
+                  this.frameContent.removeClass('component-frame-no-sameType');
                   this.downDropFrame.removeClass("hover-drop-handler");
+                  var draggable = ui.draggable;
+                  var type = draggable.attr("data-component-type");
+                  console.log('over-type:id:' + type + ";type:" + this.type)
+                  if (type == this.type) {
+                      var dragComponent = $(".component-frame[data-component-id='" + id + "']")[0];
+                      this.hebing(dragComponent, flag);
+                  }
               }
               //无法找到id默认为拖动的新建组件
               // if(!id) {   
@@ -142,6 +153,8 @@
                   this.ZWKFrame.removeClass('zwk-hid');
               } else {
                   this.frameContent.removeClass('component-frame-sameType');
+                  this.frameContent.removeClass('component-frame-no-sameType');
+                  this.downDropFrame.removeClass("hover-drop-handler");
                   this.downDropFrame.removeClass("hover-drop-handler");
               }
 
@@ -161,11 +174,85 @@
               } else {
                   this.frame.after(moveComponent);
               }
+          },
+          hebing: function (moveComponent, flag) {
+              var moveComponent = $(moveComponent);
+              var header = moveComponent.find('.inner-content-header>ul>li');
+              var moveBody = moveComponent.find('.inner-content');
+              moveBody.addClass('hidden');
+              this.frame.find('.inner-content-header>ul').append(header);
+              this.frame.find('.inner-content-body').append(moveBody);
+              moveComponent.detach()
           }
       }
+
+      $('h1').on("click", function () {
+          var x = $(this).html()
+          $(this).html(x + "ok")
+      })
+      $('.inner-content-header li').on("click", function () {
+          if (!$(this).hasClass('selected')) {
+              $(this).addClass('selected');
+              var index = $(this).index();
+              $(this).siblings('li').removeClass('selected');
+              var cont = $(this).parents('.component-frame-content');
+              cont.find('.inner-content').addClass('hidden');
+              cont.find('.inner-content:eq(' + index + ')').removeClass('hidden');
+          }
+
+      })
       $(".component-frame").each(function (index, item) {
           item = $(item);
           new drag(item);
       })
 
+      var detilDaiog = {
+          downflag: false,
+          init: function () {
+              this.initDrag();
+          },
+
+          initDrag: function () {
+              var self = this;
+              self.maxHeight = document.documentElement.clientHeight;
+              self.maxWidth = document.documentElement.clientWidth;
+              $('.detail-dialog').on('mousedown', function (e) {
+                  self.initClientX = e.clientX;
+                  self.initClientY = e.clientY;
+                  self.downflag = true;
+                  var position = $(this).position();
+                  self.top = position.top;
+                  self.left = position.left;
+                  self.startDrag();
+                  $(this).addClass('drag-cusor');
+                  $('body').addClass('noselect');
+              });
+          },
+          startDrag: function () {
+              var self = this;
+              var html = $('.detail-dialog');
+              $('body').on('mousemove', function (e) {
+                  if (!!self.downflag) {
+                      var top = self.top + e.clientY - self.initClientY;
+                      var left = self.left + e.clientX - self.initClientX;
+                      if (top < 0) { top = 0; } else if (top > self.maxHeight) { top = self.maxHeight; }
+                      if (left < 140) { left = 140; } else if (left > self.maxWidth) { left = self.maxWidth; }
+                      html.css({
+                          'top': top + 'px',
+                          'left': left + 'px'
+                      })
+                  }
+              });
+              $('body').on('mouseup', function (e) {
+                  self.downflag = false;
+                  self.endDrag();
+              });
+          },
+          endDrag: function () {
+              $('body').off('mousemove');
+              $('body').off('mouseup');
+              $('body').removeClass('noselect');
+              $('.detail-dialog').removeClass('drag-cusor');
+          }
+      }
   });

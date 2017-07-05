@@ -9,12 +9,21 @@
     <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
     <style>
+        ul {
+            margin: 0px;
+            list-style: none;
+            padding: 0px;
+        }
+        
         body {
             box-sizing: border-box;
+            font-size: 12px;
+            background: #f2f2f5;
         }
         
         .container {
             width: 1000px;
+            background: #f2f2f5;
         }
         
         .container-panel {
@@ -26,7 +35,7 @@
         }
         
         .layout-frame,
-        .panel-frame {          
+        .panel-frame {
             width: 100%;
             height: 100%;
             float: left;
@@ -76,24 +85,26 @@
         }
         
         .component-frame .hover-drop-handler {
-            background: #bdb4ff;
+            /*background: #bdb4ff;*/
             opacity: 0.85;
         }
         
         .zwf {
             width: 100%;
             height: 50px;
-            margin: 20px;
+            margin: 10px;
             background: #bdb4ff;
             display: none;
         }
         
         .component-frame-content {
             /*height: 200px;*/
-            margin: 20px;
-            border: 3px solid;
+            margin: 10px;
+            border: 3px solid transparent;
+            border-radius: 3px;
             position: relative;
             z-index: 99;
+            background: #fff;
         }
         
         .zwk-hid {
@@ -105,7 +116,15 @@
         }
         
         .component-frame-sameType {
-            border-style: dotted;
+            border-color: blue;
+        }
+        
+        .component-frame-no-sameType {
+            border-color: red;
+        }
+        
+        .ui-draggable-dragging .component-frame-content {
+            border: 3px solid blue;
         }
         
         .inner-content-header {
@@ -118,14 +137,12 @@
             min-height: 150px;
         }
         
-        .inner-content a:hover {
-            color: red;
+        .inner-content.hidden {
+            display: none;
         }
         
-        ul {
-            margin: 0px;
-            list-style: none;
-            padding: 0px;
+        .inner-content-header a:hover {
+            color: red;
         }
         
         h1 {
@@ -133,10 +150,40 @@
             padding: 0px;
         }
         
-        ul li {
+        .inner-content-header>ul {
+            float: left;
+            cursor: default;
+        }
+        
+        .inner-content-header>ul li {
             width: 50px;
             padding: 10px;
             border-right: 1px solid #444;
+            float: left;
+        }
+        
+        .inner-content-header>ul li.selected {
+            font-weight: bold;
+        }
+        
+        .toolbar {
+            float: right;
+        }
+        
+        .toolbar>span {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .toolbar>span.setting {
+            background: url(s.png) no-repeat 0px -259px;
+        }
+        
+        .toolbar>span.close {
+            font-size: 30px;
+            font-weight: bold;
         }
     </style>
 
@@ -149,45 +196,58 @@
 
                 <div class="panel-frame layout-panel">
                     <div class="component-frame" data-component-id="1" data-component-type="1">
-                        <div class="component-frame-content" style="border-color: red;">
+                        <div class="component-frame-content">
 
                             <div class="inner-content-header">
                                 <ul>
-                                    <li><a href="https://www.baidu.com" target="_blank">模块1</a></li>
+                                    <li><a href="https://www.baidu.com" target="_blank">焦点新闻</a></li>
                                 </ul>
                             </div>
-                            <div class="inner-content">
-                                <h1>1</h1>
-                                <a href="https://www.baidu.com">百度</a>
+                            <div class="inner-content-body">
+                                <div class="inner-content">
+                                    <h1>1</h1>
+                                    <a href="https://www.baidu.com">百度</a>
+                                </div>
                             </div>
+
                         </div>
                     </div>
 
                     <div class="component-frame" data-component-id="2" data-component-type="1">
-                        <div class="component-frame-content" style="border-color: green;">
+                        <div class="component-frame-content">
                             <div class="inner-content-header">
                                 <ul>
-                                    <li><a> 模块2</a></li>
+                                    <li><a> 舆情对象</a></li>
                                 </ul>
                             </div>
-                            <div class="inner-content">
-                                <h1>2</h1>
-                                <a href="https://www.baidu.com">百度</a>
+                            <div class="inner-content-body">
+                                <div class="inner-content">
+                                    <h1>2</h1>
+                                    <a href="https://www.baidu.com">百度</a>
+                                </div>
+
                             </div>
                         </div>
 
                     </div>
 
-                    <div class="component-frame" data-component-id="3" data-component-type="2">
-                        <div class="component-frame-content" style="border-color: blue;">
+                    <div class="component-frame  mdc" data-component-id="3" data-component-type="2">
+                        <div class="component-frame-content">
                             <div class="inner-content-header">
                                 <ul>
-                                    <li><a> 模块3</a></li>
+                                    <li><a href="javscript:void(0)"> 公司新闻</a></li>
                                 </ul>
+                                <div class="toolbar">
+                                    <span class="setting"></span>
+                                    <span class="close">×</span>
+                                </div>
                             </div>
-                            <div class="inner-content">
-                                <h1>3</h1>
-                                <a href="https://www.baidu.com">百度</a>
+                            <div class="inner-content-body">
+                                <div class="inner-content">
+                                    <h1>3</h1>
+                                    <a href="https://www.baidu.com">百度</a>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -201,46 +261,81 @@
 
                 <div class="panel-frame layout-panel">
                     <div class="component-frame" data-component-id="4" data-component-type="3">
-                        <div class="component-frame-content" style="border-color: grey;">
+                        <div class="component-frame-content">
                             <div class="inner-content-header">
                                 <ul>
-                                    <li><a> 模块4</a></li>
+                                    <li><a> 汇率走势</a></li>
                                 </ul>
+                                <div class="toolbar">
+                                    <span class="close">×</span>
+                                </div>
+
                             </div>
-                            <div class="inner-content">
-                                <h1>4</h1>
-                                <a href="https://www.baidu.com">百度</a>
+                            <div class="inner-content-body">
+                                <div class="inner-content">
+                                    <h1>4</h1>
+                                    <ul>
+                                        <li><a href="https://www.baidu.com">百度</a></li>
+                                        <li><a href="https://www.baidu.com">百度</a></li>
+                                        <li><a href="https://www.baidu.com">百度</a></li>
+                                        <li><a href="https://www.baidu.com">百度</a></li>
+                                        <li><a href="https://www.baidu.com">百度</a></li>
+
+                                    </ul>
+                                </div>
+
                             </div>
                         </div>
 
                     </div>
 
-                    <div class="component-frame" data-component-id="5" data-component-type="2">
-                        <div class="component-frame-content" style="border-color: orange;">
+                    <div class="component-frame mdc" data-component-id="5" data-component-type="2">
+                        <div class="component-frame-content">
                             <div class="inner-content-header">
                                 <ul>
-                                    <li><a> 模块5</a></li>
+                                    <li><a href="javscript:void(0)"> 公司公告</a></li>
                                 </ul>
+                                <div class="toolbar">
+                                    <span class="setting"></span>
+                                    <span class="close">×</span>
+                                </div>
                             </div>
-                            <div class="inner-content">
-                                <h1>5</h1>
-                                <a href="https://www.baidu.com">百度</a>
+                            <div class="inner-content-body">
+                                <div class="inner-content">
+                                    <h1>5</h1>
+                                    <ul>
+                                        <li><a href="https://www.baidu.com">百度</a></li>
+                                        <li><a href="https://www.baidu.com">百度</a></li>
+                                        <li><a href="https://www.baidu.com">百度</a></li>
+                                        <li><a href="https://www.baidu.com">百度</a></li>
+                                        <li><a href="https://www.baidu.com">百度</a></li>
+
+                                    </ul>
+                                </div>
+
                             </div>
                         </div>
 
                     </div>
 
-                    <div class="component-frame" data-component-id="6" data-component-type="1">
-                        <div class="component-frame-content" style="border-color: #7D751F;">
+                    <div class="component-frame" data-component-id="6" data-component-type="2">
+                        <div class="component-frame-content">
                             <div class="inner-content-header">
                                 <ul>
-                                    <li><a> 模块6</a></li>
+                                    <li><a href="https://www.baidu.com">研究报告</a></li>
                                 </ul>
+                                <div class="toolbar">
+                                    <span class="setting"></span>
+                                    <span class="close">×</span>
+                                </div>
                             </div>
-                            <div class="inner-content">
-                                <h1>6</h1>
-                                <a href="https://www.baidu.com">百度</a>
+                            <div class="inner-content-body">
+                                <div class="inner-content">
+                                    <h1>6</h1>
+                                    <a href="https://www.baidu.com">百度</a>
+                                </div>
                             </div>
+
                         </div>
 
                     </div>
