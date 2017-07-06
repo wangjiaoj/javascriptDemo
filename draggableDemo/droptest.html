@@ -85,20 +85,18 @@
         }
         
         .component-frame .hover-drop-handler {
+            /*background: #bdb4ff;*/
             opacity: 0.85;
         }
-        .zwf {           
+        
+        .zwf {
+            width: 100%;
             height: 50px;
             margin: 10px;
             background: #bdb4ff;
-            text-align: center;
-            display:none;
-            border-radius: 3px;
+            display: none;
         }
-       
-        .zwf>h1{
-        padding-top:10px;
-        }
+        
         .component-frame-content {
             /*height: 200px;*/
             margin: 10px;
@@ -128,6 +126,7 @@
         
         .ui-draggable-dragging .component-frame-content {
             border: 3px solid blue;
+            cursor: move;
         }
         
         .inner-content-header {
@@ -136,7 +135,7 @@
             cursor: move;
         }
         
-        .inner-content-body {
+        .inner-content {
             min-height: 150px;
         }
         
@@ -144,12 +143,8 @@
             display: none;
         }
         
-        .inner-content-header a {
-            text-decoration: none;
-        }
-        
-        a.more-link:hover {
-            text-decoration: underline;
+        .inner-content-header a:hover {
+            color: red;
         }
         
         h1 {
@@ -206,12 +201,12 @@
             <div class="layout-frame split-2-layout">
 
                 <div class="panel-frame layout-panel">
-                    <div class="component-frame" data-component-type="1">
+                    <div class="component-frame" data-component-id="1" data-component-type="1">
                         <div class="component-frame-content">
 
                             <div class="inner-content-header">
                                 <ul>
-                                    <li><a>焦点新闻</a></li>
+                                    <li><a href="https://www.baidu.com" target="_blank">焦点新闻</a></li>
                                 </ul>
                                 <div class="toolbar">
                                     <span class="close">×</span>
@@ -227,7 +222,7 @@
                         </div>
                     </div>
 
-                    <div class="component-frame" data-component-type="1">
+                    <div class="component-frame" data-component-id="2" data-component-type="1">
                         <div class="component-frame-content">
                             <div class="inner-content-header">
                                 <ul>
@@ -248,11 +243,11 @@
 
                     </div>
 
-                    <div class="component-frame  mdc" data-component-type="2">
+                    <div class="component-frame  mdc" data-component-id="3" data-component-type="2">
                         <div class="component-frame-content">
                             <div class="inner-content-header">
                                 <ul>
-                                    <li><a href="http://www.baidu.com" target="_blank" class="more-link"> 公司新闻</a></li>
+                                    <li><a href="javscript:void(0)"> 公司新闻</a></li>
                                 </ul>
                                 <div class="toolbar">
                                     <span class="setting"></span>
@@ -277,7 +272,7 @@
                 </div>
 
                 <div class="panel-frame layout-panel">
-                    <div class="component-frame" data-component-type="3">
+                    <div class="component-frame" data-component-id="4" data-component-type="3">
                         <div class="component-frame-content">
                             <div class="inner-content-header">
                                 <ul>
@@ -306,11 +301,11 @@
 
                     </div>
 
-                    <div class="component-frame mdc" data-component-type="2">
+                    <div class="component-frame mdc" data-component-id="5" data-component-type="2">
                         <div class="component-frame-content">
                             <div class="inner-content-header">
                                 <ul>
-                                    <li><a href="http://www.baidu.com" target="_blank" class="more-link"> 公司公告</a></li>
+                                    <li><a href="javscript:void(0)"> 公司公告</a></li>
                                 </ul>
                                 <div class="toolbar">
                                     <span class="setting"></span>
@@ -335,11 +330,11 @@
 
                     </div>
 
-                    <div class="component-frame" data-component-type="2">
+                    <div class="component-frame" data-component-id="6" data-component-type="2">
                         <div class="component-frame-content">
                             <div class="inner-content-header">
                                 <ul>
-                                    <li><a href="https://www.baidu.com" target="_blank" class="more-link">研究报告</a></li>
+                                    <li><a href="https://www.baidu.com">研究报告</a></li>
                                 </ul>
                                 <div class="toolbar">
                                     <span class="setting"></span>
@@ -367,7 +362,7 @@
         </div>
     </div>
 
-    <script src="drag-zwf-hb.js"></script>
+    <script src="droptest.js"></script>
 </body>
 
 </html>

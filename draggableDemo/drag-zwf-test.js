@@ -12,6 +12,7 @@
       drag.prototype = {
           beginEditMode: function () {
               var t = this;
+
               this.frame.addClass("edit-mode-frame"),
                   this.frame.draggable({
                       revert: "invalid",
