@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>jQuery UI 拖动（Draggable） - 自动滚动</title>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
+    <style>
+        ul {
+            margin: 0px;
+            list-style: none;
+            padding: 0px;
+        }
+        
+        body {
+            box-sizing: border-box;
+            font-size: 12px;
+            background: #f2f2f5;
+        }
+        
+        .container {
+            width: 1000px;
+            background: #f2f2f5;
+        }
+        
+        .container-panel {
+            width: 100%;
+        }
+        
+        .panel-frame {
+            /*display: table-cell;*/
+        }
+        
+        .layout-frame,
+        .panel-frame {
+            width: 100%;
+            height: 100%;
+            float: left;
+            position: relative;
+        }
+        
+        .split-2-layout .component-frame,
+        .split-2-layout .component-empty {
+            width: 50%;
+        }
+        
+        .component-frame,
+        .component-empty {
+            position: relative;
+            /*width: 100%;*/
+            /*height: 280px;*/
+            float: left;
+            margin-bottom: 10px;
+        }
+        
+        .edit-mode-frame {
+            /*cursor: move;*/
+            overflow: hidden;
+        }
+        
+        .down-drop-handler,
+        .panel-drop-frame,
+        .panel-tip-frame,
+        .up-drop-handler {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /*z-index: 1000;*/
+        }
+        
+        .down-drop-handler,
+        .panel-drop-frame,
+        .panel-tip-frame,
+        .up-drop-handler {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            /*z-index: 1000;*/
+        }
+        
+        .down-drop-handler {
+            top: 50%;
+        }
+        
+        .component-frame .hover-drop-handler {
+            opacity: 0.85;
+        }
+        
+        .zwf {
+            height: 50px;
+            margin: 10px;
+            background: #bdb4ff;
+            text-align: center;
+            display: none;
+            border-radius: 3px;
+        }
+        
+        .zwf>h1 {
+            padding-top: 10px;
+        }
+        
+        .component-frame-content {
+            height: 280px;
+            margin-right: 10px;
+            border: 3px dotted transparent;
+            border-radius: 3px;
+            position: relative;
+            z-index: 99;
+            background: #fff;
+            transform: scale(1);
+        }
+        
+        .zwk-hid {
+            display: block;
+        }
+        
+        .component-empty .up-drop-handler {
+            height: 100%;
+        }
+        
+        .component-frame-fg {
+            border-color: #ddd;
+        }
+        
+        .component-frame-sameType {
+            border-color: blue;
+        }
+        
+        .component-frame-no-sameType {
+            border-color: red;
+        }
+        
+        .ui-draggable-dragging .component-frame-content {
+            border: 3px solid blue;
+        }
+        
+        .inner-content-header {
+            /*background: #CAC4C4;*/
+            height: 40px;
+            cursor: move;
+        }
+        
+        .inner-content-body {
+            min-height: 150px;
+        }
+        
+        .inner-content.hidden {
+            display: none;
+        }
+        
+        .inner-content-header a {
+            text-decoration: none;
+        }
+        
+        a.more-link:hover {
+            text-decoration: underline;
+        }
+        
+        h1 {
+            margin: 0px;
+            padding: 0px;
+        }
+        
+        .inner-content-header>ul {
+            float: left;
+            cursor: default;
+        }
+        
+        .inner-content-header>ul li {
+            width: 50px;
+            padding: 10px;
+            border-right: 1px solid #444;
+            float: left;
+        }
+        
+        .inner-content-header>ul li:last-child {
+            border-color: transparent;
+        }
+        
+        .inner-content-header>ul li.selected {
+            font-weight: bold;
+        }
+        
+        .toolbar {
+            float: right;
+        }
+        
+        .toolbar>span {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .toolbar>span.setting {
+            background: url(s.png) no-repeat 0px -259px;
+        }
+        
+        .toolbar>span.close {
+            font-size: 30px;
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="panel-frame container-panel">
+            <div class="layout-frame split-2-layout">
+
+
+                <div class="component-frame" data-component-type="1">
+                    <div class="component-frame-content">
+
+                        <div class="inner-content-header">
+                            <ul>
+                                <li><a>焦点新闻</a></li>
+                            </ul>
+                            <div class="toolbar">
+                                <span class="close">×</span>
+                            </div>
+                        </div>
+                        <div class="inner-content-body">
+                            <div class="inner-content">
+                                <h1>1</h1>
+                                <a href="https://www.baidu.com">百度</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="component-frame" data-component-type="1">
+                    <div class="component-frame-content">
+                        <div class="inner-content-header">
+                            <ul>
+                                <li><a> 舆情对象</a></li>
+                            </ul>
+                            <div class="toolbar">
+                                <span class="close">×</span>
+                            </div>
+                        </div>
+                        <div class="inner-content-body">
+                            <div class="inner-content">
+                                <h1>2</h1>
+                                <a href="https://www.baidu.com">百度</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="component-frame  mdc" data-component-type="2">
+                    <div class="component-frame-content">
+                        <div class="inner-content-header">
+                            <ul>
+                                <li><a href="http://www.baidu.com" target="_blank" class="more-link"> 公司新闻</a></li>
+                            </ul>
+                            <div class="toolbar">
+                                <span class="setting"></span>
+                                <span class="close">×</span>
+                            </div>
+                        </div>
+                        <div class="inner-content-body">
+                            <div class="inner-content">
+                                <h1>3</h1>
+                                <a href="https://www.baidu.com">百度</a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="component-frame" data-component-type="3">
+                    <div class="component-frame-content">
+                        <div class="inner-content-header">
+                            <ul>
+                                <li><a> 汇率走势</a></li>
+                            </ul>
+                            <div class="toolbar">
+                                <span class="close">×</span>
+                            </div>
+
+                        </div>
+                        <div class="inner-content-body">
+                            <div class="inner-content">
+                                <h1>4</h1>
+                                <ul>
+                                    <li><a href="https://www.baidu.com">百度</a></li>
+                                    <li><a href="https://www.baidu.com">百度</a></li>
+                                    <li><a href="https://www.baidu.com">百度</a></li>
+                                    <li><a href="https://www.baidu.com">百度</a></li>
+                                    <li><a href="https://www.baidu.com">百度</a></li>
+
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="component-frame mdc" data-component-type="2">
+                    <div class="component-frame-content">
+                        <div class="inner-content-header">
+                            <ul>
+                                <li><a href="http://www.baidu.com" target="_blank" class="more-link"> 公司公告</a></li>
+                            </ul>
+                            <div class="toolbar">
+                                <span class="setting"></span>
+                                <span class="close">×</span>
+                            </div>
+                        </div>
+                        <div class="inner-content-body">
+                            <div class="inner-content">
+                                <h1>5</h1>
+                                <ul>
+                                    <li><a href="https://www.baidu.com">百度</a></li>
+                                    <li><a href="https://www.baidu.com">百度</a></li>
+                                    <li><a href="https://www.baidu.com">百度</a></li>
+                                    <li><a href="https://www.baidu.com">百度</a></li>
+                                    <li><a href="https://www.baidu.com">百度</a></li>
+
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="component-frame" data-component-type="2">
+                    <div class="component-frame-content">
+                        <div class="inner-content-header">
+                            <ul>
+                                <li><a href="https://www.baidu.com" target="_blank" class="more-link">研究报告</a></li>
+                            </ul>
+                            <div class="toolbar">
+                                <span class="setting"></span>
+                                <span class="close">×</span>
+                            </div>
+                        </div>
+                        <div class="inner-content-body">
+                            <div class="inner-content">
+                                <h1>6</h1>
+                                <a href="https://www.baidu.com">百度</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="component-empty">
+                    <div class="component-frame-content">
+                        <h1>+</h1>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script src="drag-zwf-demo-new.js"></script>
+</body>
+
+</html>
