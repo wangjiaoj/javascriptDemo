@@ -16,16 +16,24 @@
                 <li> createComment() 创建一个注释节点 => 接收参数为string类型的注释文本</li>
             </ul>
         </p>
+        <spa id="test">test</spa>
     </div>
     <script>
         var element = document.createElement('style');
         element.type = "text/css";
         document.head.appendChild(element);
-        var text = ".container{width:1000px;margin: 0 auto;}";
+        var text = ".container{width:1000px;margin: 0 auto;}.democlass{color:red}";
         var spanNode = document.createTextNode(text);
         element.appendChild(spanNode);
+
         var comment = document.createComment('注释注释');
         document.body.appendChild(comment);
+
+
+        var test = document.getElementById('test');
+        var att = document.createAttribute("class");
+        att.value = "democlass";
+        test.setAttributeNode(att);
     </script>
 </body>
 
