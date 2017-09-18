@@ -74,7 +74,13 @@
             background: #CAC4C4;
         }
         
-        .deom06 .item-shrink {
+        .deom06 .item-grow {
+            /*默认0*/
+            flex-grow: 1;
+        }
+        
+        .deom07 .item-shrink {
+            /*默认1*/
             flex-shrink: 0;
         }
     </style>
@@ -159,17 +165,29 @@
             <div class="item">8</div>
         </div>
 
-
-
+        <p>缩放与放大测试 flex-grow属性定义项目的放大比例，默认为0，模块2的flex-grow为1
+        </p>
         <div class="container deom06">
             <div class="item">1</div>
             <div class="item item-grow">2</div>
             <div class="item">3</div>
             <div class="item">4</div>
+            <div class="item">5</div>
+            <div class="item">6</div>
+            <div class="item">7</div>
+        </div>
+
+        <p>缩放与放大测试 flex-shrink属性定义了项目的缩小比例，默认为1 模块5的flex-shrink为0，其他为1在空间不足的情况下前者不缩小。
+        </p>
+        <div class="container deom07">
+            <div class="item">1</div>
+            <div class="item">2</div>
+            <div class="item">3</div>
+            <div class="item">4</div>
             <div class="item item-shrink">5</div>
             <div class="item">6</div>
             <div class="item">7</div>
-            <div class="item">7</div>
+            <div class="item">8</div>
         </div>
     </div>
 </body>
