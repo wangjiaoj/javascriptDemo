@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8 />
+    <title>渐变demo</title>
+    <style>
+        .box {
+            width: 200px;
+            height: 150px;
+            margin: 20px;
+        }
+        
+        .top-webkit-linear-gradient {
+            background: -webkit-linear-gradient(top, green, yellow);
+        }
+        
+        .topleft-webkit-linear-gradient {
+            background: -webkit-linear-gradient(top left, green, yellow);
+        }
+        
+        .topleft-moz-linear-gradient {
+            background: -moz-linear-gradient(bottom right, green, yellow);
+        }
+        
+        .stander-liner-gardient {
+            background: linear-gradient( to bottom right, green, yellow);
+        }
+        
+        .a90-stander-liner-gardient {
+            background: linear-gradient(90deg, green, yellow);
+        }
+        
+        .a45-stander-liner-gardient {
+            background: linear-gradient(45deg, green, yellow);
+        }
+        
+        .transparent-stander-liner-gardient {
+            background: linear-gradient(to right, rgba(255, 0, 0, 0), rgba(255, 255, 0, 1));
+        }
+        
+        .repeat-stander-liner-gardient {
+            background: linear-gradient(to right, rgba(255, 0, 0, 0), rgba(255, 255, 0, 1));
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <h3>线性渐变</h3>
+    <p>注意兼容性 moz webkit 和标准写法之间的区别</p>
+    <div class="box top-webkit-linear-gradient"> </div>
+    <div class="box topleft-webkit-linear-gradient"> </div>
+    <div class="box topleft-moz-linear-gradient"> </div>
+    <div class="box stander-liner-gardient"> </div>
+    <p>90deg 45deg </p>
+    <div class="box a90-stander-liner-gardient"> </div>
+    <div class="box a45-stander-liner-gardient"> </div>
+    <p>使用透明度</p>
+    <div class="box transparent-stander-liner-gardient"> </div>
+    <p>使用重复的线性渐变</p>
+    <div class="box repeat-stander-liner-gardient"> </div>
+</body>
+
+</html>
