@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8 />
+    <title>渐变demo</title>
+    <style>
+        .box {
+            width: 200px;
+            height: 150px;
+            margin: 20px;
+        }
+        
+        .top-webkit-linear-gradient {
+            background: -webkit-linear-gradient(top, green, yellow);
+        }
+        
+        .topleft-webkit-linear-gradient {
+            background: -webkit-linear-gradient(top left, green, yellow);
+        }
+        
+        .topleft-moz-linear-gradient {
+            background: -moz-linear-gradient(bottom right, green, yellow);
+        }
+        
+        .stander-liner-gardient {
+            background: linear-gradient( to bottom right, green, yellow);
+        }
+        
+        .a90-stander-liner-gardient {
+            background: linear-gradient(90deg, green, yellow);
+        }
+        
+        .a45-stander-liner-gardient {
+            background: linear-gradient(45deg, green, yellow);
+        }
+        
+        .transparent-stander-liner-gardient {
+            background: linear-gradient(to right, rgba(255, 0, 0, 0), rgba(255, 255, 0, 1));
+        }
+        
+        .percent01-stander-liner-gardient {
+            background: linear-gradient(to right, green 20%, yellow);
+        }
+        
+        .percent02-stander-liner-gardient {
+            background: linear-gradient(to right, green 20%, yellow 80%);
+        }
+        
+        .percent03-stander-liner-gardient {
+            background: linear-gradient(to right, green, yellow 20%);
+        }
+        
+        .percent04-stander-liner-gardient {
+            background: linear-gradient(to right, green 20%, yellow 40%);
+        }
+        
+        .repeat01-stander-repeating-liner-gardient {
+            background: repeating-linear-gradient(to right, green, yellow 20%);
+        }
+        
+        .repeat02-stander-repeating-liner-gardient {
+            background: repeating-linear-gradient(to right, green 10%, yellow 20%);
+        }
+        
+        .repeat03-stander-repeating-liner-gardient {
+            background: repeating-linear-gradient(to right, green, yellow 10%, red 20%);
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <h3>线性渐变</h3>
+    <p>1、注意兼容性 moz webkit 和标准写法之间的区别 使用left/to left</p>
+    <div class="box top-webkit-linear-gradient"> </div>
+    <div class="box topleft-webkit-linear-gradient"> </div>
+    <div class="box topleft-moz-linear-gradient"> </div>
+    <div class="box stander-liner-gardient"> </div>
+    <p>2、使用90deg 45deg等角度值来确定方向 </p>
+    <div class="box a90-stander-liner-gardient"> </div>
+    <div class="box a45-stander-liner-gardient"> </div>
+    <p>3、使用透明度</p>
+    <div class="box transparent-stander-liner-gardient"> </div>
+    <p>4、暂时没有找到参考文档 在颜色值后面使用百分比20%</p>
+    <div class="box percent01-stander-liner-gardient"> linear-gradient(to right, green, yellow 20%);</div>
+    <div class="box percent02-stander-liner-gardient"> linear-gradient(to right, green 20%, yellow 80%); </div>
+    <div class="box percent03-stander-liner-gardient"> linear-gradient(to right, green 20%, yellow); </div>
+    <div class="box percent04-stander-liner-gardient"> linear-gradient(to right, green 20%, yellow 40%); </div>
+    <p>5、使用重复的线性渐变</p>
+    <div class="box repeat01-stander-repeating-liner-gardient"> </div>
+    <div class="box repeat02-stander-repeating-liner-gardient"> </div>
+    <div class="box repeat03-stander-repeating-liner-gardient"> </div>
+</body>
+
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8 />
+    <title>渐变demo</title>
+    <style>
+        .box {
+            width: 200px;
+            height: 150px;
+            margin: 20px;
+        }
+        
+        .stander-radial-gardient {
+            background: -webkit-radial-gradient( green, yellow);
+            background: -webkit-radial-gradient( green, yellow);
+            background: -moz-radial-gradient( green, yellow);
+            background: radial-gradient( green, yellow);
+        }
+        
+        .shape01-radial-gardient {
+            background: radial-gradient(circle, green, yellow);
+        }
+        
+        .shape02-radial-gardient {
+            background: radial-gradient(ellipse, green, yellow);
+        }
+        
+        .percent01-radial-gardient {
+            background: radial-gradient( green 10%, yellow 40%, red 60%);
+        }
+        
+        .size01-radial-gardient {
+            background: radial-gradient( closest-side, green, yellow, red);
+        }
+        
+        .size02-radial-gardient {
+            background: radial-gradient(farthest-side, green, yellow, red);
+        }
+        
+        .size03-radial-gardient {
+            background: radial-gradient(closest-corner, green, yellow, red);
+        }
+        
+        .size04-radial-gardient {
+            background: radial-gradient(farthest-corner, green, yellow 20%);
+        }
+        
+        .repeat02-repeating-radial-gardient {
+            background: repeating-radial-gradient(green 10%, yellow 15%, red 20%);
+        }
+        
+        .repeat03-repeating-radial-gardient {
+            background: repeating-radial-gradient(green, yellow 15%, red 20%);
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <h3>径向渐变</h3>
+    <p>注意兼容性 moz webkit 和标准写法之间的区别 使用left/to left</p>
+
+    <div class="box stander-radial-gardient"> </div>
+    <p>shape不同 circle 默认椭圆 </p>
+    <div class="box shape01-radial-gardient"> </div>
+    <div class="box shape02-radial-gardient"> </div>
+    <p>径向不同百分比</p>
+    <div class="box percent01-radial-gardient "> </div>
+    <p>不同size </p>
+    <div class="box size01-radial-gardient"> radial-gradient(to right, green, yellow 20%);</div>
+    <div class="box size02-radial-gardient"> radial-gradient(to right, green 20%, yellow 80%); </div>
+    <div class="box size03-radial-gardient"> radial-gradient(to right, green 20%, yellow); </div>
+    <div class="box size04-radial-gardient"> radial-gradient(to right, green 20%, yellow 40%); </div>
+    <p>使用重复的径向渐变</p>
+    <div class="box repeat01-repeating-radial-gardient"> </div>
+    <div class="box repeat02-repeating-radial-gardient"> </div>
+    <div class="box repeat03-repeating-radial-gardient"> </div>
+</body>
+
+</html>
