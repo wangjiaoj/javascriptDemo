@@ -73,25 +73,34 @@
 <body>
 
     <h3>线性渐变</h3>
-    <p>1、注意兼容性 moz webkit 和标准写法之间的区别 使用left/to left</p>
+    <pre>
+   background-image: linear-gradient(  [ &lt;angle&gt; | &lt;side-or-corner&gt; ,]? &lt;color-stop&gt; [, &lt;color-stop&gt;]+ );
+    </pre>
+    <ul>
+        <li>[]在正则中表示一个字符类，这里，你可以理解为一个小单元。</li>
+        <li>|表示候选。也就是“或者”的意思，要么前面的，要么就后面的。</li>
+        <li>?为量词，表示0个或1个，言外之意就是，你可以不指定方向，直接渐变色走起。例如：</li>
+    </ul>
+    <p>1、注意兼容性 moz webkit 和标准写法之间的区别 使用side-or-corner:left/to left、 top、 bottom、 right </p>
     <div class="box top-webkit-linear-gradient"> </div>
     <div class="box topleft-webkit-linear-gradient"> </div>
     <div class="box topleft-moz-linear-gradient"> </div>
     <div class="box stander-liner-gardient"> </div>
-    <p>2、使用90deg 45deg等角度值来确定方向 </p>
-    <div class="box a90-stander-liner-gardient"> </div>
-    <div class="box a45-stander-liner-gardient"> </div>
+    <p>2、使用angle(90deg 45deg等角度值)来确定方向 </p>
+    <div class="box a90-stander-liner-gardient"> </div>background: linear-gradient(90deg, green, yellow);
+    <div class="box a45-stander-liner-gardient"></div> background: linear-gradient(45deg, green, yellow);
     <p>3、使用透明度</p>
     <div class="box transparent-stander-liner-gardient"> </div>
-    <p>4、暂时没有找到参考文档 在颜色值后面使用百分比20%</p>
-    <div class="box percent01-stander-liner-gardient"> linear-gradient(to right, green, yellow 20%);</div>
-    <div class="box percent02-stander-liner-gardient"> linear-gradient(to right, green 20%, yellow 80%); </div>
-    <div class="box percent03-stander-liner-gardient"> linear-gradient(to right, green 20%, yellow); </div>
-    <div class="box percent04-stander-liner-gardient"> linear-gradient(to right, green 20%, yellow 40%); </div>
-    <p>5、使用重复的线性渐变</p>
-    <div class="box repeat01-stander-repeating-liner-gardient"> </div>
-    <div class="box repeat02-stander-repeating-liner-gardient"> </div>
-    <div class="box repeat03-stander-repeating-liner-gardient"> </div>
+    <p>4、color-stop 渐变关键颜色结点，语法为：
+        <pre>&lt;color&gt; [ &lt;percentage&gt; | &lt;length&gt; ]</pre>中文解释就是，颜色值+空格+百分比或长度值。
+        <div class="box percent01-stander-liner-gardient"> linear-gradient(to right, green, yellow 20%);</div>
+        <div class="box percent02-stander-liner-gardient"> linear-gradient(to right, green 20%, yellow 80%); </div>
+        <div class="box percent03-stander-liner-gardient"> linear-gradient(to right, green 20%, yellow); </div>
+        <div class="box percent04-stander-liner-gardient"> linear-gradient(to right, green 20%, yellow 40%); </div>
+        <p>5、使用重复的线性渐变</p>
+        <div class="box repeat01-stander-repeating-liner-gardient"> </div>
+        <div class="box repeat02-stander-repeating-liner-gardient"> </div>
+        <div class="box repeat03-stander-repeating-liner-gardient"> </div>
 </body>
 
 </html>
