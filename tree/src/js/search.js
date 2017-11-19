@@ -4,7 +4,14 @@
 // require('./tree');
 
 $(function () {
-
+     $.ajax({
+                url:"../tree/json/data.json",
+                data:'',
+                dataType:'json',
+                success:function(res){
+debugger
+                }
+        }); 
     var searchResult = [];
     var item = {
         "name": "股票-基本信息-股票置换(stockExchange)", //股票名称-股票模块名称-股票模块信息表名称(股票模块信息表英文名称)
