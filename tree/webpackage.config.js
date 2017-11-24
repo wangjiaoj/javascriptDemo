@@ -2,10 +2,10 @@ var webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 module.exports = {
     entry: [
-        './dev/main.js'
+        './src/search.js'
     ],
     output: {
-        path: __dirname+'/dist',//distribution
+        path: __dirname + '/dist', //distribution
         filename: '[name].js'
     },
     module: {
@@ -16,8 +16,8 @@ module.exports = {
                 use: "css-loader"
             })
         }]
-    }
-    ,plugins: [
+    },
+    plugins: [
         new ExtractTextPlugin("[name].css")
     ]
 }

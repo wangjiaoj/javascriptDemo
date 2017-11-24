@@ -11,8 +11,8 @@ $(function () {
 
     var TreeNav = function (el, options) {
         this.el = el;
-        this.init();
         this.options = $.extend(defalutoptions, options);
+        this.init();
     }
     var fn = TreeNav.prototype;
 
@@ -21,16 +21,21 @@ $(function () {
         this.bind();
     }
     fn.build = function () {
-        //根据ajax获取数据 --treeDate
-        // $.ajax({
-        //         url:"",
-        //         data:'',
-        //         dataType:'json',
-        //         success:function(res){
-        //         }
-        // }); 
+        //根据ajax获取数据
+        var _this = this;
+        var ajaxUrl = this.options.url;
+        $.ajax({
+            url: ajaxUrl,
+            dataType: 'json',
+            success: function (res) {
+                if (res.errno == 0) {
+                    _this.createtreeRoot(res.data);
+                }
+            }
+        });
+    }
+    fn.createtreeRoot = function (data) {
         //构造最外层父节点
-        var data = treeDate;
         var el = this.el;
         var parentTree = [];
         parentTree.push('<ul class="tree-ul">');
@@ -39,39 +44,29 @@ $(function () {
                 var leaf = this.createTreeleaf(data[i]);
                 parentTree.push(leaf);
             } else {
-                var parentTreeNode = this.createParentTree(data[i]);
+                var parentTreeNode = this.createParentTreeItem(data[i]);
                 parentTree.push(parentTreeNode);
             }
         }
         parentTree.push('</ul>');
         $(el).empty().append(parentTree.join(''));
+        this.options.afterBuildRoot(data);
     }
-    fn.createParentTree = function (item) {
+    fn.createParentTreeItem = function (item) {
         var parentTreeNode = [];
-        parentTreeNode.push('<li class="parent-tree-item" data-seq="' + item.seq + '">');
-        parentTreeNode.push('<div class="parent-tree-item-name"> <span class="">' + item.name +
-            '</span><label class="">' + item.ename + '</label> <i class="tree-contrl-icon"></i></div>');
+        parentTreeNode.push('<li class="parent-tree-item" data-seq="' + item.seq + '" seq="' + item.seq + '">');
+        if (item.ename) {
+            parentTreeNode.push('<div class="parent-tree-item-name"> <span class="">' + item.cname +
+                '</span><label class="">' + item.ename + '</label> <i class="tree-contrl-icon"></i></div>');
+        } else {
+            parentTreeNode.push('<div class="parent-tree-item-name"> <span class="">' + item.cname +
+                '</span><label class=""></label> <i class="tree-contrl-icon"></i></div>');
+        }
         parentTreeNode.push('</li>');
         return parentTreeNode.join('');
     }
 
-    fn.createChild = function (seq, type) {
-        //根据ajax获取数据 --treeleaveData
-        // $.ajax({
-        //         url:""+seq,
-        //         data:'',
-        //         dataType:'json',
-        //         success:function(res){
-
-        //         }
-        // }); 
-        var data;
-        if (type == 0) {
-            data = window.treeleaveData;
-        } else {
-            data = window.lefdata;
-        }
-
+    fn.createChild = function (data) {
         var childtree = [];
         childtree.push('<ul class="child-tree">');
         var childTreeItemName;
@@ -81,8 +76,13 @@ $(function () {
                 childtree.push(leaf);
             } else {
                 childtree.push('<li class="child-tree-item"  data-seq="' + data[i].seq + '">');
-                childTreeItemName = ' <div class="child-tree-item-name"> <span>' + data[i].name +
-                    ' </span><label>' + data[i].ename + '</label> <i class="tree-contrl-icon"></i> </div>';
+                if (data[i].ename) {
+                    childTreeItemName = ' <div class="child-tree-item-name"> <span>' + data[i].cname +
+                        ' </span><label>' + data[i].ename + '</label> <i class="tree-contrl-icon"></i> </div>';
+                } else {
+                    childTreeItemName = ' <div class="child-tree-item-name"> <span>' + data[i].cname +
+                        ' </span><label></label> <i class="tree-contrl-icon"></i> </div>';
+                }
                 childtree.push(childTreeItemName);
             }
             childtree.push('</li>');
@@ -91,77 +91,165 @@ $(function () {
         return childtree.join('');
     }
     fn.createTreeleaf = function (data) {
-        //叶子节点
-        return '<li class="tree-leaf-item" data-seq="' + data.seq + '" ><p>' + data.name + '</span><p>' + data.ename + '</p></li>';
-    }
-
-    fn.openParentNode = function (seq) {
-        //展开seq父目录 子目录都关闭
-        var prentTreeNode = $('.parent-tree-item-name[data-seq=' + seq + ']');
+            //叶子节点 暂时使用tbCname
+            return '<li class="tree-leaf-item" data-seq="' + data.seq + '" ><p>' + data.tbCname + '</span><p>' + data.ename + '</p></li>';
+        }
+        /**
+         * 展开seq父目录 子目录都关闭,而且没有叶子节点被选中
+         * */
+    fn.openParentNode = function (rootSeq) {
+        var prentTreeNode = $('.parent-tree-item[data-seq=' + rootSeq + ']');
         if (prentTreeNode.hasClass('tree-open')) {
+            prentTreeNode.find('tree-open').removeClass('tree-open');
             prentTreeNode.find('tree-open').removeClass('tree-open');
         } else {
             prentTreeNode.trigger("click");
         }
-
     }
-    fn.openFirstleafNode = function (seq) {
-        //展开seq父目录第一个子目录的第一个子节点
-        var prentTreeNode = $('.parent-tree-item-name[data-seq=' + seq + ']');
-        var childTree = prentTreeNode.child("ul"); //子节点已加载
-        if (childTree.length == 0) {
-            this.createFisrtLeaf(prentTreeNode, seq);
+
+    /**
+     *  展开rootSeq父目录第一个子目录的第一个子节点
+     *  */
+    fn.selectedFirstleafNode = function (rootSeq) {
+        var prentTreeNode = $('.parent-tree-item[data-seq=' + rootSeq + ']');
+        var childTree = prentTreeNode.children("ul");
+        if (childTree.length == 0) { //子节点已加载
+            this.createFisrtLeaf(prentTreeNode, rootSeq);
         } else {
-            this.checkFisrtLeaf(childTree, seq);
+            this.checkFisrtLeaf(childTree);
         }
-        prentTreeNode.addClass('treeopen');
+        prentTreeNode.addClass('tree-open');
     }
     fn.checkFisrtLeaf = function (content) {
         //展开一层 判断第一个节点是否叶子节点
-        var firstLi = content.childfirstLi();
+        var firstLi = content.find("li:eq(0)");;
         var seq = firstLi.data('seq');
         if (firstLi.hasClass('tree-leaf-item')) {
-            firstLi.addClass("leaf-selected");
-            this.options.selectedLeaf(seq);
+            //是叶子节点 取消其他节点选中效果 增加当前节点选中效果 
+            this.selectedleafStatus(firstLi, seq);
             return;
         } else {
-            firstLi.addClass('treeopen');
-            var childTree = firstLi.child("ul"); //子节点已加载
+            firstLi.addClass('tree-open');
+            var childTree = firstLi.children("ul"); //子节点已加载
             if (childTree.length == 0) {
-                this.createFisrtLeaf(prentTreeNode, seq);
+                this.createFisrtLeaf(firstLi, seq);
             } else {
                 this.checkFisrtLeaf(childTree, seq)
             }
         }
     }
     fn.createFisrtLeaf = function (content, seq) {
-        content.addClass('treeopen');
+        content.addClass('tree-open');
         var that = this;
+        var ajaxUrl = this.options.url;
         $.ajax({
-            url: "" + seq,
-            data: '',
+            url: ajaxUrl + "?seq=" + seq,
             dataType: 'json',
             success: function (res) {
-                var dom = that.checkFisrtLeaf(res.data, seq);
+                var dom = that.createChild(res.data);
+                dom = $(dom);
                 //判断res.data里面第一个res.data[0].isleaf
                 content.append(dom);
-                var firstLi = dom.childfirstLi()
-                if (!res.data[0].isleaf) {
-                    that.createFisrtLeaf(firstLi, res.data[0].seq);
+                var firstLi = dom.find("li:eq(0)");
+                var first = res.data[0];
+                if (!first.isleaf) {
+                    that.createFisrtLeaf(firstLi, first.seq);
                 } else {
-                    firstLi.addClass("leaf-selected");
-                    that.options.selectedLeaf(seq);
+                    that.selectedleafStatus(firstLi, first.seq);
                     return;
                 }
             }
         });
     }
-    fn.selelctedlef = function (seq) {
-        //选中某一个叶子节点seq
-        //这个估计要拿到parentSeq
-        var prentTreeNode = $('.parent-tree-item-name[data-seq=' + parentSeq + ']');
-        //遍历childNode isleaf&&seq==seq
 
+    /**
+     * 根据leafSeq选中某一个叶子节点  rootSeq leafSeq
+     **/
+    fn.selelctedleafBySeq = function (rootSeq, leafSeq) {
+        var prentTreeNode = $('.parent-tree-item[data-seq=' + rootSeq + ']');
+        var childTree = prentTreeNode.children("ul");
+        if (childTree.length == 0) {
+            this.createLeafBySeq(prentTreeNode, rootSeq, leafSeq);
+        } else {
+            //子节点已加载
+            this.checkLeafBySeq(childTree, leafSeq);
+        }
+        prentTreeNode.addClass('tree-open');
+    }
+    fn.checkLeafBySeq = function (content, leafSeq) {
+        //展开一层 判断节点是否叶子节点
+        var _this = this;
+        var liList = content.children('li');
+        liList.each(function (index, liItem) {
+            liItem = $(liItem);
+            var seq = liItem.data('seq');
+            if (liItem.hasClass('tree-leaf-item')) {
+                _this.selectedleafStatus(liItem, seq);
+                return;
+            } else {
+                liItem.addClass('tree-open');
+                var childTree = liItem.children("ul"); //子节点已加载
+                if (childTree.length == 0) {
+                    _this.createLeafBySeq(liItem, seq, leafSeq);
+                } else {
+                    _this.checkLeafBySeq(childTree, leafSeq)
+                }
+            }
+        });
+    }
+    fn.createLeafBySeq = function (content, seq, leafSeq) {
+        content.addClass('tree-open');
+        var that = this;
+        var ajaxUrl = this.options.url;
+        $.ajax({
+            url: ajaxUrl + "?seq=" + seq,
+            dataType: 'json',
+            success: function (res) {
+                var dom = that.createChild(res.data);
+                dom = $(dom);
+                //判断res.data里面 res.data[i].isleaf
+                content.append(dom);
+                for (var i = 0; i < res.data.length; i++) {
+                    var item = res.data[i];
+                    var liItem = dom.find("li:eq(" + i + ")");
+                    if (!item.isleaf) {
+                        that.createLeafBySeq(liItem, item.seq, leafSeq);
+                    } else if (item.seq == leafSeq) {
+                        that.selectedleafStatus(liItem, item.seq);
+                        return;
+                    }
+                }
+
+            }
+        });
+    }
+    fn.appendChildTree = function (parentLi, seq) {
+            var _this = this;
+            var ajaxUrl = _this.options.url;
+            $.ajax({
+                url: ajaxUrl + "?seq=" + seq,
+                dataType: 'json',
+                success: function (res) {
+                    if (res.errno == 0) {
+                        var childTree = _this.createChild(res.data);
+                        parentLi.append(childTree);
+                    }
+                }
+            });
+        }
+        /**
+         * 给leaf节点-liItem添加选中效果 并取消其他节点的选中效果
+         *  */
+    fn.selectedleafStatus = function (liItem, seq) {
+        var LiRoot = liItem.parents(".parent-tree-item")
+        var other = LiRoot.siblings();
+        other.find('.tree-open').removeClass('tree-open');
+        other.find('.leaf-selected').removeClass('leaf-selected');
+        other.removeClass('tree-open');
+
+        LiRoot.find('.leaf-selected').removeClass('leaf-selected');
+        liItem.addClass("leaf-selected");
+        this.options.selectedLeaf(seq);
     }
     fn.bind = function () {
         var el = this.el;
@@ -174,10 +262,8 @@ $(function () {
                 parentLi.addClass("tree-open");
                 var seq = parentLi.data('seq');
                 if (parentLi.find('ul').length == 0) {
-                    var childTree = _this.createChild(seq, 0);
-                    parentLi.append(childTree);
+                    _this.appendChildTree(parentLi, seq);
                 }
-
             }
         });
         $(el).on("click", ".child-tree-item-name", function () {
@@ -188,8 +274,7 @@ $(function () {
                 parentLi.addClass("tree-open");
                 var seq = parentLi.data('seq');
                 if (parentLi.find('ul').length == 0) {
-                    var childTree = _this.createChild(seq, 1);
-                    parentLi.append(childTree);
+                    _this.appendChildTree(parentLi, seq);
                 }
             }
         });
@@ -198,60 +283,12 @@ $(function () {
                 $(el).find('.tree-leaf-item').removeClass('leaf-selected');
                 $(this).addClass("leaf-selected");
                 var seq = $(this).data('seq');
-                that.options.selectedLeaf(seq);
+                _this.options.selectedLeaf(seq);
             }
         });
 
     }
 
     window.TreeNav = TreeNav;
-    window.treeDate = [{
-        "name": "股票", //股票名称
-        "ename": "Stock",
-        "seq": 1, //股票seq
-        "isleaf": false,
-    }, {
-        "name": "港股", //股票名称
-        "ename": "Stock",
-        "seq": 2, //股票seq
-        "isleaf": false,
-    }, {
-        "name": "美股", //股票名称
-        "ename": "Stock",
-        "seq": 3, //股票seq
-        "isleaf": false,
-    }];
-    window.treeleaveData = [{
-        "name": "基本信息", //股票模块名称
-        "ename": "BascicInforamtion",
-        "seq": 11, //股票模块seq 
-        "isleaf": false,
-    }, {
-        "name": "股本股东", //股票模块名称
-        "ename": "BascicInforamtion",
-        "seq": 11, //股票模块seq 
-        "isleaf": false,
-    }];
-    window.lefdata = [{
-        "name": "股票置换", //股票模块详情名称
-        "ename": "Stock Exchange",
-        "seq": 111, //股票模块详情seq
-        "isleaf": true
-    }, {
-        "name": "股票置换日历", //股票模块详情名称
-        "ename": "BascicInforamtion",
-        "seq": 112, //股票模块详情seq
-        "isleaf": true
-    }, {
-        "name": "公司员工情况", //股票模块详情名称
-        "ename": "BascicInforamtion",
-        "seq": 113, //股票模块详情seq
-        "isleaf": true
-    }, {
-        "name": "公司主要产品", //股票模块详情名称
-        "ename": "BascicInforamtion",
-        "seq": 114, //股票模块详情seq
-        "isleaf": true
-    }];
-    new TreeNav(".tree-wrap", {});
+
 });

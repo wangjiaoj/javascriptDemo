@@ -101,15 +101,17 @@
  body {
      width: 100%;
      height: 100%;
-     overflow: hidden;
-     font-family: "Microsoft Yahei";
-     font-size: 13px;
-     background-color: #e5e5e5;
-     min-width: 1200px;
  }
  
  body {
+     width: 100%;
+     height: 100%;
+     min-width: 1200px;
+     overflow-y: hidden;
      overflow-x: auto;
+     font-family: "Microsoft Yahei";
+     font-size: 13px;
+     background-color: #e5e5e5;
  }
  
  .container {
@@ -120,13 +122,20 @@
  }
  
  .header-wrap {
+     position: absolute;
+     z-index: 9999;
      width: 100%;
      height: 80px;
      background-color: #fff;
      padding: 20px 15px 20px 40px;
      box-shadow: 0px 2px 1px 1px rgba(45, 45, 45, 0.3);
-     position: absolute;
-     z-index: 9999;
+     /*opera或ie9*/
+     -moz-box-shadow: 0px 2px 1px 1px rgba(45, 45, 45, 0.3);
+     /*firefox*/
+     -webkit-box-shadow: 0px 2px 1px 1px rgba(45, 45, 45, 0.3);
+     /*webkit*/
+     filter: progid: DXImageTransform.Microsoft.Shadow(color='#2D2D2D', Direction=135, Strength=5);
+     /*for ie6,7,8*/
  }
  
  .header-logo {
@@ -136,6 +145,27 @@
      float: left;
  }
  
+ .header-split {
+     float: left;
+     margin: 0px 12px 0px 10px;
+ }
+ 
+ .header-split .header-line {
+     display: block;
+     height: 8px;
+     width: 1px;
+     background-color: grey;
+ }
+ 
+ .header-split .header-circle {
+     display: block;
+     height: 5px;
+     width: 5px;
+     background-color: grey;
+     border-radius: 50%;
+     margin: 4px -2px;
+ }
+ 
  .header-title {
      float: left;
  }
@@ -143,6 +173,7 @@
  .header-title h1 {
      font-size: 17px;
      color: #5c5c5c;
+     margin-top: -5px;
  }
  
  .header-title p {
@@ -152,6 +183,10 @@
  
  .header-login-status {
      float: right;
+ }
+ 
+ .header-login-status a {
+     color: #4288fa;
  }
  /*公用头部样式 结束*/
  /*公用左侧树样式 开始*/
@@ -289,6 +324,7 @@
      display: inline-block;
      text-align: center;
      line-height: 40px;
+     cursor: pointer;
  }
  
  .select-options-icon {
@@ -372,11 +408,36 @@
      width: 8px;
  }
  
+ .info-item .table-wrap::-webkit-scrollbar {
+     height: 8px;
+     background-color: #d6d6d6;
+ }
+ 
+ .info-item .table-wrap::-webkit-scrollbar-button {
+     background-color: #fff;
+ }
+ 
+ .info-item .table-wrap::-webkit-scrollbar-thumb {
+     background: #d6d6d6;
+     border-radius: 3px;
+ }
+ 
+ .info-item .table-wrap::-webkit-scrollbar-track {
+     background: #fff;
+ }
+ 
  .tree-wrap,
  .info-wrap,
- .search-result-wrap {
+ .search-result-wrap,
+ .info-item .table-wrap {
      scrollbar-base-color: #d6d6d6;
      scrollbar-arrow-color: #fff;
      scrollbar-3dlight-color: #d6d6d6;
      scrollbar-track-color: #fff;
+ }
+ 
+ .loading {
+     text-align: center;
+     font-size: 15px;
+     padding: 150px 0px;
  }
