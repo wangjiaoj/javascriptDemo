@@ -1,6 +1,7 @@
 var gulp = require('gulp'),
     $ = require('gulp-load-plugins')(),
-    runSequence = require('run-sequence')
+    runSequence = require('run-sequence');
+    var replace = require('gulp-replace-path');
 
 // 资源
 var cssSrc = './static/project/css/**/*.css',
@@ -42,7 +43,9 @@ gulp.task('manageJs', function () {
         .pipe(gulp.dest('./rev/js'))
 })
 
-// 清空原文件
+
+
+//清空原文件
 gulp.task('cleanSrc', function () {
     return gulp.src([cssPath, jsPath])
         .pipe($.clean())
@@ -69,26 +72,60 @@ gulp.task('replacePath', function () {
 
 // 清除中间文件
 gulp.task('cleanTemp', function () {
-        return gulp.src(['./dist', './rev'])
-            .pipe($.clean())
-    })
-    // dev
+    return gulp.src(['./dist', './rev'])
+        .pipe($.clean())
+});
+
+// dev替换路径
+gulp.task('devReplacePath', function () {
+     return gulp.src([htmlSrc])
+       .pipe(replace(/project/g, 'dist'))
+        .pipe(gulp.dest(htmlPath))
+})
+// 清除中间文件
+gulp.task('devCleanTemp', function () {
+    return gulp.src(['./static/dist', './static/rev'])
+        .pipe($.clean())
+});
+// dev 处理 CSS
+gulp.task('devManageCss', function () {
+    return gulp.src(cssSrc)
+        .pipe($.minifyCss()) // 压缩
+       //   .pipe($.rev()) // 版本化
+        .pipe(gulp.dest('./static/dist/css'))
+     //   .pipe($.rev.manifest()) // 生成映射表
+     //    .pipe(gulp.dest('./static/rev/css'))
+        
+})
+// dev 处理 jS
+gulp.task('devManageJs', function () {
+    return gulp.src(jsSrc)
+        .pipe($.babel()) // babel 编译
+        .pipe($.uglify()) // 压缩
+  //      .pipe($.rev()) // 版本化
+        .pipe(gulp.dest('./static/dist/js'))
+  //      .pipe($.rev.manifest()) // 生成映射表
+  //      .pipe(gulp.dest('./static/rev/js'))
+})
+// dev
 gulp.task('watch', function () {
-    gulp.watch(jsSrc, ['manageJs']),
-        gulp.watch(cssSrc, ['manageCss'])
+    gulp.watch(jsSrc, ['devManageJs']),
+    gulp.watch(cssSrc, ['devManageCss'])
 });
 // build
+//['cleanSrc'], ['inputCss'], ['inputJs'], ['replacePath'], ['cleanTemp'],
 gulp.task('build', function (done) {
         runSequence( // 同步执行
-            ['cleanTemp'], ['manageImg'], ['manageCss'], ['manageJs'], ['cleanSrc'], ['inputCss'], ['inputJs'], ['replacePath'], ['cleanTemp'],
+            ['cleanTemp'], ['manageImg'], ['manageCss'], ['manageJs'], 
             done
         )
     })
     // dev
 gulp.task('dev', function (done) {
         runSequence( // 同步执行
-            ['manageCss'], ['manageJs'], ['watch']
+            ['devCleanTemp'], ['devManageCss'], ['devManageJs'],['devReplacePath'],['watch']
         )
     })
+    //   ['devCleanTemp'], ['devManageCss'], ['devManageJs'],['devReplacePath'],['watch']
     // default
-gulp.task('default', ['build'])
+// gulp.task('default', ['build'])

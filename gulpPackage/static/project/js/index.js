@@ -1,4 +1,4 @@
-const id = "hello world",
+const id = "hello world";
     var account = () => {
         let i = 0;
         i++
@@ -7,5 +7,6 @@ const id = "hello world",
 var button = document.getElementById("test");
 button.addEventListener("click", function () {
     var t = account();
+        t++;
     alert("num:" + t);
 });
