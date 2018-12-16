@@ -5,71 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="/css/f9Stock/stock54/app.f967a251.css">
-    <link rel="stylesheet" href="/css/f9Stock/stock54/flextable.3536c4e0.css">
-    <link rel="stylesheet" href="/css/f9Stock/stock54/business.40d5425e.css">
-    <link rel="stylesheet" href="/css/f9Stock/stock54/select2.82b91c66.css">
+    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="flextable.css">
     <title>公司业务数据</title>
-
     <style>
         .fixLeftTop a {
             text-decoration: none;
         }
     </style>
-    <script>
-        (function(arr) {
-            arr.forEach(function(item) {
-                if (item.hasOwnProperty('prepend')) {
-                    return;
-                }
-                Object.defineProperty(item, 'prepend', {
-                    configurable: true,
-                    enumerable: true,
-                    writable: true,
-                    value: function prepend() {
-                        var argArr = Array.prototype.slice.call(arguments),
-                            docFrag = document.createDocumentFragment();
-
-                        argArr.forEach(function(argItem) {
-                            var isNode = argItem instanceof Node;
-                            docFrag.appendChild(isNode ? argItem : document.createTextNode(String(argItem)));
-                        });
-
-                        this.insertBefore(docFrag, this.firstChild);
-                    }
-                });
-            });
-        })([Element.prototype, Document.prototype, DocumentFragment.prototype]);
-
-        function log(value, {
-            type,
-            color
-        } = {
-            type: 'log',
-            color: ''
-        }) {
-            if (color) {
-                console[type || 'log'](`%c${value}`, `color: ${color}`);
-            } else {
-                console[type || 'log'](value);
-            }
-        }
-    </script>
-
-    <script>
-        // 表格获取数据时要用到的初始参数
-        var thsName = '浦发银行';
-        var requestThscode = '600000.SH';
-    </script>
+    
 </head>
 
 <body>
-    <link href="/css/f9web/header_tool.87b02361.css" rel="stylesheet" type="text/css">
 
 
-
-    <!-- 公司股票状态 -->
-    <input type="hidden" value="n" name="tool_stock_status" />
 
     <div class="content" id="content">
         <div class="content-tools"></div>
@@ -85,32 +34,25 @@
     <div class="j-toggle-table" style="display: none"></div>
 
     <div class="c-point-table j-toggle-table" style="display: none">
-        <!-- div class="table-fixtop j-table-fixtop" style="z-index:200">
-            <table width="100%" border="0" class="n_tablebox n_tablebox_right u-fixed-top" id="J_tableFixtop">
-            </table>
-        </div -->
         <div class="table-container j-table-container">
             <table cellspacing="0" cellpadding="3" border="0" class="n_tablebox n_tablebox_right u-fixed-container" id="J_tableContainer">
                 <tbody id="J_trs">
-                    <!-- items begin -->
-
-                    <!-- items end -->
+               
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- <script type="text/javascript" src="data.js"></script> -->
-    <script type="text/javascript" src="/js/jquery/jquery-1.8.3.min.js"></script>
-    <!--script type="text/javascript" src="/js/f9Stock/painter/mock.a163fa69.js"></script-->
-    <script type="text/javascript" src="/js/api/api.4db619fc.js"></script>
-    <script type="text/javascript" src="/js/researchReport/client_functions.js"></script>
-    <script type="text/javascript" src="/js/f9Stock/stock54/events.6765031e.js"></script>
-    <script type="text/javascript" src="/js/f9Stock/stock54/common.7ca28175.js"></script>
-    <script type="text/javascript" src="/js/f9Stock/stock54/flextable.867b857b.js"></script>
-    <script type="text/javascript" src="/js/f9Stock/stock54/axios.330bd8ed.js"></script>
-    <script type="text/javascript" src="/js/f9Stock/stock54/app.5b2df073.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/js/f9Stock/stock54/select2.a05c652a.js"></script>
+<!--
+    <script type="text/javascript" src="/js/jquery/jquery-1.8.3.min.js"></script>-->
+    <script
+  src="https://code.jquery.com/jquery-1.12.4.min.js"
+  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+  crossorigin="anonymous"></script>
+    <script type="text/javascript" src="common.js"></script>
+    <script type="text/javascript" src="flextable.js"></script>
+    <script type="text/javascript" src="x.js"></script>
+        <script type="text/javascript" src="test.js"></script>
     <script>
         var rangeYears = '{"years":[2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018],"startYear":"2004","endYear":"2018"}';
     </script>
@@ -138,268 +80,15 @@
         var mockData = [];
 
         rangeYears = JSON.parse(rangeYears);
-        /*var rangeYears = {
-            // years: [2012, 2013, 2014, 2015, 2016, 2017],
-            years: [2016, 2017],
-            startYear: '2016',
-            endYear: '2017'
-        }*/
-
-        /* document.querySelector('.j-table-container').addEventListener('scroll', function(e){
-            var scrollLeft = e.target.scrollLeft;
-            // document.querySelector('.j-table-fixtop').style.left = `-${scrollLeft}px`;
-            // document.querySelector('.j-table-fixtop').style.width = `calc(100% - 15px + ${scrollLeft}px)`;
-        }); */
-
-        var http_url = document.location.protocol + "//" + document.location.host;
-
-        // 渲染机构观点表
-        function renderPointsTable(data) {
-
-            if (!(data.length > 0)) {
-                log('没有数据', {
-                    color: 'blue'
-                });
-                document.querySelector('.j-table-container').innerHTML = '<div class="o-frame-empty">对不起，该公司暂无机构观点</div>';
-                return false;
-            }
-
-            function componentTd(data, isKeyIndex) {
-                if (!data) return [];
-                var items = Object.keys(data);
-                var tds = [];
-                if (isKeyIndex) {
-                    items.map(d => {
-                        tds.push(`<td>${data[d]}</td>`);
-                    });
-                } else {
-                    items.map(d => {
-                        tds.push(`<td class="fixTop"><div align="center">${d}</div></td>`);
-                    });
-                }
-                return tds;
-            }
-
-            function cloneCol(number, isDifferent) {
-                var c = new Array(number);
-                var TDS = [];
-
-                for (var i = 0, L = c.length; i < L; i++) {
-                    var px = 40;
-                    /* if (isDifferent) {
-                        px = i === 0 ? 100 : 90;
-                    } */
-                    var TD = `<col width="${px}px">`;
-                    TDS.push(TD);
-                }
-                return TDS;
-            }
-
-            function getYJYTd(yjy) {
-                if (!yjy || yjy == '--') {
-                    return '--';
-                } else {
-                    return `<a href="javascript:;" onclick="openFullWindow('${http_url}/iFindService/report/index/index#/home?author=${yjy}&noleftside&noAcrossNavigate');return false;">${yjy}</a>`;
-                }
-            }
-
-            function getBGTd(bgdz) {
-                if (!bgdz || bgdz == '--') {
-                    return '<div align="center">--</div>';
-                } else {
-                    return `<a style="cursor:pointer;width:100%;display:inline-block;text-align:center;" href="javascript:void(0)" onclick="openDownloadWindow1('${bgdz}')"> <div class="pdf_ico" align="center"></div></a> `
-                }
-            }
-
-            function getTheadTrs() {
-                var TRS = [];
-                var theadData = data || mockData.data;
-                var FIXED_TOP_MGSY_TD = [];
-                var FIXED_TOP_MGSY_GROUP = [];
-                var FIXED_TOP_GSMGSJLR_TD = [];
-                var FIXED_TOP_GSMGSJLR_GROUP = [];
-                // 这里需要优化
-                theadData.length > 0 && (
-                    // 每股收益 tds
-                    FIXED_TOP_MGSY_TD = componentTd(theadData[0].mgsy, false),
-
-                    // 每股收益 group
-                    FIXED_TOP_MGSY_GROUP = cloneCol(FIXED_TOP_MGSY_TD.length, false),
-
-                    // 归属母公司股东净利润 tds
-                    FIXED_TOP_GSMGSJLR_TD = componentTd(theadData[0].gsmgsgdjlr, false),
-
-                    // 归属母公司股东净利润 group
-                    FIXED_TOP_GSMGSJLR_GROUP = cloneCol(FIXED_TOP_GSMGSJLR_TD.length, true)
-                );
-
-                var FIXED_TOP = [
-                    '<colgroup>',
-                    '    <col width="50px">',
-                    '    <col width="80px">',
-                    '    <col width="50px">',
-                    '    <col width="50px">',
-                    '    <col width="50px">',
-                    '    <col width="50px">',
-                    FIXED_TOP_MGSY_GROUP.join(''),
-                    FIXED_TOP_GSMGSJLR_GROUP.join(''),
-                    '</colgroup>',
-                    '<thead>',
-                    '    <tr class="firsttitle">',
-                    '        <td class="fixLeftTop" rowspan="2" nowrap="true">',
-                    '            <div align="center">预测日期</div>',
-                    '        </td>',
-                    '        <td class="fixLeftTop" rowspan="2" nowrap="true">',
-                    '            <div align="center">研究机构</div>',
-                    '        </td>',
-                    '        <td class="fixLeftTop" rowspan="2" nowrap="true">',
-                    '            <div align="center">研究员</div>',
-                    '        </td>',
-                    '        <td class="fixLeftTop" rowspan="2" nowrap="true">',
-                    '            <div align="center">报告</div>',
-                    '        </td>',
-                    '        <td class="fixTop" colspan="2">',
-                    '            <div align="center">最新评级</div>',
-                    '        </td>',
-                    `        <td class="fixTop" colspan="${FIXED_TOP_MGSY_GROUP.length}">`,
-                    '            <div align="center">每股收益(元)</div>',
-                    '        </td>',
-                    `        <td class="fixTop" colspan="${FIXED_TOP_GSMGSJLR_GROUP.length}">`,
-                    '            <div align="center">归属母公司股东的净利润(百万元)</div>',
-                    '        </td>',
-                    '    </tr>',
-                    '    <tr class="secondtitle">',
-                    '        <td class="fixTop">',
-                    '            <div align="center">',
-                    '                <div align="center">评级</div>',
-                    '            </div>',
-                    '        </td>',
-                    '        <td class="fixTop">',
-                    '            <div align="center">',
-                    '                <div align="center">目标价区间</div>',
-                    '            </div>',
-                    '        </td>',
-                    FIXED_TOP_MGSY_TD.join(''),
-                    FIXED_TOP_GSMGSJLR_TD.join(''),
-                    '    </tr>',
-                    '</thead>',
-                ];
-                return FIXED_TOP;
-            }
-
-            function getTbodyTrs() {
-                var TRS = [];
-                var tbodyData = data || mockData.data;
-
-                tbodyData.map(data => {
-                    var TR_MGSY_TD = function() {
-                        return componentTd(data.mgsy, true);
-                    };
-                    var TR_GSMGSGDJLR_TD = function() {
-                        return componentTd(data.gsmgsgdjlr, true);
-                    };
-                    var TR_YJY_TD = function() {
-                        return getYJYTd(data.yjy);
-                    }
-                    var TR_BG_TD = function() {
-                        return getBGTd(data.bg.bgdz);
-                    }
-                    var TR = [
-                        '<tr>',
-                        '    <td class="fixLeftTop" class="u-bg-white">',
-                        `        <div align="center">${data.ycrq}</div>`,
-                        '    </td>',
-                        '    <td class="fixLeftTop" class="u-bg-white">',
-                        '        <div align="center">',
-                        `            <a href="javascript:;" onclick="openFullWindow('${http_url}/iFindService/report/index/index#/home?source=${data.yjjg}&noleftside&noAcrossNavigate');return false;">${data.yjjg}</a>`,
-                        '        </div>',
-                        '    </td>',
-                        '    <td class="fixLeftTop" class="u-bg-white">',
-                        '        <div align="center">',
-                        TR_YJY_TD(),
-                        '        </div>',
-                        '    </td>',
-                        '    <td class="fixLeftTop" class="u-bg-white" align="center">',
-                        TR_BG_TD(),
-                        '    </td>',
-                        '    <td>',
-                        `        <div align="center">${data.zxpj.pj}</div>`,
-                        '    </td>',
-                        `    <td><div align="center">${data.zxpj.mbjqj}</div></td>`,
-                        TR_MGSY_TD().join(''),
-                        TR_GSMGSGDJLR_TD().join(''),
-                        '</tr>',
-                    ];
-                    TRS.push(TR);
-                });
-                return TRS;
-            }
-
-            var FIXED_TOP = getTheadTrs();
-            var FIXED_CONTAINER = [
-                FIXED_TOP.join(''),
-                getTbodyTrs().map(data => data.join('')).join('')
-            ];
-
-            // var TABLE_FIX_TOP = document.querySelector('#J_tableFixtop');
-            var TABLE_CONTAINER = document.querySelector('#J_tableContainer');
-
-            // TABLE_FIX_TOP.innerHTML = FIXED_TOP.join('');
-            TABLE_CONTAINER.innerHTML = FIXED_CONTAINER.join('');
-        }
-
+ 
         console.time('all');
-        rangeYears.years.reverse();
-        var thsTable = new XmlTable(document.getElementById('content'), 0, {
-            beginYears: rangeYears.years,
-            endYears: rangeYears.years,
-        });
-        thsTable.init();
         // 减去顶部固定tr和固定头部的高度
         document.querySelector('.content-body').style.height = window.innerHeight - 90 + 'px';
         console.timeEnd('all');
 
-        // 这里可以优化成点击后获取
-        // 股转不发机构观点请求
-        if (requestThscode.indexOf('.OC') < 0) {
-            thsTable.ajax({
-                url: '/iFindService/f9Stock/stock54/ajax-institutional-perspective?thscode=' + requestThscode,
-                method: 'get',
-                payload: function(data) {
-                    renderPointsTable(data);
-                }
-            });
-        }
+      
 
-        (function($) {
-            var oldVersion = "1.10.12.260";
-            var getCookie = function(n) {
-                var a, r = new RegExp("(^| )" + n + "=([^;]*)(;|$)");
-                if (a = document.cookie.match(r))
-                    return unescape(a[2]);
-                else
-                    return null;
-            };
-            var version = getCookie("version") || '';
-            var tver = version.substr(0, 4);
-
-            window.openDownloadWindow1 = function(uri) {
-                // if(tver == '1.10'){
-                try {
-                    var url = http_url + uri;
-                    window.API.OnDispOpenSubUrlV1([url, 808, 600, 10]);
-                } catch (e) {
-                    alert("请使用客户端打开");
-                }
-                // }else{
-                //    var subkey = "/reportservice?req=download&seq=";
-                //    var seq = uri.substr(subkey.length);
-                //    var uri='/reportservice?req=download&action=olddownload&seq='+seq
-                //    window.open(uri);
-                // }
-            }
-
-        })(jQuery)
+       
     </script>
 
 </body>

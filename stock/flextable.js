@@ -406,14 +406,10 @@ tp.renderFixedTitle = function(dom) {
 
         // charts icon
         if (this.baseOption.chartsRows[i]) {
-            // thscode=600115.SH&zbid=600039&syear=2016&eyear=2017&zblx=%E7%B4%AF%E8%AE%A1%E5%80%BC&tjpl=%E6%9C%88
             var icon = createNode('div', 'is--charts', '', {
                 'data-id': elementData.id,
                 'data-index': i,
                 'data-zbmc': elementData.title
-            });
-            icon.addEventListener('click', function(e) {
-                _this2.admin.emit('popcharts', e);
             });
             element.appendChild(icon);
         }
@@ -810,18 +806,7 @@ tp.bind = function() {
         var level = e.target.parentElement ? e.target.parentElement.getAttribute('data-level') : e.target.getAttribute('data-level');
         effect('handleSub', e.target.getAttribute('data-children'), level);
     });
-    this.admin.on('popcharts', function(e) {
-        log(e.target.getAttribute('data-id') + ' popcharts', { color: 'purple' });
-        var thscode = this.state.thscode;
-        var zbid = e.target.getAttribute('data-id');
-        var syear = this.state.beginYear;
-        var eyear = this.state.endYear;
-        var zblx = this.state.kpis.join(',') || '累计值';
-        var tjpl = this.state.scopesBtns.join(',') || '月';
-        var zbmc = e.target.getAttribute('data-zbmc');
-        var url = document.location.protocol + "//" + document.location.host + ('/thsft/iFindService/f9Stock/financial-statement/index?from=gsywsj&thscode=' + thscode + '&zbid=' + zbid + '&syear=' + syear + '&eyear=' + eyear + '&zblx=' + zblx + '&tjpl=' + tjpl + '&zbmc=' + zbmc);
-        window.API.OnDispOpenSubUrlV1([url, 792, 520, 31]);
-    }.bind(this));
+  
     var that = this;
     this.tableFrame.addEventListener('scroll', function(event) {
         console.time('scroll');

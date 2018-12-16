@@ -1,4 +1,4 @@
-var x = {
+var jsonResult = {
     errno: 0,
     error: "",
     data: {
