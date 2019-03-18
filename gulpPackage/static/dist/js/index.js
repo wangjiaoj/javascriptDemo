@@ -1,1 +1,0 @@
-var id="hello world",account=function(){var t=0;return t++,t++},button=document.getElementById("test");button.addEventListener("click",function(){var t=account();t+=2,alert("num:"+t)});

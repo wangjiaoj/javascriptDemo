@@ -1,0 +1,14 @@
+@function px( $px) {
+    @return $px/$designWidth*10+rem;
+}
+
+$designWidth: 640; // 640 是设计稿的宽度，你要根据设计稿的宽度填写。设计师的设计稿宽度需要统一
+.child {
+    width: px(320);
+    height: px(160);
+    margin: px(40) px(40);
+    border: 1px solid red;
+    float: left;
+    font-size: 1.2em;
+    background: red;
+}
