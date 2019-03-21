@@ -15,7 +15,7 @@ var cssPath = './static/project/css',
     imgPath = './static/project/images',
     htmlPath = './templates'
 
-var sassSrc = './static/source/**/*.scss';
+var sassSrc = './static/source/css/**/*.scss';
 // 处理图片
 gulp.task('manageImg', function() {
     return gulp.src(imgSrc)

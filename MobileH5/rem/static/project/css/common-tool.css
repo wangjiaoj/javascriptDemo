@@ -1,0 +1,122 @@
+@charset "UTF-8";
+/* 移动端页面设计稿宽度 */
+/* 移动端页面设计稿dpr基准值 */
+/* 将移动端页面分为10块 */
+/* 缩放所支持的设备最小宽度 */
+/* 缩放所支持的设备最大宽度 */
+/*
+    rem与px对应关系，1rem代表在JS中设置的html font-size值（为一块的宽度），$rem即为$px对应占多少块
+
+        $px                    $rem
+    -------------    ===    ------------
+    $design-width              $blocks
+*/
+/* 单位px转化为rem */
+/* 单位rem转化为px，可用于根据rem单位快速计算原px */
+/* html根的宽度定义 */
+/* 设置容器拉伸的最小宽度 */
+/* 设置容器拉伸的最大宽度 */
+/* 设置字体大小，不使用rem单位， 根据dpr值分段调整 */
+body {
+  position: relative; }
+
+.full-screen-select {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  top: 0;
+  left: 0; }
+
+.full-screen-select ul {
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 100%; }
+
+.full-screen-select li {
+  width: 9.2rem;
+  height: 1.30667rem;
+  margin: 0 auto;
+  line-height: 1.30667rem;
+  border-bottom: 1px solid #DCDFE6;
+  font-family: PingFangSC-Regular;
+  font-size: .37333rem;
+  color: #303133;
+  letter-spacing: 2.36px; }
+
+.full-screen-select li.full-select-option-selected i {
+  display: inline-block; }
+
+.full-screen-select li i {
+  display: none;
+  float: right;
+  width: 25px;
+  height: 19px;
+  background: url(../image/options-selected-icon@2x.png) no-repeat;
+  margin: .52rem 0;
+  -webkit-background-size: 100% 100%;
+  background-size: 100% 100%; }
+
+/** 
+ * 非模态框实现：Toast / HUD
+ **/
+.m-ifind-toast-wrapper {
+  position: fixed;
+  bottom: .94667rem;
+  width: 100%;
+  text-align: center; }
+
+.m-ifind-toast-wrapper .toast-container {
+  border-radius: 8px;
+  margin: 0 auto;
+  background: rgba(0, 0, 0, 0.8);
+  display: inline-block;
+  padding: 0.33333rem 0.53333rem;
+  max-width: 9rem;
+  min-width: 4rem; }
+
+.m-ifind-toast-wrapper .toast-container .toast-text {
+  font-size: 0.32rem;
+  color: #FFF;
+  padding: 0.13333rem;
+  text-align: center;
+  letter-spacing: 0.71px; }
+
+.miui-toast-icon:before {
+  content: "\EA0D"; }
+
+.miui-toast-icon:before {
+  color: #fff;
+  font-size: 55px; }
+
+/** 
+ * css3动画+svg实现:loading
+ **/
+.m-ifind-loading-wrapper {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  text-align: middle; }
+
+.m-ifind-loading-wrapper .m-ifind-loading-icon {
+  display: block;
+  width: 3.33333rem;
+  height: 3.33333rem;
+  margin: 3.33333rem auto 0px;
+  background-image: url(../image/loading.svg);
+  animation-name: circleRotate;
+  animation-duration: 3s;
+  animation-timing-function: linear;
+  animation-delay: 0s;
+  animation-fill-mode: none;
+  animation-iteration-count: infinite; }
+
+@keyframes circleRotate {
+  from {
+    transform: rotate(0deg); }
+  50% {
+    transform: rotate(180deg); }
+  to {
+    transform: rotate(360deg); } }
