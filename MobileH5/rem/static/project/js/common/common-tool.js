@@ -150,9 +150,11 @@ class Toast extends HtmlElementBuild {
         body.appendChild(div);
         this.container = div;
         this.id = id;
-        var that = this;
-        setTimeout(function() {
-            that.remove();
+
+
+
+        setTimeout(() => {
+            this.remove();
         }, timer)
     };
 
