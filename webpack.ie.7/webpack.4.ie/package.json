@@ -40,5 +40,5 @@
         "/static/v2/base/ifind-ui.min.css",
         "/static/v2/tools/jQuery/jquery.1.11.3.js"
     ],
-    "host": "http://testpub.51ifind.com"
+    "host": ""
 }
