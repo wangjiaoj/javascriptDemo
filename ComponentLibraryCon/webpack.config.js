@@ -9,12 +9,11 @@ const path = require('path');
  *  */
 module.exports = {
     entry: {
-        app: './static/src/app.js',
-        tool: './static/src/tool.js',
+        tool: './src/tool.js',
     },
     output: {
         //path.resolve为nodejs的固定语法，用于找到当前文件的绝对路径
-        path: path.resolve(__dirname, './static/js/'),
+        path: path.resolve(__dirname, './js/'),
         // publicPath: '',
         filename: '[name].bundle.js' //可以以name/id/hash放在中括号里区分文件名
     },

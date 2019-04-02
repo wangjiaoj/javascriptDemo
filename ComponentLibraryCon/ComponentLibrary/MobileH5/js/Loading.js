@@ -1,3 +1,4 @@
+ import '../css/common-tool.scss'
  import HtmlElementBuild from './HtmlElementBuild';
  class Loading extends HtmlElementBuild {
      constructor() {

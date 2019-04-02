@@ -6,7 +6,7 @@ devConfig.plugins.push(
     new webpack.HotModuleReplacementPlugin()
 );
 devConfig.devServer = {
-    contentBase: path.resolve(__dirname, './static/'),
+    contentBase: path.resolve(__dirname, './js/'),
     compress: true,
     hot: true, // 开启配置
     port: 9000
