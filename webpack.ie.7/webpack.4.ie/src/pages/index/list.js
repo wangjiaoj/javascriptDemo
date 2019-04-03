@@ -1,4 +1,4 @@
-import Event from './Util/EventEmitter';
+import Event from '../../Util/EventEmitter';
 
 class List extends Event {
     constructor(el) {
@@ -6,7 +6,7 @@ class List extends Event {
         this.el = el;
     }
     load() {
-       alert('load data');
+        alert('load data');
     }
 }
 

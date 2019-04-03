@@ -13,7 +13,7 @@ module.exports = {
     },
     output: {
         //path.resolve为nodejs的固定语法，用于找到当前文件的绝对路径
-        path: path.resolve(__dirname, './js/'),
+        path: path.resolve(__dirname, './dist/'),
         // publicPath: '',
         filename: '[name].bundle.js' //可以以name/id/hash放在中括号里区分文件名
     },

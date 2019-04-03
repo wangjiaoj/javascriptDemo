@@ -9,12 +9,13 @@ const path = require('path');
  *  */
 module.exports = {
     entry: {
-        app: './static/src/app.js',
-        tool: './static/src/tool.js',
+        app: './src/pages/index/app.js',
+        phone: './src/pages/phone/index.js',
+        rem: './src/util/common-rem.js',
     },
     output: {
         //path.resolve为nodejs的固定语法，用于找到当前文件的绝对路径
-        path: path.resolve(__dirname, './static/js/'),
+        path: path.resolve(__dirname, './static/project/js/'),
         // publicPath: '',
         filename: '[name].bundle.js' //可以以name/id/hash放在中括号里区分文件名
     },
@@ -51,7 +52,7 @@ module.exports = {
                     options: {
                         // you can specify a publicPath here
                         // by default it use publicPath in webpackOptions.output
-                        publicPath: './static/css/'
+                        publicPath: './static/project/css/'
                     }
                 }, 'css-loader']
             }, {
@@ -61,7 +62,7 @@ module.exports = {
                     options: {
                         // you can specify a publicPath here
                         // by default it use publicPath in webpackOptions.output
-                        publicPath: './static/css/'
+                        publicPath: './static/project/css/'
                     }
                 }, 'css-loader', 'sass-loader']
 

@@ -3,7 +3,6 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
-        "watch": "node ./node_modules/webpack/bin/webpack.js --watch",
         "build": "node ./node_modules/webpack/bin/webpack.js --mode development",
         "dev": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.config.dev.js --mode development"
     },

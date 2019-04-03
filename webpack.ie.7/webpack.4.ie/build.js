@@ -10,6 +10,8 @@
      var DOWNLOAD_DIR = './libs/';
      var webpackConfig;
      var importList;
+     //先清空下libs
+     rmDirSync(DOWNLOAD_DIR);
      //读取package.json 获取组件库依赖importList和组件库组件结构文件componentFile(component.file.json)
      var packageJson = fs.readFileSync(path.join(__dirname, './package.json'), 'utf8');
      if (packageJson) {
@@ -80,32 +82,24 @@
 
          var file_name = url.parse(file_url).pathname.split('/').pop();
          var dirFile = dir ? dir + file_name : DOWNLOAD_DIR + file_name;
-         //如果./libs已经存在该文件就不再重新从线上拉取
-         if (fs.existsSync(dirFile)) {
-             var err = `${file_url} exist in libs already`;
-             console.log(err);
-             if (callback) {
-                 callback();
+         var file = fs.createWriteStream(dirFile);
+
+         var req = http.get(options, function(res) {
+             if (res.statusCode === 404) {
+                 var err = `${file_url} -- status:${res.statusCode} didn't exist`;
+                 console.log(err);
+                 throw new Error(err);
+             } else {
+                 res.on('data', function(data) {
+                     file.write(data);
+                 }).on('end', function() {
+                     file.end();
+                     if (callback) {
+                         callback();
+                     }
+                 });
              }
-         } else {
-             var file = fs.createWriteStream(dirFile);
-             var req = http.get(options, function(res) {
-                 if (res.statusCode === 404) {
-                     var err = `${file_url} -- status:${res.statusCode} didn't exist`;
-                     console.log(err);
-                     throw new Error(err);
-                 } else {
-                     res.on('data', function(data) {
-                         file.write(data);
-                     }).on('end', function() {
-                         file.end();
-                         if (callback) {
-                             callback();
-                         }
-                     });
-                 }
-             });
-         }
+         });
      };
      /**
       * 读取component.file.json中的组件文件结构，并将package.json中依赖的组件下载到libs中
@@ -146,7 +140,14 @@
                  }
              });
              console.log('make libs sucess!');
-
+             console.log('npm run build... ');
+             exec('npm run build', function(error, stdout, stderr) {
+                 if (error) throw error;
+                 else {
+                     console.log(stdout);
+                     console.log(stderr);
+                 }
+             });
          }
      }
 
