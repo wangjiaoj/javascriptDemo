@@ -5,9 +5,9 @@ const path = require('path');
 devConfig.plugins.push(
     new webpack.HotModuleReplacementPlugin()
 );
-devConfig.devTool = 'source-map';
+devConfig.devtool = 'source-map';
 devConfig.devServer = {
-    contentBase: path.resolve(__dirname, './js/'),
+    contentBase: path.resolve(__dirname, './dist/'),
     compress: true,
     hot: true, // 开启配置
     port: 9000

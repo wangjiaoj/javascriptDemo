@@ -20,16 +20,16 @@ module.exports = {
     module: {
         rules: [{
                 test: /\.js$/,
-                enforce: 'post', // post-loader处理
-                use: {
-                    loader: 'es3ify-loader'
-                }
-            }, {
-                test: /\.js$/,
                 //include: [resolve('src')], // 限定范围 提升速度
                 exclude: /(node_modules|bower_components)/,
                 use: {
                     loader: 'babel-loader',
+                }
+            }, {
+                test: /\.js$/,
+                enforce: 'post', // post-loader处理
+                use: {
+                    loader: 'es3ify-loader'
                 }
             },
             /**
