@@ -26,6 +26,8 @@ class HtmlElementBuild {
         }
         return div;
     }
-}
+    on(target) {
 
-module.exports = HtmlElementBuild;
+    }
+}
+export default HtmlElementBuild;

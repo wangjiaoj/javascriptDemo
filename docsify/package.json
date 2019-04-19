@@ -1,0 +1,16 @@
+{
+    "name": "gulp-cli",
+    "version": "1.0.0",
+    "description": "A front-end build tool by gulp",
+    "main": "gulpfile.js",
+    "scripts": {
+        "docsifyInit": "node ./node_modules/docsify-cli/bin/docsify init docs",
+        "docsifyServe": "node ./node_modules/docsify-cli/bin/docsify serve docs"
+    },
+    "license": "ISC",
+    "devDependencies": {
+        "docsify": "^4.9.1",
+        "docsify-cli": "^4.3.0"
+    },
+    "desc": []
+}

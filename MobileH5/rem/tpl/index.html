@@ -6,10 +6,11 @@
     <meta charset="utf-8">
     <meta lang="zh-CN">
     <meta name="viewport" data-content-max content="width=device-width,initial-scale=1,user-scalable=no">
-    <!--<link rel="stylesheet" href="../static/libs/tool.css">-->
-    <link rel="stylesheet" href="http://localhost:9000/tool.css">
     <link rel="stylesheet" href="../static/project/css/rem.css">
     <script src="../static/project/js/common/rem.js"></script>
+
+    <!--<link rel="stylesheet" href="../static/libs/tool.css">-->
+    <link rel="stylesheet" href="http://localhost:9000/tool.css">
 
 </head>
 
@@ -33,6 +34,17 @@
             </ul>
         </nav>
         <main>
+            <h3>填写地址</h3>
+            <div class="info-items">
+                <p class="info-item">
+                    <span>省份</span>
+                    <input type="text" class="info-item__province" placeholder="请填写省份">
+                </p>
+                <p class="info-item">
+                    <span>城市</span>
+                    <input type="text" class="info-item__city" placeholder="请填写城市">
+                </p>
+            </div>
             <h3>填写信息</h3>
             <div class="info-items">
                 <p class="info-item">
@@ -58,7 +70,60 @@
     </section>
 
     <!--<script src="../static/libs/tool.bundle.js"></script>-->
+    <script src="http://localhost:9000/provice.js"></script>
     <script src=" http://localhost:9000/tool.bundle.js"></script>
+    <script>
+        var provinceList = [];
+        var cityList = [];
+        var selectObj;
+        for (var i = 0; i < areaList.length; i++) {
+            provinceList.push({
+                name: areaList[i].name,
+                key: areaList[i].name
+            });
+        }
+        new FullScreenSelect({
+            el: document.querySelector(".info-item__province"),
+            afterSelectedFun: function(item) {
+                document.querySelector(".info-item__province").value = item.name;
+                cityList = getCityList(item.name);
+                if (cityList.length > 0) {
+                    selectObj.resetData(cityList);
+                    document.querySelector(".info-item__city").value = cityList[0].name;
+                }
+            },
+            data: provinceList
+        });
+
+        cityList = getCityList(provinceList[0].name);
+        selectObj = new FullScreenSelect({
+            el: document.querySelector(".info-item__city"),
+            afterSelectedFun: function(item) {
+                document.querySelector(".info-item__city").value = item.name;
+            },
+            data: cityList
+        });
+
+
+        function getCityList(name) {
+            var city = [];
+            var cityList = [];
+            var selectObj;
+            for (var i = 0; i < areaList.length; i++) {
+                if (areaList[i].name == name) {
+                    city = areaList[i].city;
+                    break;
+                }
+            }
+            for (var j = 0; j < city.length; j++) {
+                cityList.push({
+                    name: city[j].name,
+                    key: city[j].name
+                });
+            }
+            return cityList;
+        }
+    </script>
 </body>
 
 </html>
