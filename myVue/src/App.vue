@@ -1,20 +1,16 @@
 <template>
     <div id="app">
-    <ul>
-    <li><router-link to="/index">index</router-link></li>
-    </ul>
-    <p></p>
        <router-view></router-view> 
     </div>
 </template>
 <script>
     export default {
-        name: 'App',  
-        data(){
-             return{
-              msg: 'I am an apple'
+        name: 'App',
+        data() {
+            return {
+                msg: 'I am an apple'
             }
-      }
+        }
     }
 </script>
 <style lang="scss">
