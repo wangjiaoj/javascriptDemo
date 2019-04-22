@@ -3,16 +3,14 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const devMode = process.env.NODE_ENV !== 'production'
 const path = require('path');
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
-// function resolve(dir) {
-//     return path.join(__dirname, '..', dir)
-// }
 /****
  * 在webpack 4中，我们可以直接使用"mode"设置为"production"来启用UglifyJsPlugin。
  *  */
 module.exports = {
     entry: {
-        app: './src/index.js',
+        app: './src/main.js',
     },
     output: {
         //path.resolve为nodejs的固定语法，用于找到当前文件的绝对路径
@@ -20,6 +18,11 @@ module.exports = {
         // publicPath: '',
         filename: '[name].bundle.js' //可以以name/id/hash放在中括号里区分文件名
     },
+   resolve: {
+      alias: {
+        'vue$': 'vue/dist/vue.esm.js' 
+      }
+   },
     // resolve: {
     //     extensions: ['.js', '.vue', '.json'],
     //     alias: {
@@ -29,7 +32,7 @@ module.exports = {
     // },
     module: {
         rules: [{
-                test: /\.vue$/,
+                test: /.vue$/,
                 use: {
                     loader: 'vue-loader',
                     options: {
@@ -62,24 +65,28 @@ module.exports = {
             *  */
             {
                 test: /\.css$/,
-                use: [{
-                    loader: MiniCssExtractPlugin.loader,
-                    options: {
-                        // you can specify a publicPath here
-                        // by default it use publicPath in webpackOptions.output
-                        publicPath: './static/css/'
-                    }
-                }, 'css-loader']
+                use: [
+                //     {
+                //     loader: MiniCssExtractPlugin.loader,
+                //     options: {
+                //         // you can specify a publicPath here
+                //         // by default it use publicPath in webpackOptions.output
+                //         publicPath: './src'
+                //     }
+                // },
+                 'css-loader']
             }, {
                 test: /\.scss$/,
-                use: [{
-                    loader: MiniCssExtractPlugin.loader,
-                    options: {
-                        // you can specify a publicPath here
-                        // by default it use publicPath in webpackOptions.output
-                        publicPath: './static/css/'
-                    }
-                }, 'css-loader', 'sass-loader']
+                use: [
+                //     {
+                //     loader: MiniCssExtractPlugin.loader,
+                //     options: {
+                //         // you can specify a publicPath here
+                //         // by default it use publicPath in webpackOptions.output
+                //         publicPath: './src'
+                //     }
+                // }, 
+                 'vue-style-loader','css-loader', 'sass-loader']
             }, {
                 test: /\.(png|svg|jpg|jpeg|gif)$/,
                 loader: 'url-loader',
@@ -90,12 +97,14 @@ module.exports = {
         ]
     },
     plugins: [
-        new MiniCssExtractPlugin({
-            // Options similar to the same options in webpackOptions.output
-            // both options are optional
-            filename: "[name].css",
-            chunkFilename: "[id].css"
-        })
+        // 请确保引入这个插件！ 它的职责是将你定义过的其它规则复制并应用到 .vue 文件里相应语言的块。例如，如果你有一条匹配 /\.js$/ 的规则，那么它会应用到 .vue 文件里的 <script> 块。
+    new VueLoaderPlugin()
+        // new MiniCssExtractPlugin({
+        //     // Options similar to the same options in webpackOptions.output
+        //     // both options are optional
+        //     filename: "[name].css",
+        //     chunkFilename: "[id].css"
+        // })
     ],
 
     optimization: {

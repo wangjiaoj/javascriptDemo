@@ -7,7 +7,7 @@ devConfig.plugins.push(
 );
 devConfig.devtool = 'source-map';
 devConfig.devServer = {
-    contentBase: path.resolve(__dirname, './dist/'),
+    contentBase: path.resolve(__dirname, './'),
     compress: true,
     hot: true, // 开启配置
     port: 9000
