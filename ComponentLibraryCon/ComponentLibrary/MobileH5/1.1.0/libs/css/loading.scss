@@ -1,0 +1,27 @@
+/** 
+ * css3动画+svg实现:loading
+ **/
+
+.m-ifind-loading-wrapper {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    text-align: center;
+    /*加载中图标*/
+    .m-ifind-loading-icon {
+        display: block;
+        width: px2rem(250);
+        height: px2rem(250);
+        margin: px2rem(250) auto 0px;
+        background-image: url(../image/loading.svg);
+        background-size: 100%;
+        animation-name: circleRotate;
+        animation-duration: 3s;
+        animation-timing-function: linear;
+        animation-delay: 0s;
+        animation-fill-mode: none;
+        animation-iteration-count: infinite;
+    }
+}

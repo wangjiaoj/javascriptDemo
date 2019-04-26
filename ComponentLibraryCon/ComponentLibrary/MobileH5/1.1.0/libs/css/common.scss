@@ -1,0 +1,13 @@
+@charset "UTF-8";
+@import "./util";
+body {
+    position: relative;
+}
+
+.ifind-show {
+    display: block;
+}
+
+.ifind-hide {
+    display: none;
+}

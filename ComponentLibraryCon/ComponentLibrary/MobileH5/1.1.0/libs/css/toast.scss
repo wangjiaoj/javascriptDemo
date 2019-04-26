@@ -1,0 +1,53 @@
+/** 
+ * 非模态框实现：Toast / HUD
+ **/
+
+.m-ifind-toast-wrapper {
+    position: fixed;
+    bottom: px2rem(50);
+    width: 100%;
+    text-align: center;
+    left: 0px;
+    &.m-ifind-toast-wrapper-top {
+        bottom: auto;
+        top: px2rem(50);
+    }
+    &.m-ifind-toast-wrapper-middle {
+        bottom: 50%;
+    }
+    .toast-container {
+        border-radius: 8px;
+        margin: 0 auto;
+        background: hsla(0, 0%, 7%, .7);
+        display: inline-block;
+        padding: px2rem(25) px2rem(40);
+        max-width: px2rem(675);
+        min-width: px2rem(300);
+        .toast-text {
+            font-size: px2rem(24);
+            color: #FFF;
+            text-align: center;
+            letter-spacing: 0.71px;
+        }
+        i.toast-icon {
+            display: block;
+            margin: 0px auto px2rem(10);
+            text-align: center;
+            &.toast-icon-success::before {
+                content: " ";
+                background-image: url(../image/check.svg);
+            }
+            &.toast-icon-warn::before {
+                content: " ";
+                background-image: url(../image/info-circle-fill.svg);
+            }
+            &::before {
+                display: inline-block;
+                width: px2rem(100);
+                height: px2rem(100);
+                background-repeat: no-repeat;
+                background-size: 100%;
+            }
+        }
+    }
+}
