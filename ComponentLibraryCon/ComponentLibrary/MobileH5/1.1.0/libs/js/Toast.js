@@ -1,4 +1,4 @@
- import '../css/common-tool.scss'
+ import '../css/toast.scss'
  import HtmlElementBuild from './HtmlElementBuild';
  /** 
   * 模态框实现：Dialog

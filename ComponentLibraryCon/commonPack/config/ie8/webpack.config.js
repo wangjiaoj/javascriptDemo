@@ -10,6 +10,7 @@ const path = require('path');
 module.exports = {
     entry: {
         tool: './src/tool.js',
+        vendor: ['es5-shim', 'es5-shim/es5-sham', 'console-polyfill']
     },
     output: {
         //path.resolve为nodejs的固定语法，用于找到当前文件的绝对路径

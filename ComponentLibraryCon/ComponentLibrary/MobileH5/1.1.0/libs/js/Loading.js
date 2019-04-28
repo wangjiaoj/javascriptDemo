@@ -1,4 +1,4 @@
- import '../css/common-tool.scss'
+ import '../css/Loading.scss'
  import HtmlElementBuild from './HtmlElementBuild';
  /** 
   * 加载中效果实现：Loading

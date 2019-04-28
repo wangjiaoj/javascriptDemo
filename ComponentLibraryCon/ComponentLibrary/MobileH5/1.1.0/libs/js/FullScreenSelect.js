@@ -1,4 +1,5 @@
- import '../css/common-tool.scss'
+ import '../css/full-screen-select.scss'
+
  import HtmlElementBuild from './HtmlElementBuild';
  /**
   * 全屏下拉框：FullScreenSelect
