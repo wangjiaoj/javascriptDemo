@@ -2,8 +2,8 @@
     <div class="page-container">
         <div class="page-header">
             <ul>
-                <li><router-link to="/">login</router-link></li>
-                <li><router-link to="/main/index">index</router-link></li>
+                <li><router-link to="/main/movie">movie</router-link></li>
+                <li><router-link to="/main/book">book</router-link></li>
             </ul>
         </div>
         <div class="page-body">

@@ -1,3 +1,4 @@
+import './components/assets/base'
 <template>
     <div id="app">
        <router-view></router-view> 

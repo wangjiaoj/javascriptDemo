@@ -24,31 +24,25 @@
     export default {
         data() {
             return {
-                book: {
-                    id: 0,
-                    author: '',
-                    name: '',
-                    price: ''
-                },
                 books: [{
                     id: 1,
-                    author: '曹雪芹',
-                    name: '红楼梦',
+                    author: '伪装者',
+                    name: '伪装者',
                     price: 32.0
                 }, {
                     id: 2,
-                    author: '施耐庵',
-                    name: '水浒传',
+                    author: 'super deluxe',
+                    name: 'super deluxe',
                     price: 30.0
                 }, {
                     id: '3',
-                    author: '罗贯中',
-                    name: '三国演义',
+                    author: 'wondering',
+                    name: 'wondering',
                     price: 24.0
                 }, {
                     id: 4,
-                    author: '吴承恩',
-                    name: '西游记',
+                    author: 'baahubali',
+                    name: 'baahubali',
                     price: 20.0
                 }]
             }
