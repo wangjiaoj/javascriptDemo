@@ -1,5 +1,21 @@
 <template>
     <div class="index">
+        <my-Row >
+            <my-Col span="1">ddddddd</my-Col>
+        </my-Row>
+        <my-tab>
+            <my-tab-panel>
+                 AAAAA
+            </my-tab-panel>  
+
+            <my-tab-panel>
+                BBBBB
+            </my-tab-panel> 
+
+            <my-tab-panel>
+                CCCCCC
+            </my-tab-panel>
+        </my-tab>
         <table>
             <thead>
                 <th>

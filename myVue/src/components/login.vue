@@ -1,11 +1,15 @@
 <template>
-    <div class="login-main">
+    <div class="login-box">
         <div class="login-bg">登录</div>
          <div class="login-area">
-           <input type="text" name="" value="" placeholder="姓名">
-            <input type="password" name="" value="" placeholder="密码">
+             <div class="row">
+                   <input type="text" name="" value="" placeholder="姓名">
+             </div>  
+             <div class="row">
+                  <input type="password" name="" value="" placeholder="密码">
+             </div>
+              <input type='button' href="javscript:;" @click="doLogin"  value="login button">
          </div>
-         <a href="javscript:;" @click="doLogin">button</a>
     </div>
 </template>
 <script>
@@ -26,5 +30,8 @@
     }
 </script>
 <style lang="scss">
-
+    .login-box {
+        width: 400px;
+        margin: 0 auto;
+    }
 </style>
