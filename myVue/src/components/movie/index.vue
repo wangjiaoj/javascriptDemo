@@ -3,16 +3,16 @@
         <my-Row >
             <my-Col span="1">ddddddd</my-Col>
         </my-Row>
-        <my-tab>
-            <my-tab-panel>
+        <my-tab value="tab1">
+            <my-tab-panel label="tab1" name="tab1">
                  AAAAA
             </my-tab-panel>  
 
-            <my-tab-panel>
+            <my-tab-panel label="tab2" name="tab2">
                 BBBBB
             </my-tab-panel> 
 
-            <my-tab-panel>
+            <my-tab-panel label="tab3" name="tab3">
                 CCCCCC
             </my-tab-panel>
         </my-tab>

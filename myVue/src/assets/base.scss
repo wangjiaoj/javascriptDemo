@@ -4,12 +4,15 @@ li {
 }
 
 li {
-    float: left;
+    display: inline-block;
     margin: 20px;
 }
 
 .iv-row {
     width: 100%;
+    .iv-col {
+        float: left;
+    }
     .iv-col {
         width: 8.33%;
     }
@@ -49,4 +52,30 @@ li {
     .iv-col-12 {
         width: 100%;
     }
+}
+
+.iv-tab-coantainer {
+    .iv-tab-nav {
+        li {
+            margin: 0px;
+            padding: 5px 10px;
+            border-bottom: 1px solid #CCC;
+            cursor: pointer;
+            &:hover {
+                color: #57a3f3;
+            }
+            &.tab-focus {
+                color: #57a3f3;
+                border-color: #57a3f3;
+            }
+        }
+    }
+    .iv-tab-body {
+        .iv-tab-content {}
+    }
+}
+
+.page-container {
+    min-width: 1200px;
+    margin: 0 auto;
 }
