@@ -3,8 +3,8 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
-        "build": "node ./node_modules/webpack/bin/webpack.js --config webpack.config.js  --mode production",
-        "dev": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.config.dev.js --mode development"
+        "build": "node ./node_modules/webpack/bin/webpack.js --config config/webpack.config.js",
+        "dev": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --config config/webpack.config.dev.js"
     },
     "dependencies": {
         "console-polyfill": "^0.2.3",
