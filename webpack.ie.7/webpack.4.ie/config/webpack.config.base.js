@@ -1,23 +1,68 @@
+/** 
+* 4.0中不再支持Extract-text-webpack-plugin,换用mini-css-extract-plugin
+* 此外webpack内置的JS压缩插件不能使用了，可以安装uglifyjs-webpack-plugin插件，使用同其他非内置插件；
+* 配置说明：
+ path:所有输出文件的目标路径;
+ publicPath:输出解析文件的目录，url 相对于 HTML 页面
+*/
 const webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const devMode = process.env.NODE_ENV !== 'production'
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const path = require('path');
+const glob = require("glob");
 
-/****
- * 在webpack 4中，我们可以直接使用"mode"设置为"production"来启用UglifyJsPlugin。
- *  */
+const devMode = process.env.NODE_ENV !== 'production'
+const dirPath = '../static/project/';
+const publicPath = 'static/project/';
+const cssPublicPath = './';
+const cssFileName = devMode ? 'css/[name].css' : 'css/[name].[chunkhash].css'; //'.[chunkhash]'
+const jsFileName = devMode ? 'js/[name].js' : 'js/[name].[chunkhash].js'; //'.[chunkhash]'
+const imgFileName = devMode ? 'image/[name].[ext]' : 'image/[name].[hash:7].[ext]'; //'.[hash:7]'
+const entryDir = './src/pages/**/*.js'; //该目录下全部为入口文件
+
+
+//方便多页面打包时可以在不用修改入口文件配置 
+function getEntry() {
+    var entry = {};
+    //读取src/pages目录所有入口文件
+    glob.sync(entryDir)
+        .forEach(function(name) {
+            var start = name.indexOf('src/pages/') + 10,
+                end = name.length - 3;
+            var eArr = [];
+            var nameKey = '';
+            var nameStr = name.slice(start, end);
+            var nameStrArry = nameStr.split('/');
+            for (let i = 0; i < nameStrArry.length; i++) {
+                if (nameStrArry[i]) {
+                    nameKey += nameStrArry[i];
+                    if (i !== (nameStrArry.length - 1)) {
+                        nameKey += '-';
+                    }
+                }
+                //保存各个组件的入口 
+            }
+            console.log(`key:${nameKey};filename:${name}`)
+            eArr.push(name);
+            entry[nameKey] = eArr;
+        });
+    return entry;
+};
+
+console.log(`devMode:${devMode}`)
+
 module.exports = {
-    entry: {
-        app: './src/pages/index/app.js',
-        phone: './src/pages/phone/index.js',
-        rem: './src/util/common-rem.js',
-    },
+    //webpack4中，可以直接使用"mode"设置为"production"来启用UglifyJsPlugin
+    mode: devMode ? "development" : "production",
+    entry: getEntry(),
     output: {
         //path.resolve为nodejs的固定语法，用于找到当前文件的绝对路径
-        path: path.resolve(__dirname, './static/project/js/'),
-        // publicPath: '',
-        filename: '[name].bundle.js' //可以以name/id/hash放在中括号里区分文件名
+        path: path.resolve(__dirname, dirPath),
+        publicPath: publicPath,
+        filename: jsFileName
     },
     module: {
         rules: [{
@@ -50,9 +95,7 @@ module.exports = {
                 use: [{
                     loader: MiniCssExtractPlugin.loader,
                     options: {
-                        // you can specify a publicPath here
-                        // by default it use publicPath in webpackOptions.output
-                        publicPath: './static/project/css/'
+                        publicPath: cssPublicPath
                     }
                 }, 'css-loader']
             }, {
@@ -60,9 +103,7 @@ module.exports = {
                 use: [{
                     loader: MiniCssExtractPlugin.loader,
                     options: {
-                        // you can specify a publicPath here
-                        // by default it use publicPath in webpackOptions.output
-                        publicPath: './static/project/css/'
+                        publicPath: cssPublicPath
                     }
                 }, 'css-loader', 'sass-loader']
 
@@ -70,16 +111,15 @@ module.exports = {
                 test: /\.(png|svg|jpg|jpeg|gif)$/,
                 loader: 'url-loader',
                 options: {
-                    limit: 10000
+                    limit: 100,
+                    name: imgFileName
                 }
             }
         ]
     },
-    plugins: [
+    plugins: [new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({
-            // Options similar to the same options in webpackOptions.output
-            // both options are optional
-            filename: "[name].css",
+            filename: cssFileName,
             chunkFilename: "[id].css"
         })
     ],
@@ -92,7 +132,6 @@ module.exports = {
      *  */
     optimization: {
         minimizer: [
-
             new UglifyJsPlugin({
                 // mangle: {
                 //     screw_ie8: false
@@ -116,7 +155,6 @@ module.exports = {
                     keep_fnames: false,
                 }
             })
-
         ]
     }
 };

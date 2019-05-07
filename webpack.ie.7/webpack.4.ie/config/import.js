@@ -8,12 +8,12 @@
      var host;
      var pages = [];
      var DOWNLOAD_DIR = './libs/';
+     var packageJsonName = '../package.json';
+     var DOWNLOAD_DIR_JSON = '../libs/component.file.json'
      var webpackConfig;
      var importList;
-     //先清空下libs
-     rmDirSync(DOWNLOAD_DIR);
      //读取package.json 获取组件库依赖importList和组件库组件结构文件componentFile(component.file.json)
-     var packageJson = fs.readFileSync(path.join(__dirname, './package.json'), 'utf8');
+     var packageJson = fs.readFileSync(path.join(__dirname, packageJsonName), 'utf8');
      if (packageJson) {
          webpackConfig = JSON.parse(packageJson);
          if (webpackConfig.componentFile && webpackConfig.host && webpackConfig.host) {
@@ -60,11 +60,13 @@
      /**
       * Function to make Dir  
       *  */
-     async function mkDirSync(DIR) {
-         if (fs.existsSync(DIR)) {
+     function mkDirSync(path) {
+         if (fs.existsSync(path)) {
+             //  console.log(`mk dir:${path} but dir exists already`);
              return false;
          } else {
-             fs.mkdirSync(DIR);
+             let status = fs.mkdirSync(path);
+             // console.log(`mk dir:${path} status:${status}`)
              return true;
          }
      }
@@ -82,41 +84,59 @@
 
          var file_name = url.parse(file_url).pathname.split('/').pop();
          var dirFile = dir ? dir + file_name : DOWNLOAD_DIR + file_name;
-         var file = fs.createWriteStream(dirFile);
-
-         var req = http.get(options, function(res) {
-             if (res.statusCode === 404) {
-                 var err = `${file_url} -- status:${res.statusCode} didn't exist`;
-                 console.log(err);
-                 throw new Error(err);
-             } else {
-                 res.on('data', function(data) {
-                     file.write(data);
-                 }).on('end', function() {
-                     file.end();
-                     if (callback) {
-                         callback();
-                     }
-                 });
+         //如果../libs已经存在该文件就不再重新从线上拉取
+         if (fs.existsSync(dirFile)) {
+             var err = `${file_url} exist in libs already`;
+             console.log(err);
+             if (callback) {
+                 callback();
              }
-         });
+         } else {
+             console.log(dirFile)
+             var file = fs.createWriteStream(dirFile);
+             var req = http.get(options, function(res) {
+                 if (res.statusCode === 404) {
+                     var err = `${file_url} -- status:${res.statusCode} didn't exist`;
+                     console.log(err);
+                     throw new Error(err);
+                 } else {
+                     res.on('data', function(data) {
+                         file.write(data);
+                     }).on('end', function() {
+                         file.end();
+                         if (callback) {
+                             callback();
+                         }
+                     });
+                 }
+             });
+         }
      };
      /**
       * 读取component.file.json中的组件文件结构，并将package.json中依赖的组件下载到libs中
       * param:dir存在时使用dir作为目录,否则使用 DOWNLOAD_DIR作为目录
       *  */
      function downLibsAndBuild() {
-         var componentJson = fs.readFileSync(path.join(__dirname, DOWNLOAD_DIR + 'component.file.json'), 'utf8');
+
+         var componentJson = fs.readFileSync(path.join(__dirname, DOWNLOAD_DIR_JSON), 'utf8');
          if (componentJson) {
              var componentStruct = JSON.parse(componentJson);
              for (var key in componentStruct.component) {
                  var item = componentStruct.component[key];
                  for (var i = 0; i < importList.length; i++) {
                      if (importList[i].name == key) {
+                         let versionFlag = false;
                          for (var j = 0; j < item.length; j++) {
                              if (importList[i].version == item[j].version) {
+                                 versionFlag = true;
                                  pages.push({ name: key, list: item[j] });
+                                 break;
                              }
+                         }
+                         if (versionFlag) {
+                             console.log(`found ${key} of version:${importList[i].version}`);
+                         } else {
+                             console.log(`error!!! can't found  ${key} of version ${importList[i].version}`);
                          }
                      }
                  }
@@ -124,31 +144,39 @@
          }
 
          if (pages.length) {
-             //按照依赖的组件和item[j].file中的组件结构在libs中创建目录，并下载对应文件到本地
+             //按照依赖的组件和在libs中创建目录/name/version
              pages.map((item, key) => {
                  let dir = DOWNLOAD_DIR + item.name;
                  mkDirSync(dir);
-                 for (var floder in item.list.file) {
-                     var urlItem = item.list.file[floder];
-                     mkDirSync(dir + "/" + floder);
-                     for (var i = 0; i < urlItem.length; i++) {
-                         var pageUrl = urlItem[i];
-                         var fileName = getName(pageUrl);
-                         pageUrl = host + pageUrl;
-                         download_file_httpget(pageUrl, dir + "/" + floder + "/");
-                     }
-                 }
+                 dir = dir + "/" + item.list.version;
+                 mkDirSync(dir);
+                 analysisFile(item.list.file, dir);
              });
              console.log('make libs sucess!');
-             console.log('npm run build... ');
-             exec('npm run build', function(error, stdout, stderr) {
-                 if (error) throw error;
-                 else {
-                     console.log(stdout);
-                     console.log(stderr);
-                 }
-             });
          }
      }
-
+     //按照item[j].file中的组件结构在libs/name/version中拉取对应组件的文件到本地
+     function analysisFile(files, dir) {
+         if (files && typeof files === "object") {
+             if (Array.isArray(files)) {
+                 for (var i = 0; i < files.length; i++) {
+                     let pageUrl = files[i];
+                     if (typeof pageUrl === "string") {
+                         pageUrl = host + pageUrl;
+                         download_file_httpget(pageUrl, dir + "/");
+                     } else if (typeof pageUrl === "object") {
+                         analysisFile(pageUrl, dir);
+                     }
+                 }
+             } else {
+                 //对象
+                 for (var floder in files) {
+                     //创建文件夹
+                     let tempdir = dir + "/" + floder;
+                     mkDirSync(tempdir);
+                     analysisFile(files[floder], tempdir);
+                 }
+             }
+         }
+     }
  })();

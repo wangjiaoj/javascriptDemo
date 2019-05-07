@@ -1,4 +1,4 @@
-import Event from '../../Util/EventEmitter';
+import Event from '../Util/EventEmitter';
 
 class List extends Event {
     constructor(el) {
