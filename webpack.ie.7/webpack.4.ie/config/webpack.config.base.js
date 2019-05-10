@@ -17,7 +17,7 @@ const glob = require("glob");
 const devMode = process.env.NODE_ENV !== 'production'
 const dirPath = '../static/project/';
 const publicPath = 'static/project/';
-const cssPublicPath = './';
+const cssPublicPath = '../';
 const cssFileName = devMode ? 'css/[name].css' : 'css/[name].[chunkhash].css'; //'.[chunkhash]'
 const jsFileName = devMode ? 'js/[name].js' : 'js/[name].[chunkhash].js'; //'.[chunkhash]'
 const imgFileName = devMode ? 'image/[name].[ext]' : 'image/[name].[hash:7].[ext]'; //'.[hash:7]'
@@ -30,24 +30,27 @@ function getEntry() {
     //读取src/pages目录所有入口文件
     glob.sync(entryDir)
         .forEach(function(name) {
-            var start = name.indexOf('src/pages/') + 10,
-                end = name.length - 3;
-            var eArr = [];
-            var nameKey = '';
-            var nameStr = name.slice(start, end);
-            var nameStrArry = nameStr.split('/');
-            for (let i = 0; i < nameStrArry.length; i++) {
-                if (nameStrArry[i]) {
-                    nameKey += nameStrArry[i];
-                    if (i !== (nameStrArry.length - 1)) {
-                        nameKey += '-';
+            let start = name.indexOf('src/pages/') + 10,
+                end = name.lastIndexOf('.');
+            let ext = name.slice(end, name.length);
+            if (ext === '.js') {
+                let eArr = [];
+                let nameKey = '';
+                let nameStr = name.slice(start, end);
+                let nameStrArry = nameStr.split('/');
+                for (let i = 0; i < nameStrArry.length; i++) {
+                    if (nameStrArry[i]) {
+                        nameKey += nameStrArry[i];
+                        if (i !== (nameStrArry.length - 1)) {
+                            nameKey += '-';
+                        }
                     }
+                    //保存各个组件的入口 
                 }
-                //保存各个组件的入口 
+                console.log(`key:${nameKey};filename:${name}`)
+                eArr.push(name);
+                entry[nameKey] = eArr;
             }
-            console.log(`key:${nameKey};filename:${name}`)
-            eArr.push(name);
-            entry[nameKey] = eArr;
         });
     return entry;
 };
