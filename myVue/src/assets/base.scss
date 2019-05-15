@@ -75,7 +75,18 @@ li {
     }
 }
 
+.clearfix {
+    /*clear: both;*/
+    overflow: auto;
+    _height: 1%
+}
+
 .page-container {
     min-width: 1200px;
     margin: 0 auto;
+    .nav-header {
+        li {
+            float: left;
+        }
+    }
 }

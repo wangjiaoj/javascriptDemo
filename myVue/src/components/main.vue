@@ -1,7 +1,7 @@
 <template>
     <div class="page-container">
-        <div class="page-header">
-            <ul>
+        <div class="nav-header">
+            <ul class="clearfix">
                 <li><router-link to="/main/movie">movie</router-link></li>
                 <li><router-link to="/main/book">book</router-link></li>
             </ul>
