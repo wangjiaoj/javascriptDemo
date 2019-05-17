@@ -1,19 +1,12 @@
-/** 
-* 4.0中不再支持Extract-text-webpack-plugin,换用mini-css-extract-plugin
-* 此外webpack内置的JS压缩插件不能使用了，可以安装uglifyjs-webpack-plugin插件，使用同其他非内置插件；
-* 配置说明：
- path:所有输出文件的目标路径;
- publicPath:输出解析文件的目录，url 相对于 HTML 页面
-*/
 const webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin'); // 此外webpack内置的JS压缩插件不能使用了，可以安装uglifyjs-webpack-plugin插件，使用同其他非内置插件；
+const MiniCssExtractPlugin = require("mini-css-extract-plugin"); //4.0中不再支持Extract-text-webpack-plugin,换用mini-css-extract-plugin
+
 const CopyPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const path = require('path');
-const glob = require("glob");
-
+const until = require("./until");
+//path:所有输出文件的目标路径;publicPath:输出解析文件的目录，url 相对于 HTML 页面
 const devMode = process.env.NODE_ENV !== 'production'
 const dirPath = '../static/project/';
 const publicPath = 'static/project/';
@@ -23,44 +16,11 @@ const jsFileName = devMode ? 'js/[name].js' : 'js/[name].[chunkhash].js'; //'.[c
 const imgFileName = devMode ? 'image/[name].[ext]' : 'image/[name].[hash:7].[ext]'; //'.[hash:7]'
 const entryDir = './src/pages/**/*.js'; //该目录下全部为入口文件
 
-
-//方便多页面打包时可以在不用修改入口文件配置 
-function getEntry() {
-    var entry = {};
-    //读取src/pages目录所有入口文件
-    glob.sync(entryDir)
-        .forEach(function(name) {
-            let start = name.indexOf('src/pages/') + 10,
-                end = name.lastIndexOf('.');
-            let ext = name.slice(end, name.length);
-            if (ext === '.js') {
-                let eArr = [];
-                let nameKey = '';
-                let nameStr = name.slice(start, end);
-                let nameStrArry = nameStr.split('/');
-                for (let i = 0; i < nameStrArry.length; i++) {
-                    if (nameStrArry[i]) {
-                        nameKey += nameStrArry[i];
-                        if (i !== (nameStrArry.length - 1)) {
-                            nameKey += '-';
-                        }
-                    }
-                    //保存各个组件的入口 
-                }
-                console.log(`key:${nameKey};filename:${name}`)
-                eArr.push(name);
-                entry[nameKey] = eArr;
-            }
-        });
-    return entry;
-};
-
 console.log(`devMode:${devMode}`)
 
 module.exports = {
-    //webpack4中，可以直接使用"mode"设置为"production"来启用UglifyJsPlugin
-    mode: devMode ? "development" : "production",
-    entry: getEntry(),
+    mode: devMode ? "development" : "production", //webpack4中，可以直接使用"mode"设置为"production"来启用UglifyJsPlugin
+    entry: until.getEntry(entryDir),
     output: {
         //path.resolve为nodejs的固定语法，用于找到当前文件的绝对路径
         path: path.resolve(__dirname, dirPath),

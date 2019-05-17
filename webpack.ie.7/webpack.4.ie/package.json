@@ -19,6 +19,7 @@
         "babel-plugin-transform-es3-member-expression-literals": "^6.22.0",
         "babel-plugin-transform-es3-property-literals": "^6.22.0",
         "babel-plugin-transform-react-jsx": "^6.24.1",
+        "babel-plugin-transform-runtime": "^6.23.0",
         "babel-preset-env": "^1.7.0",
         "babel-preset-stage-0": "^6.24.1",
         "clean-webpack-plugin": "^2.0.2",
@@ -39,9 +40,23 @@
         "webpack-cli": "^3.3.0",
         "webpack-dev-server": "^3.2.1"
     },
-    "importList": [
-        "/static/v2/base/ifind-ui.min.css",
-        "/static/v2/tools/jQuery/jquery.1.11.3.js"
+    "componentFile": "/ComponentLibraryCon/component.file.json",
+    "importList": [{
+            "name": "checkboxL",
+            "version": "1.0.0"
+        },
+        {
+            "name": "MobileH5",
+            "version": "1.0.0"
+        },
+        {
+            "name": "select",
+            "version": "1.0.0"
+        },
+        {
+            "name": "radioL",
+            "version": "1.0.0"
+        }
     ],
-    "host": ""
+    "host": "http://testpub.51ifind.com/static/v2",
 }
