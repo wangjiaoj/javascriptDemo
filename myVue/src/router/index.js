@@ -1,3 +1,4 @@
+import IndexPage from "../components/index"
 import BookIndexPage from "../components/book/index"
 import MovieIndexPage from "../components/movie/index"
 import MainPage from "../components/main"
@@ -18,6 +19,11 @@ const router = new VueRouter({
             path: '/main',
             component: MainPage,
             children: [{
+                    path: 'index',
+                    name: 'mainIndex',
+                    component: IndexPage
+                },
+                {
                     // 当 /user/:id/profile 匹配成功，
                     // UserProfile 会被渲染在 User 的 <router-view> 中
                     path: 'book',

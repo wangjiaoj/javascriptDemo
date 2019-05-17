@@ -4,11 +4,9 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const devMode = process.env.NODE_ENV !== 'production'
 const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-
-/****
- * 在webpack 4中，我们可以直接使用"mode"设置为"production"来启用UglifyJsPlugin。
- *  */
+console.log(`development:${devMode}`);
 module.exports = {
+    mode: devmode ? "development" : 'development', //在webpack 4中，我们可以直接使用"mode"设置为"production"来启用UglifyJsPlugin。
     entry: {
         app: './src/main.js',
     },
@@ -50,12 +48,13 @@ module.exports = {
             /**
             ** 遇到后缀为.css的文件，webpack先用css-loader加载器去解析这个文件，
             遇到“@import”等语句就将相应样式文件引入（所以如果没有css-loader，就没法解析这类语句），
-            最后计算完的css，将会使用style-loader生成一个内容为最终解析完的css代码的style标签，放到head标签里。
+            
+            style-loader:最后计算完的css，将会使用style-loader生成一个内容为最终解析完的css代码的style标签，放到head标签里。
             loader是有顺序的，webpack肯定是先将所有css模块依赖解析完得到计算结果再创建style标签。
             因此应该把style-loader放在css-loader的前面（webpack loader的执行顺序是从右到左）。
-            mini-css-extract-plugin 是把css分离出去的'style-loader'和 mini-css-extract-plugin 不可通用 自己选一个
-             MiniCssExtractPlugin:This plugin should be used only on production builds without style-loader in the loaders chain, 
-              especially if you want to have HMR in development.
+            mini-css-extract-plugin :是把css分离出去的
+            'style-loader'和 mini-css-extract-plugin 不可通用 自己选一个
+           
             *  */
             {
                 test: /\.css$/,
@@ -68,7 +67,7 @@ module.exports = {
                     //         publicPath: './src'
                     //     }
                     // },
-                    'css-loader'
+                    'vue-style-loader', 'css-loader'
                 ]
             }, {
                 test: /\.scss$/,

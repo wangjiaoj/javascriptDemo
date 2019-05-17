@@ -1,5 +1,5 @@
 const devConfig = require("./webpack.config.js");
-const devMode = process.env.NODE_ENV !== 'production';
+process.env.NODE_ENV = 'development';
 const webpack = require('webpack');
 const path = require('path');
 devConfig.plugins.push(
