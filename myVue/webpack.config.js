@@ -6,7 +6,7 @@ const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 console.log(`development:${devMode}`);
 module.exports = {
-    mode: devmode ? "development" : 'development', //在webpack 4中，我们可以直接使用"mode"设置为"production"来启用UglifyJsPlugin。
+    mode: devMode ? "development" : 'development', //在webpack 4中，我们可以直接使用"mode"设置为"production"来启用UglifyJsPlugin。
     entry: {
         app: './src/main.js',
     },

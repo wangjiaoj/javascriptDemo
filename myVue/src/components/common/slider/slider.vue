@@ -1,11 +1,14 @@
 <template>
-    <div class="slider">
+    <div class="slider" :style="sliderStyle">
         <slot></slot>
-         <ul>
-            <li v-for="(item, index) in imgList" :class="tabCls(index)" >
+         <ul class="slider-img">
+            <li v-for="(item, index) in imgList" :class="tabCls(index)" v-on="{mouseenter:stopSlider,mouseleave:sliderFun}">
                   <img v-bind:src="item.img" v-bind:alt="item.alt"/> 
             </li>
         </ul>
+        <div class="slider-pager"> 
+            <i v-for="(item, index) in imgList" :class="pageCls(index)"> </i>
+        </div>
     </div>
 </template>
 <script>
@@ -32,12 +35,25 @@
             }
         },
         computed: {
-
+            sliderStyle: () => {
+                let style = "";
+                if (this.width) {
+                    style += "width:" + this.width + "px;"
+                } else {
+                    style += "width:100%;";
+                }
+                debugger
+                this.height ? style += "height:" + this.height + "px" : style += "height:500px";
+                return style;
+            }
         },
         mounted() {
             //  
         },
         methods: {
+            computeWidth() {
+
+            },
             getItems() {
                 return this.$children.filter(item => item.$options.name === 'slider-item');
             },
@@ -47,15 +63,18 @@
                 }
                 this.clock = setTimeout(() => {
                     this.activekey++;
-                    if (this.activekey > this.maxNum) {
+                    if (this.activekey >= this.maxNum) {
                         this.activekey = 0;
                     }
-                    console.log(this.activekey);
                     this.sliderFun();
                 }, 1000 * this.timeGap);
             },
+            stopSlider() {
+                if (this.clock) {
+                    clearTimeout(this.clock);
+                }
+            },
             tabCls(index) {
-
                 if (index === this.activekey) {
                     return 'slider-show'
                 }
@@ -63,11 +82,14 @@
                     return 'slider-hide'
                 }
             },
+            pageCls(index) {
+                if (index === this.activekey) {
+                    return 'slider-page-show'
+                }
+            },
             updateNav() {
                 this.imgList = [];
-
-                let list = this.getItems();
-                list.forEach(item => {
+                this.getItems().forEach(item => {
                     this.imgList.push({
                         img: item.img,
                         alt: item.alt
