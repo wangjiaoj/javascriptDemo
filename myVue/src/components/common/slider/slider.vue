@@ -14,11 +14,14 @@
 <script>
     export default {
         props: {
+            // prop 指定验证要求, prop 会在一个组件实例创建之前进行验证，所以实例的属性 (如 data、computed 等) 在 default 或 validator 函数中是不可用的。
             width: {
-                type: String
+                type: String,
+                 defalut: 800
             },
             height: {
-                type: String
+                type: String,
+                 defalut: 500
             },
             gap: {
                 type: String,
@@ -35,15 +38,14 @@
             }
         },
         computed: {
-            sliderStyle: () => {
-                let style = "";
+            sliderStyle:function () {
+                let style = ""; style += "width:100%;";
                 if (this.width) {
-                    style += "width:" + this.width + "px;"
+                    style += "width:" + this.width + ";"
                 } else {
                     style += "width:100%;";
                 }
-                debugger
-                this.height ? style += "height:" + this.height + "px" : style += "height:500px";
+               this.height ? style += "height:" + this.height + "" : style += "height:500px;";
                 return style;
             }
         },
