@@ -1,10 +1,10 @@
 <template>
     <div class="index-box">
-       <slider width="100%" height="500px">
-            <slider-item img="../../../src/assets/images/01.jpg" alt="01.jpg"></slider-item>
-            <slider-item img="../../../src/assets/images/02.jpg" alt="02.jpg"></slider-item>
-            <slider-item img="../../../src/assets/images/03.jpg" alt="03.jpg"></slider-item>
-        </slider>
+       <carousel width="100%" height="500px"  gap="3" loop>
+            <carousel-item img="../../../src/assets/images/01.jpg" alt="01.jpg"></carousel-item>
+            <carousel-item img="../../../src/assets/images/02.jpg" alt="02.jpg"></carousel-item>
+            <carousel-item img="../../../src/assets/images/03.jpg" alt="03.jpg"></carousel-item>
+        </carousel>
     </div>
 </template>
 <script>

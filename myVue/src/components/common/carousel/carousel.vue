@@ -1,13 +1,13 @@
 <template>
-    <div class="slider" :style="sliderStyle">
+    <div class="carousel" :style="carouselStyle">
         <slot></slot>
-         <ul class="slider-img">
-            <li v-for="(item, index) in imgList" :class="tabCls(index)" v-on="{mouseenter:stopSlider,mouseleave:sliderFun}">
+         <ul class="carousel-img">
+            <li v-for="(item, index) in imgList" :class="tabCls(index)" v-on="{mouseenter:stopcarousel,mouseleave:carouselFun}">
                   <img v-bind:src="item.img" v-bind:alt="item.alt"/> 
             </li>
         </ul>
-        <div class="slider-pager"> 
-            <i v-for="(item, index) in imgList" :class="pageCls(index)"> </i>
+        <div class="carousel-pager"> 
+            <i v-for="(item, index) in imgList" :class="pageCls(index)" @click="pageChange(index)"> </i>
         </div>
     </div>
 </template>
@@ -17,15 +17,19 @@
             // prop 指定验证要求, prop 会在一个组件实例创建之前进行验证，所以实例的属性 (如 data、computed 等) 在 default 或 validator 函数中是不可用的。
             width: {
                 type: String,
-                 defalut: 800
+                defalut: 800
             },
             height: {
                 type: String,
-                 defalut: 500
+                defalut: 500
             },
             gap: {
                 type: String,
                 defalut: 5
+            },
+            loop: {
+                type: Boolean,
+                defalut: false
             }
         },
         data() {
@@ -38,14 +42,10 @@
             }
         },
         computed: {
-            sliderStyle:function () {
-                let style = ""; style += "width:100%;";
-                if (this.width) {
-                    style += "width:" + this.width + ";"
-                } else {
-                    style += "width:100%;";
-                }
-               this.height ? style += "height:" + this.height + "" : style += "height:500px;";
+            carouselStyle: function() {
+                let style = "";
+                this.width ? style += "width:" + this.width + ";" : style += "width:100%;";
+                this.height ? style += "height:" + this.height + ";" : style += "height:500px;";
                 return style;
             }
         },
@@ -53,13 +53,12 @@
             //  
         },
         methods: {
-            computeWidth() {
-
-            },
+            computeWidth() {},
             getItems() {
-                return this.$children.filter(item => item.$options.name === 'slider-item');
+                return this.$children.filter(item => item.$options.name === 'carousel-item');
             },
-            sliderFun() {
+            carouselFun() {
+                if (!this.loop) return;
                 if (this.clock) {
                     clearTimeout(this.clock);
                 }
@@ -68,25 +67,26 @@
                     if (this.activekey >= this.maxNum) {
                         this.activekey = 0;
                     }
-                    this.sliderFun();
+                    this.carouselFun();
                 }, 1000 * this.timeGap);
             },
-            stopSlider() {
+            stopcarousel() {
+                if (!this.loop) return;
                 if (this.clock) {
                     clearTimeout(this.clock);
                 }
             },
             tabCls(index) {
                 if (index === this.activekey) {
-                    return 'slider-show'
+                    return 'carousel-show'
                 }
                 if ((index + 1) === this.activekey || (index === 0 && this.maxNum === this.activekey)) {
-                    return 'slider-hide'
+                    return 'carousel-hide'
                 }
             },
             pageCls(index) {
                 if (index === this.activekey) {
-                    return 'slider-page-show'
+                    return 'carousel-page-show'
                 }
             },
             updateNav() {
@@ -98,7 +98,17 @@
                     })
                 });
                 this.maxNum = this.imgList.length;
-                this.sliderFun();
+                this.carouselFun();
+            },
+            pageChange(index) {
+
+                if (this.clock) {
+                    clearTimeout(this.clock);
+                }
+                this.activekey = index;
+                if (this.loop) {
+                    this.carouselFun();
+                }
             }
         },
     }
