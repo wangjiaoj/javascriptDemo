@@ -1,0 +1,317 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Template Editor</title>
+    <!--<link href="{static}/css/main.css" rel='stylesheet' type='text/css' />-->
+    <style>
+        .mapContainer {
+            /*display: grid;*/
+            height: 404px;
+            width: 550px;
+            /*height: 1000px;
+            width: 1000px;*/
+            /*grid-template-rows: 100%;
+            grid-template-columns: 100%;*/
+        }
+        /*mapDemo1      */
+        
+        #mapDemo1 {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script src="../static/libs/jquery-1.12.1.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1/echarts-en.js"></script>-->
+    <script src="../static/libs/echarts.min.js"></script>
+</head>
+
+<body>
+
+    <div class="mapContainer">
+        <div id="mapDemo1"></div>
+    </div>
+    <script>
+        $(function() {
+            paintMap1();
+        });
+
+        function getOption() {
+            var option = {
+                selectedMode: 'single',
+                backgroundColor: '#FFFFFF', //画布背景颜色
+                series: [{
+                    type: 'map',
+                    map: 'china',
+                    // roam: true, //允许缩放和平移
+                    //初始化时的地图位置，可通过改变地图中心视角的经纬度来实现地图的平移
+                    // center: [100.97, 35.71],
+                    zoom: 1.2, //地图缩放多少倍
+                    // selectedMode: true, //点击区域，会处于选中状态，多选
+                    label: { //设置地图区域名的文本样式，例如地名的字体大小等
+                        normal: {
+                            // show: true, //显示地区的文本名称,默认是不显示的，默认状态是hoverORclick才显示
+                            fontSize: 12,
+                            fontFamily: '微软雅黑',
+                            fontWeight: 'bolder',
+                            position: 'center',
+                            color: '#FFFFFF',
+                        }
+                    },
+                    itemStyle: { //地图区域的多边形图形样式
+                        normal: {
+                            areaColor: '#2757f8', //地图区域颜色
+                            borderColor: '#FFFFFF', //图形的描边颜色
+                            //  borderWidth: 1, //描边线宽。为 0 时无描边
+                            //  borderType: 'solid',
+                            // opacity: 0.6
+                        }
+                    },
+                    //zlevel: 1//zlevel用于 Canvas 分层，不同zlevel值的图形会放置在不同的 Canvas 中
+                    //z: 1//组件的所有图形的z值。控制图形的前后顺序。z值小的图形会被z值大的图形覆盖。
+                    //layoutCenter: ['50%', '50%'],//设置这两个值后 left/right/top/bottom/width/height 无效。
+                    //layoutSize: 1000
+                    //data: [],
+                    markPoint: {
+                        "symbol": "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAUCAYAAACAl21KAAABiklEQVQ4jZ3UMY9MURjG8d+cMzQKCkEkK6KRKDR0hJibiEpL2KBAQ0LlO5hoyHwCNApmo1mbmBvKjQhbbC9ZK8QWQiEz3FzFPWR2c+fKzpPc5Oac//vkSd73vK2yLNWpGHSO4Dj2YYiPWIxZ/raOb200KgadM7iJD3iHL2hjFw5jP3oxy1/UGhWDTkQXW/EcRW1UIs5ihDsxywsIY0Avxe83mEh3/cT2/h6GlOYq1rDUYLBRS/iaarV+vzy1DY/G3TepG7gUcBGvpjSB17gQcALLDeAe7G24X8bJgO2oHybO4TEeYnYCU2JHULVzkmbRSt/5Bi4E/GoAfoz9/2zgRkE1/pPUxQpWcbeBG7bxTTXNoxrgPa40GEi13wPmVI9zWh1DP2AeB1UPc7Nq4xDmQ8zyEvdwfQqja+jGLC8DxCxfxFNcVrX6f2ol9lmqXb+PikHnNG7jiapbdZpRDer9mOUL/5xrFttO3MJRfMJnbMFu1XJ7gwcxy9fWRZy0apPpgZRgiJWY5auT2D+RS3X0qzKQ9gAAAABJRU5ErkJggg==",
+                        symbolSize: 20,
+                        silent: false,
+                        label: { //标注的文本
+                            normal: {
+                                show: true, //即是否显示标注的名称（data:name）
+                                formatter: '{b}', //模板变量有 {a}、{b}、{c}，分别表示系列名，数据名，数据值。
+                                // formatter: '{b}:{c}' //模板变量有 {a}、{b}、{c}，分别表示系列名，数据名，数据值。
+                                backgroundColor: '#ebbe52',
+                                fontSize: 12,
+                                fontWeight: 'normal',
+                                padding: [5, 10, 5, 10],
+                                color: "#FFFFFF",
+                                borderRadius: 5,
+
+                            }
+                        },
+                        itemStyle: { //标注的样式。
+                            normal: {
+                                color: 'red'
+                            }
+                        },
+                        data: [{
+                            symbol: 'circle',
+                            symbolSize: 5,
+                            itemStyle: {
+                                color: '#FFFFFF',
+                            },
+                            label: {
+                                backgroundColor: 'transparent',
+                                position: 'left',
+                                distance: '5'
+                            },
+                            name: '沈阳',
+                            value: '11',
+                            coord: [123.46, 41.68],
+                        }, {
+                            symbol: 'circle',
+                            symbolSize: 5,
+                            itemStyle: {
+                                color: '#FFFFFF',
+                            },
+                            label: {
+                                backgroundColor: 'transparent',
+                                position: 'left',
+                                distance: '5'
+                            },
+                            name: '北京',
+                            value: '11',
+                            coord: [116.41, 39.91],
+                        }, {
+                            symbol: 'circle',
+                            symbolSize: 5,
+                            itemStyle: {
+                                color: '#FFFFFF',
+                            },
+                            label: {
+                                backgroundColor: 'transparent',
+                                position: 'left',
+                                distance: '5'
+                            },
+                            name: '天津',
+                            value: '11',
+                            coord: [117.19, 39.08],
+                        }, {
+                            symbol: 'circle',
+                            symbolSize: 5,
+                            itemStyle: {
+                                color: '#FFFFFF',
+                            },
+                            label: {
+                                backgroundColor: 'transparent',
+                                position: 'left',
+                                distance: '5'
+                            },
+                            name: '西安',
+                            value: '11',
+                            coord: [108.93, 34.34],
+
+                        }, {
+                            symbol: 'circle',
+                            symbolSize: 5,
+                            itemStyle: {
+                                color: '#FFFFFF',
+                            },
+                            label: {
+                                backgroundColor: 'transparent',
+                                position: 'left',
+                                distance: '5'
+                            },
+                            name: '武汉',
+                            value: '11',
+                            coord: [114.30, 30.59],
+
+                        }, {
+                            symbol: 'circle',
+                            symbolSize: 5,
+                            itemStyle: {
+                                color: '#FFFFFF',
+                            },
+                            label: {
+                                backgroundColor: 'transparent',
+                                position: 'left',
+                                distance: '5'
+                            },
+                            name: '上海',
+                            value: '11',
+                            coord: [121.47, 31.23],
+
+                        }, {
+                            symbol: 'circle',
+                            symbolSize: 5,
+                            itemStyle: {
+                                color: '#FFFFFF',
+                            },
+                            label: {
+                                backgroundColor: 'transparent',
+                                position: 'left',
+                                distance: '5'
+                            },
+                            name: '杭州',
+                            value: '11',
+                            coord: [120.15, 30.27]
+                        }, {
+                            symbol: 'circle',
+                            symbolSize: 5,
+                            itemStyle: {
+                                color: '#FFFFFF',
+                            },
+                            label: {
+                                backgroundColor: 'transparent',
+                                position: 'left',
+                                distance: '5'
+                            },
+                            name: '广州',
+                            value: '11',
+                            coord: [113.26, 23.13]
+                        }, {
+                            symbol: 'circle',
+                            symbolSize: 5,
+                            itemStyle: {
+                                color: '#FFFFFF',
+                            },
+                            label: {
+                                backgroundColor: 'transparent',
+                                position: 'left',
+                                distance: '5'
+                            },
+                            name: '成都',
+                            value: '11',
+                            coord: [104.06, 30.57]
+                        }, {
+                            //通过经纬度指明标注的位置，该方法是独立的，不是必须搭配geo属性
+                            name: '西北赛区',
+                            value: '1',
+                            coord: [96.59, 39.10],
+                            label: {
+                                position: 'left',
+                                distance: '10'
+                            }
+                        }, {
+                            //通过经纬度指明标注的位置，该方法是独立的，不是必须搭配geo属性
+                            name: '西南赛区',
+                            value: '1',
+                            coord: [104.10, 30.48],
+                            label: {
+                                position: 'left',
+                                distance: '10'
+                            }
+                            // label: {
+                            //     position: ['-200%', '-100%'],
+                            // }
+                        }, {
+                            //通过经纬度指明标注的位置，该方法是独立的，不是必须搭配geo属性
+                            name: '中南赛区',
+                            value: '1',
+                            coord: [111.40, 27.72, ],
+                            label: {
+                                position: 'left',
+                                distance: '10'
+                            }
+                        }, {
+                            //通过经纬度指明标注的位置，该方法是独立的，不是必须搭配geo属性
+                            name: '华北赛区',
+                            value: '1',
+                            coord: [114.60, 37.92],
+                            label: {
+                                position: 'right',
+                            }
+                        }, {
+                            //通过经纬度指明标注的位置，该方法是独立的，不是必须搭配geo属性
+                            name: '东北赛区',
+                            value: '1',
+                            coord: [124.90, 44.49],
+                            label: {
+                                position: 'right',
+                            }
+                        }, {
+                            //通过经纬度指明标注的位置，该方法是独立的，不是必须搭配geo属性
+                            name: '华东赛区',
+                            value: '1',
+                            coord: [121.67, 31.23],
+                            label: {
+                                position: 'right',
+
+                            }
+                        }, {
+                            //method2： 通过经纬度指明标注的位置，该方法是独立的，不是必须搭配geo属性
+                            name: '港澳台赛区',
+                            value: '3',
+                            coord: [114.18, 22.32],
+                            label: {
+                                position: 'right',
+                            }
+                        }],
+                        silent: true,
+                        //tooltip: {}
+
+                    },
+                }],
+
+            }
+            return option;
+        }
+
+        function paintMap1() {
+            var mapChart = echarts.init($('#mapDemo1')[0]);
+            var option = getOption();
+            $.get('../static/libs/result.json', function(chinaJson) {
+                echarts.registerMap('china', chinaJson);
+                mapChart.setOption(option);
+                mapChart.on('mapselectchanged', function(param) {
+                    alert(param.batch[0].name);
+                    //var selected = param.batch['0'].selected;
+                });
+
+            });
+        }
+    </script>
+</body>
+
+</html>

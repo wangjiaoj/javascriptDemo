@@ -2,6 +2,11 @@ const webpack = require('webpack');
 process.env.NODE_ENV = 'development';
 const devConfig = require('./webpack.config.base.js');
 const path = require('path');
+const entryDir = './src/pages/**/*.js'; //该目录下全部为入口文件
+//const until = require("./until");
+devConfig.entry = { "index": "./src/pages/index/index.js" }
+    //until.getEntry(entryDir);
+
 devConfig.plugins.push(
     new webpack.HotModuleReplacementPlugin()
 );

@@ -1,26 +1,22 @@
-const webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin'); // 此外webpack内置的JS压缩插件不能使用了，可以安装uglifyjs-webpack-plugin插件，使用同其他非内置插件；
 const MiniCssExtractPlugin = require("mini-css-extract-plugin"); //4.0中不再支持Extract-text-webpack-plugin,换用mini-css-extract-plugin
-
-const CopyPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const path = require('path');
-const until = require("./until");
 //path:所有输出文件的目标路径;publicPath:输出解析文件的目录，url 相对于 HTML 页面
-const devMode = process.env.NODE_ENV !== 'production'
+const devMode = process.env.NODE_ENV !== 'production';
+
 const dirPath = '../static/project/';
 const publicPath = 'static/project/';
 const cssPublicPath = '../';
-const cssFileName = devMode ? 'css/[name].css' : 'css/[name].[chunkhash].css'; //'.[chunkhash]'
-const jsFileName = devMode ? 'js/[name].js' : 'js/[name].[chunkhash].js'; //'.[chunkhash]'
-const imgFileName = devMode ? 'image/[name].[ext]' : 'image/[name].[hash:7].[ext]'; //'.[hash:7]'
-const entryDir = './src/pages/**/*.js'; //该目录下全部为入口文件
+const cssFileName = 'css/[name].css'; //devMode ? 'css/[name].css' : 'css/[name].[chunkhash].css'; //'.[chunkhash]'
+const jsFileName = 'js/[name].js'; //devMode ? 'js/[name].js' : 'js/[name].[chunkhash].js'; //'.[chunkhash]'
+const imgFileName = 'image/[name].[ext]'; //devMode ? 'image/[name].[ext]' : 'image/[name].[hash:7].[ext]'; //'.[hash:7]'
+
 
 console.log(`devMode:${devMode}`)
 
 module.exports = {
     mode: devMode ? "development" : "production", //webpack4中，可以直接使用"mode"设置为"production"来启用UglifyJsPlugin
-    entry: until.getEntry(entryDir),
     output: {
         //path.resolve为nodejs的固定语法，用于找到当前文件的绝对路径
         path: path.resolve(__dirname, dirPath),
