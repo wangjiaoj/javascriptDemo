@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .chart {
+            width: 783px;
+            height: 720px;
+            float: left;
+            background: url(./bitmap.png) 32% 8% no-repeat;
+            position: relative;
+            top: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <div id="chart" class="chart"></div>
+
+    </div>
+    <!-- share -->
+    <script src="./jquery.min.js"></script>
+    <script src="./echarts.4.2.0.min.js"></script>
+    <script src="./china.js"></script>
+    <script>
+        bindMap();
+
+        function bindMap() {
+            var n = echarts.init(document.getElementById("chart"));
+            var t = [{
+                "type": "map",
+                "mapType": "china",
+                "geoIndex": 0,
+                "legendHoverLink": !1,
+                "hoverAnimation": !1,
+                "label": {
+                    "normal": {
+                        "show": !1
+                    },
+                    "emphasis": {
+                        "show": !1
+                    }
+                }
+            }];
+            var e = {
+                "上海": [121.480539, 31.235929],
+                "浙江": [120.159533, 30.271548],
+                "杭州": [120.215503, 30.253087],
+                "北京": [116.413384, 39.910925],
+                "深圳": [114.03104, 22.324386]
+            };
+            var i = [{
+                "name": "杭州"
+            }, {
+                "name": "深圳"
+            }, {
+                "name": "北京"
+            }, {
+                "name": "上海"
+            }];
+            var r = [];
+            for (a = 0; a < i.length; a++) {
+                r.push({
+                    "name": i[a].name,
+                    "value": e[i[a].name].concat([i[a].name])
+                })
+            };
+            var o = [];
+            t.push({
+                "name": "杭州",
+                "type": "scatter",
+                "zlevel": 20,
+                "color": "#f00",
+                "coordinateSystem": "geo",
+                "symbolSize": 10,
+                "itemStyle": {
+                    "normal": {
+                        "color": "#f00"
+                    }
+                },
+                "data": function(n) {
+                    for (var t = [], i = 0; i < n.length; i++) {
+                        var r = e[n[i].name];
+                        r && t.push({
+                            "name": n[i].name,
+                            "value": r.concat(n[i].value)
+                        })
+                    }
+                    return t
+                }(o)
+            }, {
+                "type": "effectScatter",
+                "coordinateSystem": "geo",
+                "zlevel": 15,
+                "rippleEffect": {
+                    "period": 8,
+                    "brushType": "stroke",
+                    "scale": 15
+                },
+                "symbol": "circle",
+                "symbolSize": 7,
+                "itemStyle": {
+                    "color": "#2878FA"
+                },
+                "tooltip": {
+                    "show": !1
+                },
+                "data": r
+            });
+            var s = {
+                "color": ["#fc5353", "#f4fc6c", "#e68b55", "#9a68ff", "#ff60c5"],
+                "legend": {
+                    "orient": "horizontal",
+                    "left": "27%",
+                    "top": "5%",
+                    "data": ["高线"],
+                    "textStyle": {
+                        "color": "#ffffff"
+                    },
+                    "icon": "circle"
+                },
+                "geo": {
+                    "map": "china",
+                    "zlevel": 10,
+                    "layoutCenter": ["48%", "40.5%"],
+                    "layoutSize": "95%",
+                    "zoom": 1.08,
+                    "label": {
+                        "normal": {
+                            "show": !1,
+                            "textStyle": {
+                                "fontSize": 12,
+                                "color": "transparent"
+                            }
+                        },
+                        "emphasis": {
+                            "show": !1
+                        }
+                    },
+                    "itemStyle": {
+                        "normal": {
+                            "color": "transparent",
+                            "borderWidth": 1.1,
+                            "borderColor": "transparent"
+                        },
+                        "emphasis": {
+                            "areaColor": "transparent"
+                        }
+                    }
+                },
+                "series": t
+            };
+            n.setOption(s);
+        }
+    </script>
+    <!-- share end -->
+</body>
+
+</html>
