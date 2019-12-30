@@ -1,0 +1,161 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Template Editor</title>
+    <link href="./src/hzmap.css" rel='stylesheet' type='text/css' />
+    <link rel="stylesheet" type="text/css" href="../static/map/countdown/css/countdown.css">
+
+
+</head>
+
+<body>
+    <div class="app" id="APP">
+        <div class="header">
+            <div class="header-logo">
+                <h2>杭州市科技局</h2>
+            </div>
+        </div>
+        <div class="left">
+            <div class="left-item left-item-one">
+                <div class="item-container">
+                    <h3>国家高新技术企业</h3>
+                    <div class="high-tech-enterprise comapnay-data-container clearfix">
+                        <div class="company-data-left declaration-company">
+                            <h4>全市当年申报国高企</h4>
+                            <label class="company-data-num"> </label><label class="company-data-per">家</label>
+                        </div>
+                        <div class="company-data-right effective-company">
+                            <h4>全市有效国高企</h4>
+                            <label class="company-data-num">4544</label><label class="company-data-per">家</label>
+                        </div>
+                    </div>
+                    <div class="rank-list">
+                        <ul>
+                            <li class="clearfix">
+                                <i class="rank-progress"></i>
+                                <span class="rank-txt">NO.1:滨江区</span>
+                                <div class="rank-num-container"><label class="rank-num">912</label><label class="rank-per">家</label> </div>
+                            </li>
+                            <li>
+                                <i class="rank-progress"></i>
+                                <span class="rank-txt">NO.1:滨江区</span>
+                                <div class="rank-num-container"><label class="rank-num">912</label><label class="rank-per">家</label> </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="left-item left-item-two">
+
+                <div class="item-container">
+                    <h3>企业研发能力</h3>
+                </div>
+            </div>
+            <div class="left-item left-item-three">
+                <div class="item-container">
+                    <div class="startups-item startups-item-fhq">
+                        <i class="startups-type-icon"></i>
+                        <div class="startups-desc">
+                            <h4>孵化器数量</h4>
+                            <div class="">
+                                <label for="">188家</label>
+                                <div class="startups-rate"> <i></i> <span>282家</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="startups-item">
+                        <i class="startups-type-icon"></i>
+                        <div class="startups-desc">
+                            <h4>众创空间数量</h4>
+                            <div>
+                                <label for="">188家</label>
+                                <div class="startups-rate"><i></i> <span>282家</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="map-container">
+            <div class='chart-container'>
+                <h4>2019年全社会R&D经费支出情况</h4>
+                <div class="gauge-chart">
+                    <div id="chartDemo"></div>
+                    <div class="gauge-chart-desc">
+                        <div class="chart-item">
+                            <p>第一名：滨江区</p>
+                            <label class="chart-num">172.9</label> <label class="chart-per">亿元</label>
+                        </div>
+                        <div class="chart-item">
+                            <p>第一名：滨江区</p>
+                            <label class="chart-num">172.9</label> <label class="chart-per">亿元</label>
+                        </div>
+                        <div class="chart-item">
+                            <p>第一名：滨江区</p>
+                            <label class="chart-num">172.9</label> <label class="chart-per">亿元</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-desc">
+                    杭州市R&D经费支出：
+                    <label class="chart-desc-num">464.3</label><label class="chart-desc-per">亿元</label>
+                    <i class="up-down-icon up-icon"></i><span>17.00%</span> 占GDP比重：
+                    <label for="">3.44</label><label class="chart-desc-per">%</label><i class="up-down-icon up-icon"></i><span>17.00%</span>
+                </div>
+            </div>
+            <div id="mapDemo1"></div>
+        </div>
+        <div class="right">
+            <div class="right-container">
+                <div class="right-item right-item-one">
+                    <h3>科技金融投入</h3>
+                    <h4>市创投引导基金规模</h4>
+                    <div class="item-card-container">
+                        <div class="card-item count card-item-01"></div>
+                        <div class="card-item count card-item-02"></div>
+                        <div class="card-item count card-item-03"></div>
+                        <div class="card-item count card-item-04"></div>
+                    </div>
+                    <div class="right-company-data comapnay-data-container  clearfix">
+                        <div class="company-data-left">
+                            <h4>全市当年申报国高企</h4>
+                            <label class="company-data-num">4544</label><label class="company-data-per">家</label>
+                        </div>
+                        <div class="company-data-right">
+                            <h4>全市有效国高企</h4>
+                            <label class="company-data-num">4544</label><label class="company-data-per">家</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="right-item right-item-two">
+                    <h4>市天使引导基金规模</h4>
+                </div>
+                <div class="right-item right-item-three">
+                    <h4>市科技担保基金累计担保总额</h4>
+                </div>
+                <div class="right-item right-item-four">
+                    <h4>市科技周转基金累计周转总额</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script id="count-template" type="text/template">
+        <span class="current top <%= currentSize %>"><%= time %></span>
+        <span class="next top <%= nextSize %>"><%= nextTime %></span>
+        <span class="current bottom <%= currentSize %>"><%= time %></span>
+        <span class="next bottom <%= nextSize %>"><%= nextTime %></span>
+    </script>
+    <script src="../static/map/jquery-1.12.1.min.js"></script>
+    <script src="../static/map/echarts.min.js"></script>
+    <!--<script src="https://www.echartsjs.com/examples/vendors/echarts/echarts.min.js?v=1571424732409"></script>-->
+    <script src="../static/map/jquery.animateNumber.min.js"></script>
+    <script src="../static/map/countdown/js/Underscore-1.5.2-min.js"></script>
+
+    <script src="./src/hzmap.js"></script>
+
+</body>
+
+</html>

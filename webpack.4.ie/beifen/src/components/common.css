@@ -1,0 +1,12 @@
+@charset "UTF-8";
+html,
+body {
+    font-size: 14px;
+    color: #303313;
+}
+
+html,
+body,
+* {
+    box-sizing: border-box;
+}

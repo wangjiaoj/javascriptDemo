@@ -1,0 +1,7 @@
+ $baseRowBackground: red;
+ @import "@libs/row/index.scss";
+ $baseColBackground: red;
+ @import "@libs/col/index.scss";
+ .dd {
+     background: $baseRowBackground;
+ }
