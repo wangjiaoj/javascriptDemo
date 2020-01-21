@@ -15,9 +15,7 @@ function getEntry(entryDir) {
                     let nameStr = name.slice(start, end);
                     let pageEntranceFlagIndex = nameStr.lastIndexOf('-entrance');
                     if ((nameStr.length - 9) == pageEntranceFlagIndex) {
-
-
-                        let nameStrArry = nameStr.split('/');
+                        let nameStrArry = nameStr.slice(0, pageEntranceFlagIndex).split('/');
                         for (let i = 0; i < nameStrArry.length; i++) {
                             if (nameStrArry[i]) {
                                 nameKey += nameStrArry[i];
