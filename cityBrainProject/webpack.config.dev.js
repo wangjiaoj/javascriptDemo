@@ -2,13 +2,15 @@ process.env.NODE_ENV = 'development';
 
 var webpack = require('webpack');
 var path = require('path');
-var merge = require('webpack-merge');
+var {merge} = require('webpack-merge');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var baseWebpackConfig = require("./webpack.config.js");
+var { ROOT_PATH, BUILD_PATH, entryConfig, jsPath, cssPath, AMAP_KEY } = require('./config/buildConfig.js');
+
 module.exports = merge(baseWebpackConfig, {
     entry: entryConfig.reduce((acc, cur) => {
         cur.entry['babel-polyfill'] = 'babel-polyfill'
-        acc[cur.name] = [cur.entry].concat(hotMiddlewareScript);
+        acc[cur.name] = cur.entry;// [cur.entry].concat(hotMiddlewareScript);
         return acc;
     }, {}),
     devtool: 'source-map',
@@ -17,7 +19,7 @@ module.exports = merge(baseWebpackConfig, {
         compress: true,
         hot: true, // 开启配置
         port: 9000
-    };
+    },
     plugins: [
         // new webpack.DefinePlugin({
         //     __DEVELOPMENT__: JSON.stringify(true),
@@ -38,7 +40,7 @@ module.exports = merge(baseWebpackConfig, {
         chunks: [item.name],
         inject: 'body',
         windowCtxParam: '',
-        windowSaleUrlParam: 'https://testm.10jqka.com.cn/devshouji/app/20191025/ykr_ROBOT-7938_vanish_20191014/yukangrong_ykr_ROBOT-7938_vanish_20191014_1571970085362/?place=shoujichaogu',
+        windowSaleUrlParam: '',
         AMAP_KEY
     })))
 })

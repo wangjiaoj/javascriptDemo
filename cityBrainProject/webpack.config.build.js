@@ -6,8 +6,9 @@
  var HtmlWebpackPlugin = require('html-webpack-plugin');
  const MiniCssExtractPlugin = require("mini-css-extract-plugin");
  var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
- var CleanWebpackPlugin = require('clean-webpack-plugin');
- var CopyWebpackPlugin = require('copy-webpack-plugin');
+ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+ var { CleanWebpackPlugin } = require('clean-webpack-plugin');
+  var CopyWebpackPlugin = require('copy-webpack-plugin');
  var baseWebpackConfig = require("./webpack.config.js");
 
 
@@ -26,11 +27,11 @@
      },
      optimization: {
          minimizer: [
-             //  new UglifyJsPlugin({
-             //      cache: true,
-             //      parallel: true,
-             //      sourcMap: true
-             //  }),
+              new UglifyJsPlugin({
+                  cache: true,
+                  parallel: true,
+                  sourcMap: true
+              }),
              new OptimizeCssAssetsPlugin({
                  assetNameRegExp: /\.optimize\.css$/g, // /\.css$/g,
                  cssProcessor: require('cssnano'),
@@ -38,16 +39,44 @@
                  canPrint: true
              })
          ],
+        //  splitChunks: {
+        //     chunks: 'async',
+        //     minSize: 30000,
+        //     maxSize: 0,
+        //     minChunks: 2, // 最少需要几个模块公用 
+        //     maxAsyncRequests: 6, // 按需加载时并行请求的最大数量
+        //     maxInitialRequests: 4, // //最大的初始化加载次数，默认为4；
+        //     automaticNameDelimiter: '-',
+          
+        //     name: true, //拆分出来块的名字(Chunk Names)，默认由块名和hash值自动生成；
+        //     cacheGroups: {
+        //       vendors: {
+        //         test: /[\\/]node_modules[\\/]/,
+        //         priority: -10
+        //       },
+        //       app: {
+        //         name: 'app',
+        //         minChunks: 3,
+        //         priority: -20,
+        //         reuseExistingChunk: true // 复用之前打包的模块
+        //       }
+        //     }
+        //   },
+        //   runtimeChunk: {
+        //     name: entrypoint => `runtime~${entrypoint.name}`
+        //   }
      },
      plugins: [
          // 删除文件
-         new CleanWebpackPlugin('build/**/*', {
-             exclude: ['.svn']
+
+         
+         new CleanWebpackPlugin( {
+            cleanOnceBeforeBuildPatterns: ['build/**/*' ],
+             
          }),
-         //  new CopyWebpackPlugin([{
-         //      from: path.resolve(ROOT_PATH, 'external'),
-         //      to: BUILD_PATH
-         //  }]),
+          new CopyWebpackPlugin(
+            [{ from:  path.resolve(ROOT_PATH, 'external'), to: BUILD_PATH } ],
+          ),
          //  new ExtractTextPlugin({
          //      filename: cssPath + '[name].[chunkhash:8].css'
          //  }),

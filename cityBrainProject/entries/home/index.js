@@ -1,5 +1,5 @@
  import Vue from 'vue';
- import App from '../../src/pages/index/app'
+ import App from '../../src/pages/home/app'
 
  import axios from 'axios'
  import '../../src/assets/base.scss'
