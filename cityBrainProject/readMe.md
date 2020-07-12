@@ -1,11 +1,8 @@
-## Vue技术方案
+## 多入口文件打包
 
-### 技术选项依赖：vue\vuex\vue-router\iview\
+###  
 
-
-### webpack.config.js
-* alina
-
+ 
 
 
 
