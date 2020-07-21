@@ -6,7 +6,7 @@ const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 console.log(`development:${devMode}`);
 module.exports = {
-    mode: devMode ? "development" : 'development', 
+    mode: devMode ? "development" : 'development',
     //在webpack 4中，我们可以直接使用"mode"设置为"production"来启用UglifyJsPlugin。
     entry: {
         // app: './src/main.js',
@@ -20,8 +20,15 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.vue', '.json'], //自动解析确定的拓展名,使导入模块时不带拓展名
         alias: { // 创建import或require的别名
-            'vue$': 'vue/dist/vue.esm.js'
-        }
+            'vue$': 'vue/dist/vue.esm.js',
+            '@pages': path.join(__dirname, '../src/pages'),
+            '@assets': path.join(__dirname, '../src/assets'),
+            '@component': path.join(__dirname, '../src/component'),
+        },
+        // 使用绝对路径指明第三方模块存放的位置，以减少搜索步骤
+        // 其中 __dirname 表示当前工作目录，也就是项目根目录
+        modules: [path.resolve(__dirname, 'node_modules')]
+
     },
     module: {
         rules: [{
@@ -60,6 +67,7 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: [
+                    devMode ? 'vue-style-loader' : MiniCssExtractPlugin.loader,
                     //     {
                     //     loader: MiniCssExtractPlugin.loader,
                     //     options: {
@@ -68,7 +76,7 @@ module.exports = {
                     //         publicPath: './src'
                     //     }
                     // },
-                    'vue-style-loader', 'css-loader'
+                    'css-loader', 'postcss-loader'
                 ]
             }, {
                 test: /\.scss$/,
@@ -81,7 +89,7 @@ module.exports = {
                     //         publicPath: './src'
                     //     }
                     // }, 
-                    'vue-style-loader', 'css-loader', 'sass-loader'
+                    devMode ? 'vue-style-loader' : MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'
                 ]
             }, {
                 test: /\.(png|svg|jpg|jpeg|gif)$/,
@@ -99,6 +107,6 @@ module.exports = {
     ],
 
     optimization: {
-        minimizer: []
+
     }
 };
