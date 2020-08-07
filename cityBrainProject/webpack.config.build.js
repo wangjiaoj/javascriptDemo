@@ -53,6 +53,7 @@
          ],
          splitChunks: {
              chunks: 'async',
+             //默认作用于异步chunk，值为all/initial/async/function(chunk),值为function时第一个参数为遍历所有入口chunk时的chunk模块，chunk._modules为gaichunk所有依赖的模块，通过chunk的名字和所有依赖模块的resource可以自由配置,会抽取所有满足条件chunk的公有模块，以及模块的所有依赖模块，包括css
              minSize: 30000,
              maxSize: 0,
              minChunks: 2, // 最少需要几个模块公用 
@@ -93,7 +94,7 @@
              // Options similar to the same options in webpackOptions.output
              // both options are optional
              filename: "[name].css",
-             chunkFilename: "[id].css"
+             //  chunkFilename: "[id].css"
          }),
          new BundleAnalyzerPlugin()
      ].concat(entryConfig.map(item => new HtmlWebpackPlugin({

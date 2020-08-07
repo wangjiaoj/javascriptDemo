@@ -6,7 +6,7 @@ const path = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 console.log(`development:${devMode}`);
 module.exports = {
-    mode: devMode ? "development" : 'development',
+    mode: devMode ? "development" : 'production',
     //在webpack 4中，我们可以直接使用"mode"设置为"production"来启用UglifyJsPlugin。
     entry: {
         // app: './src/main.js',
@@ -71,8 +71,7 @@ module.exports = {
                     //     {
                     //     loader: MiniCssExtractPlugin.loader,
                     //     options: {
-                    //         // you can specify a publicPath here
-                    //         // by default it use publicPath in webpackOptions.output
+
                     //         publicPath: './src'
                     //     }
                     // },
@@ -89,7 +88,7 @@ module.exports = {
                     //         publicPath: './src'
                     //     }
                     // }, 
-                    devMode ? 'vue-style-loader' : MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'
+                    devMode ? 'vue-style-loader' : MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'
                 ]
             }, {
                 test: /\.(png|svg|jpg|jpeg|gif)$/,
