@@ -5,6 +5,9 @@
 import { defineComponent, ref } from 'vue'
 export default defineComponent({
     name: 'foo',
+    props:{
+        childData :'jack',
+    },
     setup() {
         return {
             name: ref('jack')
